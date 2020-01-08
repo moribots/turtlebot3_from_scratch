@@ -1,5 +1,6 @@
 # ME495 Sensing, Navigation, and Machine Learning
 Author: Maurice Rahme
+
 # Tasks Submitted
 0.000
 
@@ -8,4 +9,5 @@ Author: Maurice Rahme
 0.002
 
 B.000
+
 # Tasks Completed

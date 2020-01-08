@@ -1,0 +1,24 @@
+# x coordinate for lower left corner of rectangle
+x: 3
+
+# y coordinate for lower left corner of rectangle
+y: 2
+
+# width of rectangle
+width: 4
+
+# height of rectangle
+height: 5
+
+# translational velocity of robot
+trans_vel: 2
+
+# rotational velocity of robot
+rot_vel: 1
+
+# frequency of control loop
+frequency: 100
+
+# threshold for heading and position
+threshold : 0.01
+
