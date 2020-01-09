@@ -32,7 +32,7 @@ int main(int argc, char** argv)
   ros::Duration(1).sleep();
   turtle.control();
 
-  ros::spin();
+  // ros::spin();
 
   return 0;
 }

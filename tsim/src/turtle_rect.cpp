@@ -13,7 +13,7 @@ TurtleRect::TurtleRect() :
   // THIS IS THE CLASS CONSTRUCTOR //
 
   //***************** RETREIVE PARAMS ***************//
-  nh_private_.param<float>("threshold", threshold_, 0.05);
+  nh_private_.param<float>("threshold", threshold_, 0.08);
   // This will pull the "threshold" parameter from the ROS server, and store it in the threshold_ variable.
   // If no value is specified on the ROS param server, then the default value of 0.0001 will be applied
 
@@ -23,7 +23,7 @@ TurtleRect::TurtleRect() :
   nh_private_.param<int>("height", height_, 5);
   nh_private_.param<int>("trans_vel", trans_vel_, 2);
   nh_private_.param<int>("rot_vel", rot_vel_, 1);
-  nh_private_.param<int>("frequency", frequency_, 100);
+  nh_private_.param<int>("frequency", frequency_, 100.0);
 
   // print parameters
   ROS_INFO("x: %d", x_);
@@ -47,6 +47,8 @@ TurtleRect::TurtleRect() :
 
   vel_publisher_ = nh_.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1);
   // This connects a geometry_msgs::Twist message on the "turtle1/cmd_vel" topic. 1 is the queue size.
+
+  pose_error_publisher_ = nh_.advertise<tsim::PoseError>("pose_error", 1);
 
   pen_client_ = nh_.serviceClient<turtlesim::SetPen>("turtle1/set_pen");
 
@@ -81,7 +83,13 @@ TurtleRect::TurtleRect() :
   pen_srv_.request.off = 0;
   pen_client_.call(pen_srv_);
 
+  // sleep
+  // ros::Duration(1).sleep();
 
+  // predicted turtle pose
+  x_o_ = 3;
+  y_o_ = 2;
+  head_o_ = 0;
 
 }
 
@@ -128,11 +136,11 @@ void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goa
     case true:
       ROS_DEBUG("CHECK ANG");
       // Check if need to move lin or ang
-      if (abs(goal_head - head_) <= threshold_ / 2.0)
+      if (abs(goal_head - head_) <= threshold_ / 3.0)
       {
         lin_ang_flag_ = false;
         ROS_DEBUG("VAL: %f", goal_head - head_ - threshold_);
-        ROS_DEBUG("THRESH: %f", threshold_ / 2.0);
+        ROS_DEBUG("THRESH: %f", threshold_ / 3.0);
       } else {
         ROS_DEBUG("ANG");
         ROS_DEBUG("head: %f \t goal_head: %f", head_, goal_head);
@@ -143,6 +151,10 @@ void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goa
         twist_.angular.x = 0;
         twist_.angular.y = 0;
         twist_.angular.z = rot_vel_;
+
+        // Predict turtle pos assuming perfect commands
+        // and publish to "pose_error" topic as PoseError msg
+        this->predict();
 
         // Publish
         vel_publisher_.publish(twist_);
@@ -161,11 +173,11 @@ void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goa
         lin_ang_flag_ = true;
       } else {
         ROS_DEBUG("LIN");
-        // ROS_INFO("test y: %d", abs(goal_y - y_pos_) <= threshold_);
-        // ROS_INFO("test x: %d", abs(goal_x - x_pos_) <= threshold_);
-        // ROS_INFO("TEST y: %f", abs(goal_y - y_pos_));
-        // ROS_INFO("TEST x: %f", abs(goal_x - x_pos_));
-        // ROS_INFO("THRESH: %f", abs(threshold_ * 2));
+        ROS_INFO("test y: %d", abs(goal_y - y_pos_) <= threshold_);
+        ROS_INFO("test x: %d", abs(goal_x - x_pos_) <= threshold_);
+        ROS_INFO("TEST y: %f", abs(goal_y - y_pos_));
+        ROS_INFO("TEST x: %f", abs(goal_x - x_pos_));
+        ROS_INFO("THRESH: %f", abs(threshold_));
 
         ROS_DEBUG("x: %f \t goal_x: %f", x_pos_, goal_x);
         ROS_DEBUG("y: %f \t goal_y: %f", y_pos_, goal_y);
@@ -177,6 +189,10 @@ void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goa
         twist_.angular.y = 0;
         twist_.angular.z = 0;
 
+        // Predict turtle pos assuming perfect commands
+        // and publish to "pose_error" topic as PoseError msg
+        this->predict();
+
         // Publish
         vel_publisher_.publish(twist_);
         // sleep to make sure pose syncs
@@ -186,6 +202,28 @@ void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goa
       break;
   }
 
+}
+
+void TurtleRect::predict()
+{
+  head_o_ += twist_.angular.z * 1 / frequency_;
+  x_o_ += twist_.linear.x * cos(head_o_) * 1 / frequency_;
+  y_o_ += twist_.linear.x * sin(head_o_) * 1 / frequency_;
+
+  // wrap to 0-2pi
+  theta_error_ = abs(head_o_ - head_) - 2 * PI * floor(abs(head_o_ - head_) / (2 * PI));
+  if (theta_error_ > 6.0)
+  {
+    theta_error_ -= 6.0;
+  }
+  x_error_ = abs(x_o_ - x_pos_);
+  y_error_ = abs(y_o_ - y_pos_);
+
+  pose_error_.x_error = x_error_;
+  pose_error_.y_error = y_error_;
+  pose_error_.theta_error = theta_error_;
+
+  pose_error_publisher_.publish(pose_error_);
 }
 
 void TurtleRect::control()
@@ -219,7 +257,7 @@ void TurtleRect::control()
 
       if (abs(goal_x - x_pos_) <= threshold_ \
         && abs(goal_y - y_pos_) <= threshold_ \
-        && abs(goal_head - head_) <= threshold_ / 2.0)
+        && abs(goal_head - head_) <= threshold_ / 3.0)
       {
         done_flag_ = true;
       }
@@ -243,7 +281,7 @@ void TurtleRect::control()
 
       if (abs(goal_x - x_pos_) <= threshold_ \
         && abs(goal_y - y_pos_) <= threshold_ \
-        && abs(goal_head - head_) <= threshold_ / 2.0)
+        && abs(goal_head - head_) <= threshold_ / 3.0)
       {
         done_flag_ = true;
       }
@@ -267,7 +305,7 @@ void TurtleRect::control()
 
       if (abs(goal_x - x_pos_) <= threshold_ \
         && abs(goal_y - y_pos_) <= threshold_ \
-        && abs(goal_head - head_) <= threshold_ / 2.0)
+        && abs(goal_head - head_) <= threshold_ / 3.0)
       {
         done_flag_ = true;
       }
@@ -291,7 +329,7 @@ void TurtleRect::control()
 
       if (abs(goal_x - x_pos_) <= threshold_ \
         && abs(goal_y - y_pos_) <= threshold_ \
-        && abs(goal_head - head_) <= threshold_ / 2.0)
+        && abs(goal_head - head_) <= threshold_ / 3.0)
       {
         done_flag_ = true;
       }

@@ -9,6 +9,7 @@
 #include <math.h>
 #include <ros/console.h>
 #include <std_srvs/Empty.h>
+#include <tsim/PoseError.h>
 
 // taken from https://magiccvs.byu.edu/wiki/#!ros_tutorials/c++_node_class.md
 
@@ -45,6 +46,9 @@ private:
   ros::Publisher vel_publisher_;
   // will publish the to cmd_vel
 
+  ros::Publisher pose_error_publisher_;
+  // will publish to the pose_error topic
+
   //***************** SERVICE SERVERS ***************//
   ros::ServiceServer traj_reset_server_;
   // will teleport turtle to bottom left position and resume trajectory
@@ -80,6 +84,18 @@ private:
   float y_pos_;
   float head_;
 
+  // x,y,heading OPEN LOOP
+  float x_o_;
+  float y_o_;
+  float head_o_;
+
+  float x_error_;
+  float y_error_;
+  float theta_error_;
+
+  // custom message for publishing to pose_error topic
+  tsim::PoseError pose_error_;
+
   // state machine variables
   // True when correct position or heading has been achieved
   bool done_flag_ = false;
@@ -107,6 +123,10 @@ private:
 
   // helper function to actuate the turtle
   void move(const float &goal_x, const float &goal_y, const float &goal_head);
+
+  // function to keep track of predicted turtle position
+  void predict();
+
 };
 
 } // namespace turtle_rect
