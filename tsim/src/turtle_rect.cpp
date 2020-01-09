@@ -1,4 +1,5 @@
 #include "tsim/turtle_rect.h"
+#define PI 3.14159265
 
 // taken from https://magiccvs.byu.edu/wiki/#!ros_tutorials/c++_node_class.md
 
@@ -12,7 +13,7 @@ TurtleRect::TurtleRect() :
   // THIS IS THE CLASS CONSTRUCTOR //
 
   //***************** RETREIVE PARAMS ***************//
-  nh_private_.param<double>("threshold", threshold_, 0.0001);
+  nh_private_.param<double>("threshold", threshold_, 0.01);
   // This will pull the "threshold" parameter from the ROS server, and store it in the threshold_ variable.
   // If no value is specified on the ROS param server, then the default value of 0.0001 will be applied
 
@@ -23,6 +24,16 @@ TurtleRect::TurtleRect() :
   nh_private_.param<int>("trans_vel", trans_vel_, 1);
   nh_private_.param<int>("rot_vel", rot_vel_, 1);
   nh_private_.param<int>("frequency", frequency_, 1);
+
+  // print parameters
+
+  ROS_INFO("x: %d", x_);
+  ROS_INFO("y: %d", y_);
+  ROS_INFO("width: %d", width_);
+  ROS_INFO("height: %d", height_);
+  ROS_INFO("trans_vel: %d", trans_vel_);
+  ROS_INFO("rot_vel: %d", rot_vel_);
+  ROS_INFO("frequency: %d", frequency_);
 
   //***************** NODE HANDLES ***************//
   pose_subscriber_ = nh_.subscribe("turtle1/pose", 10, &TurtleRect::poseCallback, this);
@@ -49,12 +60,12 @@ TurtleRect::TurtleRect() :
   // setup teleport paramters
   tele_srv_.request.x = x_;
   tele_srv_.request.y = y_;
-  tele_srv_.request.theta = 0;
+  tele_srv_.request.theta = PI;
 
   // Remove pen, teleport, and re-add pen. Make sure services are available first.
   // http://docs.ros.org/electric/api/roscpp/html/namespaceros_1_1service.html
-  ros::service::waitForService("turtle1/set_pen", 5);
-  ros::service::waitForService("turtle1/teleport_absolute", 5);
+  ros::service::waitForService("turtle1/set_pen", 10);
+  ros::service::waitForService("turtle1/teleport_absolute", 10);
   // turn pen off
   pen_client_.call(pen_srv_);
   // teleport
@@ -81,7 +92,7 @@ void TurtleRect::move(const int &goal_x, const int &goal_y, const int &goal_head
   {
     case true:
       // Check if need to move lin or ang
-      if (-threshold_ <= goal_head - head_ <= threshold_)
+      if (goal_head - head_ - threshold_ <= threshold_ * 2)
       {
         lin_ang_flag_ = false;
       } else {
@@ -101,8 +112,7 @@ void TurtleRect::move(const int &goal_x, const int &goal_y, const int &goal_head
 
     case false:
       // Check if need to move lin or ang
-      if (-threshold_ <= goal_y - y_pos_ <= threshold_ \
-          && -threshold_ <= goal_head - head_ <= threshold_)
+      if (goal_y - y_pos_ - threshold_ <= threshold_ * 2)
       {
         lin_ang_flag_ = true;
       } else {
@@ -137,7 +147,7 @@ void TurtleRect::control()
 
     case 0:
       // vertex 1
-      goal_head = 3.14159;
+      goal_head = PI;
       goal_x = x_;
       goal_y = y_;
 
@@ -146,9 +156,9 @@ void TurtleRect::control()
       // 'this' is a pointer to the TurtleRect class
       this->move(goal_x, goal_y, goal_head);
 
-      if (-threshold_ <= goal_x - x_pos_ <= threshold_ \
-        && -threshold_ <= goal_y - y_pos_ <= threshold_ \
-        && -threshold_ <= goal_head - head_ <= threshold_)
+      if (goal_x - x_pos_ - threshold_ <= threshold_ * 2 \
+        && goal_y - y_pos_  - threshold_ <= threshold_ * 2 \
+        && goal_head - head_ - threshold_ <= threshold_ * 2)
       {
         done_flag_ = true;
       }
@@ -163,15 +173,15 @@ void TurtleRect::control()
 
     case 1:
       // vertex 2
-      goal_head = -3.14159 / 2.0;
+      goal_head = -PI / 2.0;
       goal_x = x_ + width_;
       goal_y = y_;
 
       this->move(goal_x, goal_y, goal_head);
 
-      if (-threshold_ <= goal_x - x_pos_ <= threshold_ \
-        && -threshold_ <= goal_y - y_pos_ <= threshold_ \
-        && -threshold_ <= goal_head - head_ <= threshold_)
+      if (goal_x - x_pos_ - threshold_ <= threshold_ * 2 \
+        && goal_y - y_pos_  - threshold_ <= threshold_ * 2 \
+        && goal_head - head_ - threshold_ <= threshold_ * 2)
       {
         done_flag_ = true;
       }
@@ -192,9 +202,9 @@ void TurtleRect::control()
 
       this->move(goal_x, goal_y, goal_head);
 
-      if (-threshold_ <= goal_x - x_pos_ <= threshold_ \
-        && -threshold_ <= goal_y - y_pos_ <= threshold_ \
-        && -threshold_ <= goal_head - head_ <= threshold_)
+      if (goal_x - x_pos_ - threshold_ <= threshold_ * 2 \
+        && goal_y - y_pos_  - threshold_ <= threshold_ * 2 \
+        && goal_head - head_ - threshold_ <= threshold_ * 2)
       {
         done_flag_ = true;
       }
@@ -209,15 +219,15 @@ void TurtleRect::control()
 
     case 3:
       // vertex 4
-      goal_head = 3.14159 / 2.0;
+      goal_head = PI / 2.0;
       goal_x = x_;
       goal_y = y_ + height_;
 
       this->move(goal_x, goal_y, goal_head);
 
-      if (-threshold_ <= goal_x - x_pos_ <= threshold_ \
-        && -threshold_ <= goal_y - y_pos_ <= threshold_ \
-        && -threshold_ <= goal_head - head_ <= threshold_)
+      if (goal_x - x_pos_ - threshold_ <= threshold_ * 2 \
+        && goal_y - y_pos_  - threshold_ <= threshold_ * 2 \
+        && goal_head - head_ - threshold_ <= threshold_ * 2)
       {
         done_flag_ = true;
       }

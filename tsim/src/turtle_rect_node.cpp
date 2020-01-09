@@ -27,11 +27,13 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "turtle_rect_node"); // register the node on ROS
   ros::NodeHandle nh; // get a handle to ROS
-
+  // ROS_INFO("test1");
   turtle_rect::TurtleRect turtle;  // instatiate our class object
+  // ROS_INFO("test2");
   turtle.control();
+  // ROS_INFO("test3");
 
-  ros::spin(); // check for new messages and call the callback if we get one
+  ros::spin();
 
   return 0;
 }
