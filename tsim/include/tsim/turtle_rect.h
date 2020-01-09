@@ -6,9 +6,9 @@
 #include <geometry_msgs/Twist.h>
 #include <turtlesim/SetPen.h>
 #include <turtlesim/TeleportAbsolute.h>
-#define _USE_MATH_DEFINES
 #include <math.h>
 #include <ros/console.h>
+#include <std_srvs/Empty.h>
 
 // taken from https://magiccvs.byu.edu/wiki/#!ros_tutorials/c++_node_class.md
 
@@ -22,8 +22,13 @@ public:
 
   TurtleRect();
 
+  //***************** FUNCTIONS ***************//
   // function which publishes Twists to cmd_vel
   void control();
+
+  //***************** SERVICE CLIENTS ***************//
+  ros::ServiceClient traj_reset_client;
+  // will teleport turtle to bottom left position and resume trajectory
 
 private:
 
@@ -40,6 +45,10 @@ private:
   ros::Publisher vel_publisher_;
   // will publish the to cmd_vel
 
+  //***************** SERVICE SERVERS ***************//
+  ros::ServiceServer traj_reset_server_;
+  // will teleport turtle to bottom left position and resume trajectory
+
   //***************** SERVICE CLIENTS ***************//
   ros::ServiceClient pen_client_;
   // turns the turtle's pen on and off
@@ -48,7 +57,7 @@ private:
   // teleports the turtle
 
   //***************** PARAMETERS ***************//
-  double threshold_;
+  float threshold_;
   // a parameter we get from the ROS server, in this case the value below which
   // we consider the turtle as not moving.  This is basically a class variable at this point,
   // but it is distinct from the other class variables, so we separate them here.
@@ -90,6 +99,8 @@ private:
   void poseCallback(const turtlesim::PoseConstPtr &msg);
   // this function will get called every time ROS "spins"
   // and there is a Pose message in the queue.
+
+  bool traj_resetCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&);
 
   //***************** FUNCTIONS ***************//
   // Helper functions.

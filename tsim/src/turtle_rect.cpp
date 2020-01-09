@@ -13,12 +13,12 @@ TurtleRect::TurtleRect() :
   // THIS IS THE CLASS CONSTRUCTOR //
 
   //***************** RETREIVE PARAMS ***************//
-  nh_private_.param<double>("threshold", threshold_, 0.05);
+  nh_private_.param<float>("threshold", threshold_, 0.05);
   // This will pull the "threshold" parameter from the ROS server, and store it in the threshold_ variable.
   // If no value is specified on the ROS param server, then the default value of 0.0001 will be applied
 
-  nh_private_.param<int>("x", x_, 1);
-  nh_private_.param<int>("y", y_, 1);
+  nh_private_.param<int>("x", x_, 3);
+  nh_private_.param<int>("y", y_, 2);
   nh_private_.param<int>("width", width_, 4);
   nh_private_.param<int>("height", height_, 5);
   nh_private_.param<int>("trans_vel", trans_vel_, 2);
@@ -26,7 +26,6 @@ TurtleRect::TurtleRect() :
   nh_private_.param<int>("frequency", frequency_, 100);
 
   // print parameters
-
   ROS_INFO("x: %d", x_);
   ROS_INFO("y: %d", y_);
   ROS_INFO("width: %d", width_);
@@ -34,6 +33,10 @@ TurtleRect::TurtleRect() :
   ROS_INFO("trans_vel: %d", trans_vel_);
   ROS_INFO("rot_vel: %d", rot_vel_);
   ROS_INFO("frequency: %d", frequency_);
+
+  //***************** CUSTOM SERVER **************//
+  traj_reset_server_ = nh_.advertiseService("traj_reset", &TurtleRect::traj_resetCallback, this);
+  // trasj_reset service will teleport turtle to bottom left position and resume trajectory
 
   //***************** NODE HANDLES ***************//
   pose_subscriber_ = nh_.subscribe("turtle1/pose", 1, &TurtleRect::poseCallback, this);
@@ -43,9 +46,11 @@ TurtleRect::TurtleRect() :
   // 'this' is a class pointer.
 
   vel_publisher_ = nh_.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1);
-  // This connects a std_msgs::Bool message on the "is_moving" topic. 1 is the queue size.
+  // This connects a geometry_msgs::Twist message on the "turtle1/cmd_vel" topic. 1 is the queue size.
 
   pen_client_ = nh_.serviceClient<turtlesim::SetPen>("turtle1/set_pen");
+
+  traj_reset_client = nh_.serviceClient<std_srvs::Empty>("traj_reset");
 
   // setup pen parameters
   pen_srv_.request.r = 255;
@@ -66,6 +71,8 @@ TurtleRect::TurtleRect() :
   // http://docs.ros.org/electric/api/roscpp/html/namespaceros_1_1service.html
   ros::service::waitForService("turtle1/set_pen", -1);
   ros::service::waitForService("turtle1/teleport_absolute", -1);
+  ros::service::waitForService("traj_reset", -1);
+  
   // turn pen off
   pen_client_.call(pen_srv_);
   // teleport
@@ -73,6 +80,30 @@ TurtleRect::TurtleRect() :
   // turn pen on
   pen_srv_.request.off = 0;
   pen_client_.call(pen_srv_);
+
+
+
+}
+
+bool TurtleRect::traj_resetCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&)
+{
+  // turn pen off
+  pen_srv_.request.off = 1;
+  pen_client_.call(pen_srv_);
+  // teleport
+  tele_client_.call(tele_srv_);
+  // turn pen on
+  pen_srv_.request.off = 0;
+  pen_client_.call(pen_srv_);
+
+  // Reset state machine
+  count_vertex_ = 1;
+  done_flag_ = false;
+  lin_ang_flag_ = true;
+
+  ROS_INFO("TURTLE RESET");
+
+  ros::Duration(0.5).sleep();
 }
 
 void TurtleRect::poseCallback(const turtlesim::PoseConstPtr &msg)
@@ -176,7 +207,7 @@ void TurtleRect::control()
 
     case 0:
       // vertex 1
-      ROS_INFO("CASE0");
+      ROS_DEBUG("CASE0");
       goal_head = - PI / 2;
       goal_x = x_;
       goal_y = y_;

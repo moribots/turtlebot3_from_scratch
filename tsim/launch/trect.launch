@@ -1,5 +1,7 @@
 <launch>
    <node name="roaming_turtle" pkg="turtlesim" type="turtlesim_node" />
-   <node name="turtle_rect_node" pkg="tsim" type="turtle_rect_node" output="screen"/>
-   <rosparam command="load" file="$(find tsim)/config/turtle_rect.yaml" />
+   <node name="turtle_rect_node" pkg="tsim" type="turtle_rect_node" output="screen">
+   		<!-- privately load params to this node -->
+      <rosparam command="load" file="$(find tsim)/config/turtle_rect.yaml" />
+   </node>
 </launch>
