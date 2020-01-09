@@ -140,7 +140,7 @@ add_executable(${PROJECT_NAME}_node src/turtle_rect.cpp src/turtle_rect_node.cpp
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
-set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME turtle_rect PREFIX "")
+set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME turtle_rect_node PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above

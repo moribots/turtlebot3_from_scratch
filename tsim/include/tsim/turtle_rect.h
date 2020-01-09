@@ -6,7 +6,9 @@
 #include <geometry_msgs/Twist.h>
 #include <turtlesim/SetPen.h>
 #include <turtlesim/TeleportAbsolute.h>
+#define _USE_MATH_DEFINES
 #include <math.h>
+#include <ros/console.h>
 
 // taken from https://magiccvs.byu.edu/wiki/#!ros_tutorials/c++_node_class.md
 
@@ -19,6 +21,9 @@ class TurtleRect
 public:
 
   TurtleRect();
+
+  // function which publishes Twists to cmd_vel
+  void control();
 
 private:
 
@@ -72,7 +77,7 @@ private:
   // True when angular velocity should be applied, linear otherwise
   bool lin_ang_flag_ = true;
   // Counter which resets to zero once all rectangle vertices have been reached
-  int count_vertex_ = 0;
+  int count_vertex_ = 1;
 
   // movement variable
   geometry_msgs::Twist twist_;
@@ -88,9 +93,6 @@ private:
 
   //***************** FUNCTIONS ***************//
   // Helper functions.
-
-  // function which publishes Twists to cmd_vel
-  void control();
 
   // helper function to actuate the turtle
   void move(const int &goal_x, const int &goal_y, const int &goal_head);

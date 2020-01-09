@@ -25,43 +25,43 @@ TurtleRect::TurtleRect() :
   nh_private_.param<int>("frequency", frequency_, 1);
 
   //***************** NODE HANDLES ***************//
-  pose_subscriber_ = nh_.subscribe("turtle1/pose", 1, &TurtleRect::poseCallback, this);
+  pose_subscriber_ = nh_.subscribe("turtle1/pose", 10, &TurtleRect::poseCallback, this);
   // This connects the poseCallback function with the reception of a Pose message on the "turtle1/pose" topic
   // ROS will essentially call the poseCallback function every time it receives a message on that topic.
   // 1 is the queue size.
   // 'this' is a class pointer.
 
-  vel_publisher_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+  vel_publisher_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 10);
   // This connects a std_msgs::Bool message on the "is_moving" topic. 1 is the queue size.
 
   pen_client_ = nh_.serviceClient<turtlesim::SetPen>("turtle1/set_pen");
 
   // setup pen parameters
-  pen_srv_ = pen_client_.request.r = 255;
-  pen_srv_ = pen_client_.request.g = 255;
-  pen_srv_ = pen_client_.request.b = 255;
-  pen_srv_ = pen_client_.request.width = 1;
+  pen_srv_.request.r = 255;
+  pen_srv_.request.g = 255;
+  pen_srv_.request.b = 255;
+  pen_srv_.request.width = 1;
   // off at first
-  pen_srv_ = pen_client_.request.off = 1;
+  pen_srv_.request.off = 1;
 
   tele_client_ = nh_.serviceClient<turtlesim::TeleportAbsolute>("turtle1/teleport_absolute");
 
   // setup teleport paramters
-  tele_srv_ = tele_client_.request.x = 1;
-  tele_srv_ = tele_client_.request.y = 1;
-  tele_srv_ = tele_client_.request.theta = 1;
+  tele_srv_.request.x = x_;
+  tele_srv_.request.y = y_;
+  tele_srv_.request.theta = 0;
 
   // Remove pen, teleport, and re-add pen. Make sure services are available first.
-  if (ros::service::exists("turtle1/set_pen") and ros::service::exists("turtle1/teleport_absolute")){
-
-    // turn pen off
-    pen_client_.call(pen_srv_);
-    // teleport
-    tele_client_.call(tele_srv_);
-    // turn pen on
-    pen_srv_ = pen_client_.request.off = 0;
-    pen_client_.call(pen_srv_);
-  }
+  // http://docs.ros.org/electric/api/roscpp/html/namespaceros_1_1service.html
+  ros::service::waitForService("turtle1/set_pen", 5);
+  ros::service::waitForService("turtle1/teleport_absolute", 5);
+  // turn pen off
+  pen_client_.call(pen_srv_);
+  // teleport
+  tele_client_.call(tele_srv_);
+  // turn pen on
+  pen_srv_.request.off = 0;
+  pen_client_.call(pen_srv_);
 }
 
 void TurtleRect::poseCallback(const turtlesim::PoseConstPtr &msg)
@@ -137,7 +137,7 @@ void TurtleRect::control()
 
     case 0:
       // vertex 1
-      goal_head = -M_PI / 2;
+      goal_head = 3.14159;
       goal_x = x_;
       goal_y = y_;
 
@@ -163,7 +163,7 @@ void TurtleRect::control()
 
     case 1:
       // vertex 2
-      goal_head = 0;
+      goal_head = -3.14159 / 2.0;
       goal_x = x_ + width_;
       goal_y = y_;
 
@@ -186,7 +186,7 @@ void TurtleRect::control()
 
     case 2:
       // vertex 3
-      goal_head = M_PI / 2;
+      goal_head = 0;
       goal_x = x_ + width_;
       goal_y = y_ + height_;
 
@@ -209,7 +209,7 @@ void TurtleRect::control()
 
     case 3:
       // vertex 4
-      goal_head = M_PI;
+      goal_head = 3.14159 / 2.0;
       goal_x = x_;
       goal_y = y_ + height_;
 
