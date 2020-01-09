@@ -60,12 +60,12 @@ TurtleRect::TurtleRect() :
   // setup teleport paramters
   tele_srv_.request.x = x_;
   tele_srv_.request.y = y_;
-  tele_srv_.request.theta = PI;
+  tele_srv_.request.theta = 0;
 
   // Remove pen, teleport, and re-add pen. Make sure services are available first.
   // http://docs.ros.org/electric/api/roscpp/html/namespaceros_1_1service.html
-  ros::service::waitForService("turtle1/set_pen", 10);
-  ros::service::waitForService("turtle1/teleport_absolute", 10);
+  ros::service::waitForService("turtle1/set_pen", -1);
+  ros::service::waitForService("turtle1/teleport_absolute", -1);
   // turn pen off
   pen_client_.call(pen_srv_);
   // teleport
@@ -147,7 +147,7 @@ void TurtleRect::control()
 
     case 0:
       // vertex 1
-      goal_head = PI;
+      goal_head = 0;
       goal_x = x_;
       goal_y = y_;
 
@@ -173,7 +173,7 @@ void TurtleRect::control()
 
     case 1:
       // vertex 2
-      goal_head = -PI / 2.0;
+      goal_head = PI / 2.0;
       goal_x = x_ + width_;
       goal_y = y_;
 
@@ -196,7 +196,7 @@ void TurtleRect::control()
 
     case 2:
       // vertex 3
-      goal_head = 0;
+      goal_head = PI;
       goal_x = x_ + width_;
       goal_y = y_ + height_;
 
@@ -219,7 +219,7 @@ void TurtleRect::control()
 
     case 3:
       // vertex 4
-      goal_head = PI / 2.0;
+      goal_head = -PI / 2.0;
       goal_x = x_;
       goal_y = y_ + height_;
 
