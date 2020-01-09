@@ -19,11 +19,11 @@ TurtleRect::TurtleRect() :
 
   nh_private_.param<int>("x", x_, 1);
   nh_private_.param<int>("y", y_, 1);
-  nh_private_.param<int>("width", width_, 1);
-  nh_private_.param<int>("height", height_, 1);
-  nh_private_.param<int>("trans_vel", trans_vel_, 1);
+  nh_private_.param<int>("width", width_, 4);
+  nh_private_.param<int>("height", height_, 5);
+  nh_private_.param<int>("trans_vel", trans_vel_, 2);
   nh_private_.param<int>("rot_vel", rot_vel_, 1);
-  nh_private_.param<int>("frequency", frequency_, 1);
+  nh_private_.param<int>("frequency", frequency_, 100);
 
   // print parameters
 
@@ -36,13 +36,13 @@ TurtleRect::TurtleRect() :
   ROS_INFO("frequency: %d", frequency_);
 
   //***************** NODE HANDLES ***************//
-  pose_subscriber_ = nh_.subscribe("turtle1/pose", 10, &TurtleRect::poseCallback, this);
+  pose_subscriber_ = nh_.subscribe("turtle1/pose", 1, &TurtleRect::poseCallback, this);
   // This connects the poseCallback function with the reception of a Pose message on the "turtle1/pose" topic
   // ROS will essentially call the poseCallback function every time it receives a message on that topic.
   // 1 is the queue size.
   // 'this' is a class pointer.
 
-  vel_publisher_ = nh_.advertise<geometry_msgs::Twist>("cmd_vel", 10);
+  vel_publisher_ = nh_.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1);
   // This connects a std_msgs::Bool message on the "is_moving" topic. 1 is the queue size.
 
   pen_client_ = nh_.serviceClient<turtlesim::SetPen>("turtle1/set_pen");
@@ -80,22 +80,32 @@ void TurtleRect::poseCallback(const turtlesim::PoseConstPtr &msg)
 // We generally use the const <message>ConstPtr &msg syntax to prevent our node from accidentally
 // changing the message, in the case that another node is also listening to it.
 {
+  ROS_DEBUG("READING POSE");
   x_pos_ = msg->x;
   y_pos_ = msg->y;
   head_ = msg->theta;
+
+  ROS_INFO("HEADING: %f", head_);
 }
 
-void TurtleRect::move(const int &goal_x, const int &goal_y, const int &goal_head)
+void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goal_head)
 {
+  ROS_DEBUG("MOVE LOOP");
 
   switch(lin_ang_flag_)
   {
     case true:
+      ROS_DEBUG("CHECK ANG");
       // Check if need to move lin or ang
-      if (goal_head - head_ - threshold_ <= threshold_ * 2)
+      if (abs(goal_head - head_) <= threshold_ * 2)
       {
         lin_ang_flag_ = false;
+        ROS_DEBUG("VAL: %f", goal_head - head_ - threshold_);
+        ROS_DEBUG("THRESH: %f", threshold_ * 2);
       } else {
+        ROS_INFO("ANG");
+        ROS_INFO("goal_head: %f", goal_head);
+        ROS_INFO("head: %f", head_);
         // Move Angularly
         twist_.linear.x = 0;
         twist_.linear.y = 0;
@@ -106,16 +116,21 @@ void TurtleRect::move(const int &goal_x, const int &goal_y, const int &goal_head
 
         // Publish
         vel_publisher_.publish(twist_);
+        // sleep to make sure pose syncs
+        // ros::Duration(0.5).sleep();
       }
 
       break;
 
     case false:
+      ROS_INFO("CHECK LIN");
       // Check if need to move lin or ang
-      if (goal_y - y_pos_ - threshold_ <= threshold_ * 2)
+      if (abs(goal_y - y_pos_) <= threshold_ * 2 \
+          && abs(goal_x - x_pos_) <= threshold_ * 2)
       {
         lin_ang_flag_ = true;
       } else {
+        ROS_INFO("LIN");
         // Move Linearly
         twist_.linear.x = trans_vel_;
         twist_.linear.y = 0;
@@ -126,6 +141,8 @@ void TurtleRect::move(const int &goal_x, const int &goal_y, const int &goal_head
 
         // Publish
         vel_publisher_.publish(twist_);
+        // sleep to make sure pose syncs
+        // ros::Duration(0.5).sleep();
       }
 
       break;
@@ -135,19 +152,24 @@ void TurtleRect::move(const int &goal_x, const int &goal_y, const int &goal_head
 
 void TurtleRect::control()
 {
+  while (ros::ok())
+  {
+  
   ros::Rate rate(frequency_);
 
+  ROS_DEBUG("CONTROL LOOP");
+
   // decalre goal position variables
-  int goal_x = 0;
-  int goal_y = 0;
-  int goal_head = 0;
+  float goal_x = 0;
+  float goal_y = 0;
+  float goal_head = 0;
 
   switch(count_vertex_)
   {
 
     case 0:
       // vertex 1
-      goal_head = 0;
+      goal_head = - PI / 2;
       goal_x = x_;
       goal_y = y_;
 
@@ -156,9 +178,9 @@ void TurtleRect::control()
       // 'this' is a pointer to the TurtleRect class
       this->move(goal_x, goal_y, goal_head);
 
-      if (goal_x - x_pos_ - threshold_ <= threshold_ * 2 \
-        && goal_y - y_pos_  - threshold_ <= threshold_ * 2 \
-        && goal_head - head_ - threshold_ <= threshold_ * 2)
+      if (abs(goal_x - x_pos_) <= threshold_ * 2 \
+        && abs(goal_y - y_pos_) <= threshold_ * 2 \
+        && abs(goal_head - head_) <= threshold_ * 2)
       {
         done_flag_ = true;
       }
@@ -173,15 +195,15 @@ void TurtleRect::control()
 
     case 1:
       // vertex 2
-      goal_head = PI / 2.0;
+      goal_head = 0;
       goal_x = x_ + width_;
       goal_y = y_;
 
       this->move(goal_x, goal_y, goal_head);
 
-      if (goal_x - x_pos_ - threshold_ <= threshold_ * 2 \
-        && goal_y - y_pos_  - threshold_ <= threshold_ * 2 \
-        && goal_head - head_ - threshold_ <= threshold_ * 2)
+      if (abs(goal_x - x_pos_) <= threshold_ * 2 \
+        && abs(goal_y - y_pos_) <= threshold_ * 2 \
+        && abs(goal_head - head_) <= threshold_ * 2)
       {
         done_flag_ = true;
       }
@@ -196,15 +218,15 @@ void TurtleRect::control()
 
     case 2:
       // vertex 3
-      goal_head = PI;
+      goal_head = PI / 2.0;
       goal_x = x_ + width_;
       goal_y = y_ + height_;
 
       this->move(goal_x, goal_y, goal_head);
 
-      if (goal_x - x_pos_ - threshold_ <= threshold_ * 2 \
-        && goal_y - y_pos_  - threshold_ <= threshold_ * 2 \
-        && goal_head - head_ - threshold_ <= threshold_ * 2)
+      if (abs(goal_x - x_pos_) <= threshold_ * 2 \
+        && abs(goal_y - y_pos_) <= threshold_ * 2 \
+        && abs(goal_head - head_) <= threshold_ * 2)
       {
         done_flag_ = true;
       }
@@ -219,15 +241,15 @@ void TurtleRect::control()
 
     case 3:
       // vertex 4
-      goal_head = -PI / 2.0;
+      goal_head = PI;
       goal_x = x_;
       goal_y = y_ + height_;
 
       this->move(goal_x, goal_y, goal_head);
 
-      if (goal_x - x_pos_ - threshold_ <= threshold_ * 2 \
-        && goal_y - y_pos_  - threshold_ <= threshold_ * 2 \
-        && goal_head - head_ - threshold_ <= threshold_ * 2)
+      if (abs(goal_x - x_pos_) <= threshold_ * 2 \
+        && abs(goal_y - y_pos_) <= threshold_ * 2 \
+        && abs(goal_head - head_) <= threshold_ * 2)
       {
         done_flag_ = true;
       }
@@ -249,6 +271,7 @@ void TurtleRect::control()
   ros::spinOnce();
   rate.sleep();
 
+}
 }
 
 } // namespace turtle_rect

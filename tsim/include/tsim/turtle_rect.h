@@ -95,7 +95,7 @@ private:
   // Helper functions.
 
   // helper function to actuate the turtle
-  void move(const int &goal_x, const int &goal_y, const int &goal_head);
+  void move(const float &goal_x, const float &goal_y, const float &goal_head);
 };
 
 } // namespace turtle_rect

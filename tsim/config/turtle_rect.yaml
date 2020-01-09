@@ -20,5 +20,5 @@ rot_vel: 1
 frequency: 100
 
 # threshold for heading and position
-threshold : 0.01
+threshold : 0.05
 
