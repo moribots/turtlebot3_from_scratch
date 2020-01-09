@@ -13,7 +13,7 @@ TurtleRect::TurtleRect() :
   // THIS IS THE CLASS CONSTRUCTOR //
 
   //***************** RETREIVE PARAMS ***************//
-  nh_private_.param<double>("threshold", threshold_, 0.01);
+  nh_private_.param<double>("threshold", threshold_, 0.05);
   // This will pull the "threshold" parameter from the ROS server, and store it in the threshold_ variable.
   // If no value is specified on the ROS param server, then the default value of 0.0001 will be applied
 
@@ -85,7 +85,7 @@ void TurtleRect::poseCallback(const turtlesim::PoseConstPtr &msg)
   y_pos_ = msg->y;
   head_ = msg->theta;
 
-  ROS_INFO("HEADING: %f", head_);
+  // ROS_INFO("HEADING: %f", head_);
 }
 
 void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goal_head)
@@ -97,15 +97,14 @@ void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goa
     case true:
       ROS_DEBUG("CHECK ANG");
       // Check if need to move lin or ang
-      if (abs(goal_head - head_) <= threshold_ * 2)
+      if (abs(goal_head - head_) <= threshold_ / 2.0)
       {
         lin_ang_flag_ = false;
         ROS_DEBUG("VAL: %f", goal_head - head_ - threshold_);
-        ROS_DEBUG("THRESH: %f", threshold_ * 2);
+        ROS_DEBUG("THRESH: %f", threshold_ / 2.0);
       } else {
-        ROS_INFO("ANG");
-        ROS_INFO("goal_head: %f", goal_head);
-        ROS_INFO("head: %f", head_);
+        ROS_DEBUG("ANG");
+        ROS_DEBUG("head: %f \t goal_head: %f", head_, goal_head);
         // Move Angularly
         twist_.linear.x = 0;
         twist_.linear.y = 0;
@@ -123,14 +122,22 @@ void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goa
       break;
 
     case false:
-      ROS_INFO("CHECK LIN");
+      ROS_DEBUG("CHECK LIN");
       // Check if need to move lin or ang
-      if (abs(goal_y - y_pos_) <= threshold_ * 2 \
-          && abs(goal_x - x_pos_) <= threshold_ * 2)
+      if (abs(goal_y - y_pos_) <= threshold_ \
+          && abs(goal_x - x_pos_) <= threshold_)
       {
         lin_ang_flag_ = true;
       } else {
-        ROS_INFO("LIN");
+        ROS_DEBUG("LIN");
+        // ROS_INFO("test y: %d", abs(goal_y - y_pos_) <= threshold_);
+        // ROS_INFO("test x: %d", abs(goal_x - x_pos_) <= threshold_);
+        // ROS_INFO("TEST y: %f", abs(goal_y - y_pos_));
+        // ROS_INFO("TEST x: %f", abs(goal_x - x_pos_));
+        // ROS_INFO("THRESH: %f", abs(threshold_ * 2));
+
+        ROS_DEBUG("x: %f \t goal_x: %f", x_pos_, goal_x);
+        ROS_DEBUG("y: %f \t goal_y: %f", y_pos_, goal_y);
         // Move Linearly
         twist_.linear.x = trans_vel_;
         twist_.linear.y = 0;
@@ -169,6 +176,7 @@ void TurtleRect::control()
 
     case 0:
       // vertex 1
+      ROS_INFO("CASE0");
       goal_head = - PI / 2;
       goal_x = x_;
       goal_y = y_;
@@ -178,9 +186,9 @@ void TurtleRect::control()
       // 'this' is a pointer to the TurtleRect class
       this->move(goal_x, goal_y, goal_head);
 
-      if (abs(goal_x - x_pos_) <= threshold_ * 2 \
-        && abs(goal_y - y_pos_) <= threshold_ * 2 \
-        && abs(goal_head - head_) <= threshold_ * 2)
+      if (abs(goal_x - x_pos_) <= threshold_ \
+        && abs(goal_y - y_pos_) <= threshold_ \
+        && abs(goal_head - head_) <= threshold_ / 2.0)
       {
         done_flag_ = true;
       }
@@ -195,15 +203,16 @@ void TurtleRect::control()
 
     case 1:
       // vertex 2
+    ROS_DEBUG("CASE1");
       goal_head = 0;
       goal_x = x_ + width_;
       goal_y = y_;
 
       this->move(goal_x, goal_y, goal_head);
 
-      if (abs(goal_x - x_pos_) <= threshold_ * 2 \
-        && abs(goal_y - y_pos_) <= threshold_ * 2 \
-        && abs(goal_head - head_) <= threshold_ * 2)
+      if (abs(goal_x - x_pos_) <= threshold_ \
+        && abs(goal_y - y_pos_) <= threshold_ \
+        && abs(goal_head - head_) <= threshold_ / 2.0)
       {
         done_flag_ = true;
       }
@@ -218,15 +227,16 @@ void TurtleRect::control()
 
     case 2:
       // vertex 3
+    ROS_DEBUG("CASE2");
       goal_head = PI / 2.0;
       goal_x = x_ + width_;
       goal_y = y_ + height_;
 
       this->move(goal_x, goal_y, goal_head);
 
-      if (abs(goal_x - x_pos_) <= threshold_ * 2 \
-        && abs(goal_y - y_pos_) <= threshold_ * 2 \
-        && abs(goal_head - head_) <= threshold_ * 2)
+      if (abs(goal_x - x_pos_) <= threshold_ \
+        && abs(goal_y - y_pos_) <= threshold_ \
+        && abs(goal_head - head_) <= threshold_ / 2.0)
       {
         done_flag_ = true;
       }
@@ -241,15 +251,16 @@ void TurtleRect::control()
 
     case 3:
       // vertex 4
+    ROS_DEBUG("CASE3");
       goal_head = PI;
       goal_x = x_;
       goal_y = y_ + height_;
 
       this->move(goal_x, goal_y, goal_head);
 
-      if (abs(goal_x - x_pos_) <= threshold_ * 2 \
-        && abs(goal_y - y_pos_) <= threshold_ * 2 \
-        && abs(goal_head - head_) <= threshold_ * 2)
+      if (abs(goal_x - x_pos_) <= threshold_ \
+        && abs(goal_y - y_pos_) <= threshold_ \
+        && abs(goal_head - head_) <= threshold_ / 2.0)
       {
         done_flag_ = true;
       }
