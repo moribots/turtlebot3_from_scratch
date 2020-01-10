@@ -5,6 +5,12 @@ Author: Maurice Rahme
 ## Package Summary
 This package makes the turtle in turtlesim trace a rectangular trajectory while showing a plot of the absolute position error (x, y, theta) between the pure-feedforward and the actual turtle position as read from the `turtle1/pose` topic. It also has a service, `traj_reset`, which teleports the turtle back to its initial configuration whenever called.
 
+Resultant Simulation:
+
+![tsim](media/traj_rect.gif)
+
+![tsimpic](media/traj_rect.png)
+
 ## Launch Instructions
 To launch the main node without showing the position error plot, run: `roslaunch tsim trect.launch`
 To launch the main node while showing the position error plot, run: `roslaunch tsim trect.launch plot_gui:=1`
@@ -25,4 +31,5 @@ This is the Class Constructor for `TurtleRect` containing the following methods:
 Header file for the `TurtleRect` class.
 
 ## Resultant Plot
+![plot](media/plot.png)
 
