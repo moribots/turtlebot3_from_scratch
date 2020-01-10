@@ -3,17 +3,19 @@
 Author: Maurice Rahme
 
 ## Package Summary
+
+![tsimpic](media/traj_rect.png)
+
 This package makes the turtle in turtlesim trace a rectangular trajectory while showing a plot of the absolute position error (x, y, theta) between the pure-feedforward and the actual turtle position as read from the `turtle1/pose` topic. It also has a service, `traj_reset`, which teleports the turtle back to its initial configuration whenever called.
 
 Resultant Simulation:
 
 ![tsim](media/traj_rect.gif)
 
-![tsimpic](media/traj_rect.png)
-
 ## Launch Instructions
-To launch the main node without showing the position error plot, run: `roslaunch tsim trect.launch`
-To launch the main node while showing the position error plot, run: `roslaunch tsim trect.launch plot_gui:=1`
+To launch the main node without showing the position error plot, run: `roslaunch tsim trect.launch`.
+
+To launch the main node while showing the position error plot, run: `roslaunch tsim trect.launch plot_gui:=1`.
 
 ## turtle_rect_node.cpp
 This is the executable node, which initialises the node, creates a `Node Handle`, and includes the `TurtleRect` class to make the turtle in turtlesim trace a rectangular trajectory while showing a plot of the absolute position error (x, y, theta) by calling its public `control` method, making it loop indefinitely until it is interrupted.
@@ -31,5 +33,12 @@ This is the Class Constructor for `TurtleRect` containing the following methods:
 Header file for the `TurtleRect` class.
 
 ## Resultant Plot
+
 ![plot](media/plot.png)
+
+Note that the plot increases in drift over time as the forward propagated controls would result in several superimposed but slanted rectangular trajectories (as you saw from Josh ealier today) were it not for the feedback control implemented here to stop and start the linear and angular velocity commands. The error plot hence descibres the difference between pure feedforward control and the implementation done here. Calling the `traj_reset` service resets this error to zero temporarily, before re-commencing the trajectory and ensuing in drift as seen below.
+
+![plot](media/reset.png)
+
+
 
