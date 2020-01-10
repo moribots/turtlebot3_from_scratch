@@ -1,7 +1,50 @@
+/// \file
+/// \brief Class Constructor for TurtleRect.
+///
+/// PARAMETERS:
+///   x_ (int): x coordinate for lower left corner of rectangle.
+///   y_ (int): y coordinate for lower left corner of rectangle.
+///   width_ (int): width of rectangle.
+///   height_ (int): height of rectangle.
+///   trans_vel_ (int): translational velocity of robot.
+///   rot_vel_ (int): rotational velocity of robot.
+///   frequency_ (int): frequency of control loop.
+///   threshold_ (float): specifies when the target pose has been reached.
+///
+///   goal_x (float): target turtle position in x.
+///   goal_y (float): target turtle position in y.
+///   goal_head (float): target turtle position in theta.
+///
+///   x_pos_ (float): turtle position in x read from turtle1/pose topic.
+///   y_pos_ (float): turtle position in y read from turtle1/pose topic.
+///   head_ (float): turtle position in theta read from turtle1/pose topic.
+///
+///   x_o_ (float): turtle position in x predicted using forward model propagation.
+///   y_o_ (float): turtle position in y predicted using forward model propagation.
+///   head_o_ (float): turtle position in theta predicted using forward model propagation.
+///
+///   x_error_ (float): turtle position error in x between read and predicted values.
+///   y_error_ (float): turtle position error in y between read and predicted values.
+///   theta_error_ (float): turtle position error in theta between read and predicted values.
+///
+///   pose_error_ (PoseError): custom message that stores x_error, y_error and theta_error.
+///   twist_ (Twist): used to publish linear and angular velocities to turtle1/cmd_vel.
+///
+///   done_flag_ (bool): true when correct position or heading has been achieved in loop.
+///   lin_ang_flag_ (bool): true when angular velocity should be applied, linear otherwise.
+///   count)vertex_ (int): counter which resets to zero once all rectangle vertices have been reached.
+///
+/// FUNCTIONS:
+///   traj_resetCallback (bool): callback for traj_reset service, which teleports turtle back to initial config.
+///   poseCallback (void): callback for turtle1/pose subscriber, which records the turtle's pose for use elsewhere.
+///   move (void): helper function which publishes Twist messages to turtle1/cmd_vel to actuate the turtle.
+///   predict(void): helper function which forward propagates the open-loop model and publishes PoseError to pose_error.
+///   control(void): main class method. Houses state machine and calls helper function to perform trajectory and plot.
+///
+///   taken from https://magiccvs.byu.edu/wiki/#!ros_tutorials/c++_node_class.md
+
 #include "tsim/turtle_rect.h"
 #define PI 3.14159265
-
-// taken from https://magiccvs.byu.edu/wiki/#!ros_tutorials/c++_node_class.md
 
 namespace turtle_rect
 {
@@ -23,7 +66,7 @@ TurtleRect::TurtleRect() :
   nh_private_.param<int>("height", height_, 5);
   nh_private_.param<int>("trans_vel", trans_vel_, 2);
   nh_private_.param<int>("rot_vel", rot_vel_, 1);
-  nh_private_.param<int>("frequency", frequency_, 100.0);
+  nh_private_.param<int>("frequency", frequency_, 100);
 
   // print parameters
   ROS_INFO("x: %d", x_);
@@ -51,8 +94,6 @@ TurtleRect::TurtleRect() :
   pose_error_publisher_ = nh_.advertise<tsim::PoseError>("pose_error", 1);
 
   pen_client_ = nh_.serviceClient<turtlesim::SetPen>("turtle1/set_pen");
-
-  traj_reset_client = nh_.serviceClient<std_srvs::Empty>("traj_reset");
 
   // setup pen parameters
   pen_srv_.request.r = 255;
@@ -83,17 +124,30 @@ TurtleRect::TurtleRect() :
   pen_srv_.request.off = 0;
   pen_client_.call(pen_srv_);
 
-  // sleep
-  // ros::Duration(1).sleep();
-
   // predicted turtle pose
-  x_o_ = 3;
-  y_o_ = 2;
+  x_o_ = x_;
+  y_o_ = y_;
   head_o_ = 0;
+
+  // sleep
+  ros::Duration(1).sleep();
 
 }
 
 bool TurtleRect::traj_resetCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&)
+/// \brief traj_reset service callback. Teleports turtle1 to original config.
+///
+/// \param x_ (int): x coordinate for lower left corner of rectangle.
+/// \param y_ (int): y coordinate for lower left corner of rectangle.
+/// \returns x_o_ (float): turtle position in x predicted using forward model propagation.
+/// \returns y_o_ (float): turtle position in y predicted using forward model propagation.
+/// \returns head_o_ (float): turtle position in theta predicted using forward model propagation.
+/// \returns publishes Twist.
+/**
+ * Teleports the turtle back to its initial configuration (x_, y_, 0), equates the predicted turtle
+ * position to this value and publishes all-zero Twist to ensure synchronization.
+ * Turns pen off during operation, and then back on subsequently.
+ */
 {
   // turn pen off
   pen_srv_.request.off = 1;
@@ -111,39 +165,70 @@ bool TurtleRect::traj_resetCallback(std_srvs::Empty::Request&, std_srvs::Empty::
 
   ROS_INFO("TURTLE RESET");
 
+  // reset predicton
+  x_o_ = x_;
+  y_o_ = y_;
+  head_o_ = 0;
+
+  twist_.linear.x = 0;
+  twist_.linear.y = 0;
+  twist_.linear.z = 0;
+  twist_.angular.x = 0;
+  twist_.angular.y = 0;
+  twist_.angular.z = 0;
+
+  // Publish
+  vel_publisher_.publish(twist_);
   ros::Duration(0.5).sleep();
 }
 
 void TurtleRect::poseCallback(const turtlesim::PoseConstPtr &msg)
-// This function runs every time we get a turtlesim::Pose message on the "turtle1/pose" topic.
-// We generally use the const <message>ConstPtr &msg syntax to prevent our node from accidentally
-// changing the message, in the case that another node is also listening to it.
+/// \brief turtle1/pose subscriber callback. Records turtle1 pose (x, y, theta)
+///
+/// \param msg (Pose): turtle1's pose in x, y, and theta.
+/// \returns x_pos_ (float): turtle position in x read from turtle1/pose topic.
+/// \returns y_pos_ (float): turtle position in y read from turtle1/pose topic.
+/// \returns head_ (float): turtle position in theta read from turtle1/pose topic.
+/** 
+* This function runs every time we get a turtlesim::Pose message on the "turtle1/pose" topic.
+* We generally use the const <message>ConstPtr &msg syntax to prevent our node from accidentally
+* changing the message, in the case that another node is also listening to it.
+*/
 {
-  ROS_DEBUG("READING POSE");
   x_pos_ = msg->x;
   y_pos_ = msg->y;
   head_ = msg->theta;
-
-  // ROS_INFO("HEADING: %f", head_);
 }
 
 void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goal_head)
+/// \brief Actuates the turtle by publishing Twists to turtle1/cmd_vel.
+///
+/// \param goal_x (float): target turtle position in x.
+/// \param goal_y (float): target turtle position in y.
+/// \param goal_head (float): target turtle position in theta.
+/// \param lin_ang_flag (bool): true when angular velocity should be applied, linear otherwise.
+/// \returns publishes Twist.
+/** 
+* This function sends Twist commands to turtle1/cmd_vel. It sends either linear or angular Twists
+* depending on the flag provided, which changes depending on the turtle's goal pose, whereby changes
+* in goal pose take precedence with respect to their theta component.
+*/
 {
-  ROS_DEBUG("MOVE LOOP");
+  // ROS_DEBUG("MOVE LOOP");
 
   switch(lin_ang_flag_)
   {
     case true:
-      ROS_DEBUG("CHECK ANG");
+      // ROS_DEBUG("CHECK ANG");
       // Check if need to move lin or ang
       if (abs(goal_head - head_) <= threshold_ / 3.0)
       {
         lin_ang_flag_ = false;
-        ROS_DEBUG("VAL: %f", goal_head - head_ - threshold_);
-        ROS_DEBUG("THRESH: %f", threshold_ / 3.0);
+        // ROS_DEBUG("VAL: %f", goal_head - head_ - threshold_);
+        // ROS_DEBUG("THRESH: %f", threshold_ / 3.0);
       } else {
-        ROS_DEBUG("ANG");
-        ROS_DEBUG("head: %f \t goal_head: %f", head_, goal_head);
+        // ROS_DEBUG("ANG");
+        // ROS_DEBUG("head: %f \t goal_head: %f", head_, goal_head);
         // Move Angularly
         twist_.linear.x = 0;
         twist_.linear.y = 0;
@@ -158,8 +243,6 @@ void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goa
 
         // Publish
         vel_publisher_.publish(twist_);
-        // sleep to make sure pose syncs
-        // ros::Duration(0.5).sleep();
       }
 
       break;
@@ -172,15 +255,15 @@ void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goa
       {
         lin_ang_flag_ = true;
       } else {
-        ROS_DEBUG("LIN");
-        ROS_INFO("test y: %d", abs(goal_y - y_pos_) <= threshold_);
-        ROS_INFO("test x: %d", abs(goal_x - x_pos_) <= threshold_);
-        ROS_INFO("TEST y: %f", abs(goal_y - y_pos_));
-        ROS_INFO("TEST x: %f", abs(goal_x - x_pos_));
-        ROS_INFO("THRESH: %f", abs(threshold_));
+        // ROS_DEBUG("LIN");
+        // ROS_INFO("test y: %d", abs(goal_y - y_pos_) <= threshold_);
+        // ROS_INFO("test x: %d", abs(goal_x - x_pos_) <= threshold_);
+        // ROS_INFO("TEST y: %f", abs(goal_y - y_pos_));
+        // ROS_INFO("TEST x: %f", abs(goal_x - x_pos_));
+        // ROS_INFO("THRESH: %f", abs(threshold_));
 
-        ROS_DEBUG("x: %f \t goal_x: %f", x_pos_, goal_x);
-        ROS_DEBUG("y: %f \t goal_y: %f", y_pos_, goal_y);
+        // ROS_DEBUG("x: %f \t goal_x: %f", x_pos_, goal_x);
+        // ROS_DEBUG("y: %f \t goal_y: %f", y_pos_, goal_y);
         // Move Linearly
         twist_.linear.x = trans_vel_;
         twist_.linear.y = 0;
@@ -195,8 +278,6 @@ void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goa
 
         // Publish
         vel_publisher_.publish(twist_);
-        // sleep to make sure pose syncs
-        // ros::Duration(0.5).sleep();
       }
 
       break;
@@ -205,19 +286,42 @@ void TurtleRect::move(const float &goal_x, const float &goal_y, const float &goa
 }
 
 void TurtleRect::predict()
+/// \brief Predicts where the turtle would be had it followed commands precisely and publishes resultant error to pose_error.
+///
+/// \param x_pos_ (float): turtle position in x read from turtle1/pose topic.
+/// \param y_pos_ (float): turtle position in y read from turtle1/pose topic.
+/// \param head_ (float): turtle position in theta read from turtle1/pose topic.
+/// \returns x_o_ (float): turtle position in x predicted using forward model propagation.
+/// \returns y_o_ (float): turtle position in y predicted using forward model propagation.
+/// \returns head_o_ (float): turtle position in theta predicted using forward model propagation.
+/// \returns publishes pose_error (PoseError) to pose_error topic.
+/** 
+* This function forward-propagates the turtle with the actual published Twists and compares the resultant
+* position to that actually recorded from turtle1/pose. Next, it calculates the resultant error, ensuring
+* that the theta values are angle-wrapped, and publishes said error to the pose_error topic.
+*/
 {
-  head_o_ += twist_.angular.z * 1 / frequency_;
-  x_o_ += twist_.linear.x * cos(head_o_) * 1 / frequency_;
-  y_o_ += twist_.linear.x * sin(head_o_) * 1 / frequency_;
+  x_o_ += twist_.linear.x * cos(head_o_) * 1.0 / (float)frequency_;
+  y_o_ += twist_.linear.x * sin(head_o_) * 1.0 / (float)frequency_;
+  head_o_ += twist_.angular.z * 1.0 / (float)frequency_;
 
-  // wrap to 0-2pi
-  theta_error_ = abs(head_o_ - head_) - 2 * PI * floor(abs(head_o_ - head_) / (2 * PI));
-  if (theta_error_ > 6.0)
+  // wrap to -PI to PI
+  head_o_ = std::fmod(head_o_ + PI, 2 * PI);
+  if (head_o_ < 0)
   {
-    theta_error_ -= 6.0;
+    head_o_ += 2 * PI;
+  }
+  head_o_ -= M_PI;
+
+  theta_error_ = abs(abs(head_o_) - abs(head_));
+  if (theta_error_ > 10)
+  {
+    theta_error_ = 0;
   }
   x_error_ = abs(x_o_ - x_pos_);
+  // ROS_INFO("X_OPEN: %f \t X_SUB: %f", x_o_, x_pos_);
   y_error_ = abs(y_o_ - y_pos_);
+  // ROS_INFO("Y_OPEN: %f \t Y_SUB: %f", y_o_, y_pos_);
 
   pose_error_.x_error = x_error_;
   pose_error_.y_error = y_error_;
@@ -227,13 +331,30 @@ void TurtleRect::predict()
 }
 
 void TurtleRect::control()
+/// \brief Main class method; implements state machine to trace rectangular trajectory and plot.
+///
+/// \param done_flag_ (bool): true when correct position or heading has been achieved in loop.
+/// \param lin_ang_flag_ (bool): true when angular velocity should be applied, linear otherwise.
+/// \param count)vertex_ (int): counter which resets to zero once all rectangle vertices have been reached.
+/// \param x_pos_ (float): turtle position in x read from turtle1/pose topic.
+/// \param y_pos_ (float): turtle position in y read from turtle1/pose topic.
+/// \param head_ (float): turtle position in theta read from turtle1/pose topic.
+/// \param goal_x (float): target turtle position in x.
+/// \param goal_y (float): target turtle position in y.
+/// \param goal_head (float): target turtle position in theta.
+/// \returns calls helper function and implements state machine for node.
+/** 
+* This function implements a four-case state machine, guiding the turtle in turtlesim to trace a rectangular
+* trajectory by calling various class helper methods and implementing a counter, a vertex completion flag, and
+* a flag to indicate whether linear or angular velocity commands should be given.
+*/
 {
   while (ros::ok())
   {
   
   ros::Rate rate(frequency_);
 
-  ROS_DEBUG("CONTROL LOOP");
+  // ROS_DEBUG("CONTROL LOOP");
 
   // decalre goal position variables
   float goal_x = 0;

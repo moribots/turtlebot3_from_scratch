@@ -17,7 +17,7 @@ trans_vel: 2
 rot_vel: 1
 
 # frequency of control loop
-frequency: 100.0
+frequency: 100
 
 # threshold for heading and position
 threshold : 0.08
