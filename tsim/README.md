@@ -23,10 +23,10 @@ This is the executable node, which initialises the node, creates a `Node Handle`
 ## turtle_rect.cpp
 This is the Class Constructor for `TurtleRect` containing the following methods:
 
-* `traj_resetCallback (bool)`: callback for traj_reset service, which teleports turtle back to initial config.
-* `poseCallback (void)`: callback for turtle1/pose subscriber, which records the turtle's pose for use elsewhere.
-* `move (void)`: helper function which publishes Twist messages to turtle1/cmd_vel to actuate the turtle.
-* `predict(void)`: helper function which forward propagates the open-loop model and publishes PoseError to pose_error.
+* `traj_resetCallback (bool)`: callback for `traj_reset service`, which teleports turtle back to initial config.
+* `poseCallback (void)`: callback for `turtle1/pose` subscriber, which records the turtle's pose for use elsewhere.
+* `move (void)`: helper function which publishes `Twist` messages to `turtle1/cmd_vel` to actuate the turtle.
+* `predict(void)`: helper function which forward propagates the open-loop model and publishes `PoseError` to `pose_error`.
 * `control(void)`: main class method. Houses state machine and calls helper function to perform trajectory and plot.
 
 ## turtle_rect.h
