@@ -32,6 +32,21 @@ This is the Class Constructor for `TurtleRect` containing the following methods:
 ## turtle_rect.h
 Header file for the `TurtleRect` class.
 
+## trect.launch
+Calls the `roaming_turtle` node from `turtlesim`, as well as the `turtle_rect_node` node from this package, and gives the user an option to show the error plot using the `plot_gui` argument, which defaults to `False`.
+
+## turtle_rect.yaml
+Contains the parameters for executing the rectangular trajectory.
+
+* `x (int)`: x coordinate for lower left corner of rectangle.
+* `y (int)`: y coordinate for lower left corner of rectangle.
+* `width (int)`: width of rectangle.
+* `height (int)`: height of rectangle.
+* `trans_vel (int)`: translational velocity of robot.
+* `rot_vel (int)`: rotational velocity of robot.
+* `frequency (int)`: frequency of control loop.
+* `threshold (float)`: specifies when the target pose has been reached.
+
 ## Resultant Plot
 
 ![plot](media/plot.png)
