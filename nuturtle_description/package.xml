@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>tsim</name>
+  <name>nuturtle_description</name>
   <version>0.0.1</version>
-  <description>make the turtle in turtlesim move in a rectangular trajectory</description>
+  <description>Contains URDF files for simulating robots in RViz and Gazebo</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/tsim</url> -->
+  <!-- <url type="website">http://wiki.ros.org/nturtle_description</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
@@ -49,23 +49,13 @@
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>geometry_msgs</build_depend>
-  <build_depend>message_generation</build_depend>
+  <build_depend>gazebo</build_depend>
+  <build_depend>gazebo_ros</build_depend>
   <build_depend>roscpp</build_depend>
-  <build_depend>std_srvs</build_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_depend>turtlesim</build_depend>
-  <build_export_depend>geometry_msgs</build_export_depend>
+  <build_export_depend>gazebo_ros</build_export_depend>
   <build_export_depend>roscpp</build_export_depend>
-  <build_export_depend>std_srvs</build_export_depend>
-  <build_export_depend>std_msgs</build_export_depend>
-  <build_export_depend>turtlesim</build_export_depend>
-  <exec_depend>geometry_msgs</exec_depend>
-  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
   <exec_depend>roscpp</exec_depend>
-  <exec_depend>std_srvs</exec_depend>
-  <exec_depend>std_msgs</exec_depend>
-  <exec_depend>turtlesim</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
