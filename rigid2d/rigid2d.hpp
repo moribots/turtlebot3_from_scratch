@@ -4,6 +4,7 @@
 /// \brief Library for two-dimensional rigid body transformations.
 
 #include<iosfwd> // contains forward definitions for iostream objects
+#include<cmath>
 
 namespace rigid2d
 {
@@ -20,6 +21,12 @@ namespace rigid2d
     /// be useful here
     constexpr bool almost_equal(double d1, double d2, double epsilon=1.0e-12)
     {
+        if (fabs(d1 - d2) < epsilon)
+        {
+            return true;
+        } else {
+            return false;
+    }
     }
 
     /// \brief convert degrees to radians
@@ -30,6 +37,7 @@ namespace rigid2d
     /// if given a compile-time constant as input
     constexpr double deg2rad(double deg)
     {
+        return deg * PI / 180.0;
     }
 
     /// \brief convert radians to degrees
@@ -37,6 +45,7 @@ namespace rigid2d
     /// \returns the angle in degrees
     constexpr double rad2deg(double rad)
     {
+        return rad * 180.0 / PI;
     }
 
     /// static_assertions test compile time assumptions.
@@ -45,12 +54,14 @@ namespace rigid2d
     /// just to see what happens
     static_assert(almost_equal(0, 0), "is_zero failed");
     static_assert(almost_equal(0.001, 0.005, 1.0e-2), "is_zero failed");
+    static_assert(almost_equal(0.0001, 0.0005, 0.001), "is_zero failed");
 
     static_assert(almost_equal(deg2rad(0.0), 0.0), "deg2rad failed");
 
-    static_assert(almost_equal(rad2deg(0.0), 0.0), "rad2deg) failed");
+    static_assert(almost_equal(rad2deg(0.0), 0.0), "rad2deg failed");
 
     static_assert(almost_equal(deg2rad(rad2deg(2.1)), 2.1), "deg2rad failed");
+    static_assert(almost_equal(rad2deg(deg2rad(2.1)), 2.1), "rad2deg failed");
 
 
     /// \brief A 2-Dimensional Vector
@@ -84,6 +95,7 @@ namespace rigid2d
 
         /// \brief create a transformation that is a pure translation
         /// \param trans - the vector by which to translate
+        // safeguard to ensure fcn is overloaded correctly
         explicit Transform2D(const Vector2D & trans);
 
         /// \brief create a pure rotation
@@ -115,7 +127,7 @@ namespace rigid2d
         /// for a description
         friend std::ostream & operator<<(std::ostream & os, const Transform2D & tf);
     private:
-        /// directly initialize, useful for forming the inverse
+        /// directly initialize, useful params for forming the inverse
         Transform2D(double theta, double ctheta, double stheta, double x, double y);
         double theta, ctheta, stheta, x, y; // angle, sin, cos, x, and y
     };
