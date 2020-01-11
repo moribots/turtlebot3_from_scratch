@@ -19,6 +19,7 @@ namespace rigid2d
     /// \return true if abs(d1 - d2) < epsilon
     /// Note: the fabs function in <cmath> (c++ equivalent of math.h) will
     /// be useful here
+    // constexpr are all define in .hpp
     constexpr bool almost_equal(double d1, double d2, double epsilon=1.0e-12)
     {
         if (fabs(d1 - d2) < epsilon)

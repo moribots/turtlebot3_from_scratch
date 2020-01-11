@@ -2,7 +2,6 @@
 #include <vector>    // vector
 #include <string>    // string
 #include <math.h>
-#include "split.h"   // split
 // #include <rigid2d.hpp>
 
 using std::cin;

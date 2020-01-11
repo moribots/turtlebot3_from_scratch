@@ -71,14 +71,14 @@ Transform2D Transform2D::Transform2D inv() const
 	// Create temp of 2d tranform (clone it essentially)
 	Transform2D temp2d(theta, ctheta, stheta, x, y);
 
-	// for transpose, flip sintheta
+	// for transpose, flip sintheta (pg 90 modern robotics)
 	temp2d.stheta = -temp2d.stheta;
 
 	// create new temp vector v
 	Vector2D v;
 	v.x = -temp2d.x;
 	v.y = -temp2d.y;
-	// this performs p' = R.T*p
+	// this performs p' = -R.T*p (pg90 modern robotics)
 	vp = this->Transform2D::operator()(v);
 
 	temp2d.x = vp.x;
@@ -89,6 +89,7 @@ Transform2D Transform2D::Transform2D inv() const
 
 Transform2D & Transform2D::operator*=(const Transform2D & rhs)
 {
+
 
 }
 

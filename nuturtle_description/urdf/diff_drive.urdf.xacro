@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<robot name="diff_drive" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- Launchfile arg -->
+<!-- <xacro:arg name="mode" default="0" /> -->
+
+<!-- Properties -->
+<xacro:property name="params" value="${load_yaml('$(find nuturtle_description)/config/diff_params.yaml')}" />
+<xacro:property name="L" value="${params['chassis_length']}" />
+<xacro:property name="W" value="${params['wheel_base']}" />
+<xacro:property name="H" value="${params['chassis_thickness']}" />
+<!-- <xacro:property name="M" value="${params['M']}" /> -->
+<xacro:property name="r" value="${params['wheel_radius']}" />
+<xacro:property name="h" value="${params['wheel_width']}" />
+<!-- <xacro:property name="m" value="${params['m']}" /> -->
+
+  <!-- Include Macros -->
+  <xacro:include filename="$(find nuturtle_description)/urdf/diff_drive_macro.xacro" />
+  <!-- Include Gazebo File -->
+  <!-- <xacro:include filename="$(find nuturtle_description)/urdf/ddrive.gazebo.xacro" /> -->
+
+  <!-- Call load_plugin macro -->
+  <!-- <load_plugin input="$(arg mode)"/> -->
+  
+  <!-- Robot description -->
+  <!-- Links -->
+  <link name="base_footprint"/>
+  <!-- Base Link -->
+  <r_box name="base_link"
+              origin_rpy="0 0 0" origin_xyz="0 0 0"
+              size="${L} ${W} ${H}"
+              matname="red_mat"
+              rgba="1 0 0 1"/>
+
+  <!-- Rear Right Wheel -->
+  <r_cyl name="rr_wheel"
+              origin_rpy="${pi/2} 0 0" origin_xyz="0 0 0"
+              length="${h}"
+              radius="${r}"
+              matname="black_mat"
+              rgba="0 0 0 1"/>
+
+  <!-- Rear Left Wheel -->
+  <r_cyl name="rl_wheel"
+              origin_rpy="${pi/2} 0 0" origin_xyz="0 0 0"
+              length="${h}"
+              radius="${r}"
+              matname="black_mat"
+              rgba="0 0 0 1"/>
+
+  <!-- Top Caster Wheel -->
+  <!-- <r_sph name="tc_wheel"
+              origin_rpy="0 0 0" origin_xyz="0 0 0"
+              radius="${r/4}"
+              matname="black_mat"
+              rgba="0 0 0 1"
+              mass="${m}"
+              ixx="${2*m*r*r/5}"
+              ixy="0"
+              ixz="0"
+              iyy="${2*m*r*r/5}"
+              iyz="0"
+              izz="${2*m*r*r/5}"/> -->
+
+  <!-- Bottom Caster Wheel -->
+  <r_sph name="ball_caster"
+              origin_rpy="0 0 0" origin_xyz="0 0 0"
+              radius="${r/4}"
+              matname="black_mat"
+              rgba="0 0 0 1"/>
+  
+  <!-- Joints -->
+  <frame_joint name="basefootprint_base" type="fixed"
+                    origin_rpy="0 0 0" origin_xyz="0 0 ${H}"
+                    parent="base_footprint" child="base_link"/>
+  <!-- Joint 1: Base - RR Wheel -->      
+  <wheel_joint name="right_wheel_axle" type="continuous"
+                    axis_xyz="0 1 0"
+                    origin_rpy="0 0 0" origin_xyz="${r-L/2} -${W-h} 0"
+                    parent="base_link" child="rr_wheel"
+                    effort="100"
+                    velocity="100"
+                    damping="1"
+                    friction="0.1"/>
+
+  <!-- Joint 2: Base - RL Wheel -->      
+  <wheel_joint name="left_wheel_axle" type="continuous"
+                    axis_xyz="0 1 0"
+                    origin_rpy="0 0 0" origin_xyz="${r-L/2} ${W-h} 0"
+                    parent="base_link" child="rl_wheel"
+                    effort="100"
+                    velocity="100"
+                    damping="1"
+                    friction="0.1"/>
+
+  <!-- Joint 3: Base - TC Wheel -->      
+  <!-- <wheel_joint name="base_tc" type="fixed"
+                    axis_xyz="1 1 1"
+                    origin_rpy="0 0 0" origin_xyz="${L/3} 0 ${H - r/4}"
+                    parent="base_link" child="tc_wheel"
+                    effort="0"
+                    velocity="100"
+                    damping="0"
+                    friction="0"/> -->
+
+  <!-- Joint 4: Base - BC Wheel -->      
+  <wheel_joint name="base_bc" type="fixed"
+                    axis_xyz="1 1 1"
+                    origin_rpy="0 0 0" origin_xyz="${L/2 - r/2} 0 -${H - r/4}"
+                    parent="base_link" child="ball_caster"
+                    effort="0"
+                    velocity="100"
+                    damping="0"
+                    friction="0"/>
+
+</robot>
