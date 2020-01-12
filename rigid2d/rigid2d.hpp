@@ -126,8 +126,14 @@ namespace rigid2d
         Transform2D & operator*=(const Transform2D & rhs);
 
         /// \brief \see operator<<(...) (declared outside this class)
-        /// for a description
+        /// for a description.
+        /// friend tag allows non-member functions to access private params.
         friend std::ostream & operator<<(std::ostream & os, const Transform2D & tf);
+
+        /// \brief \see operator>>(...) (declared outside this class)
+        /// for a description.
+        /// friend tag allows non-member functions to access private params.
+        friend std::istream & operator>>(std::istream & is, Transform2D & tf);
     private:
         /// directly initialize, useful params for forming the inverse
         Transform2D(double theta, double ctheta, double stheta, double x, double y);

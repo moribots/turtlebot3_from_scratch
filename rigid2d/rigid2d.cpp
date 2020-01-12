@@ -80,11 +80,11 @@ rigid2d::Transform2D rigid2d::Transform2D::inv() const
 	temp2d.stheta = -temp2d.stheta;
 
 	// create new temp vector v
-	Vector2D v;
+	rigid2d::Vector2D v;
 	v.x = -temp2d.x;
 	v.y = -temp2d.y;
 	// this performs p' = -R.T*p (pg90 modern robotics)
-	rigid2d::Vector2D vp = rigid2d::Transform2D::operator()(v);
+	rigid2d::Vector2D vp = temp2d.operator()(v);
 
 	temp2d.x = vp.x;
 	temp2d.y = vp.y;
