@@ -73,23 +73,30 @@ rigid2d::Vector2D rigid2d::Transform2D::operator()(rigid2d::Vector2D v) const
 
 rigid2d::Transform2D rigid2d::Transform2D::inv() const
 {
+	// create Vector2D to create Transform2D
+	rigid2d::Vector2D v;
+	v.x = x;
+	v.y = y;
+
 	// Create temp of 2d tranform (clone it essentially)
-	rigid2d::Transform2D temp2d(theta, ctheta, stheta, x, y);
+	// creating pointer to temp2d class with 'new'
+	rigid2d::Transform2D* temp2d = new rigid2d::Transform2D(v, theta);
 
 	// for transpose, flip sintheta (pg 90 modern robotics)
-	temp2d.stheta = -temp2d.stheta;
+	temp2d->stheta = -temp2d->stheta;
+	temp2d->theta = asin(temp2d->stheta);
+	temp2d->ctheta = cos(temp2d->theta);
 
-	// create new temp vector v
-	rigid2d::Vector2D v;
-	v.x = -temp2d.x;
-	v.y = -temp2d.y;
+	// update vector v for inverse operation
+	v.x = -temp2d->x;
+	v.y = -temp2d->y;
 	// this performs p' = -R.T*p (pg90 modern robotics)
-	rigid2d::Vector2D vp = temp2d.operator()(v);
+	rigid2d::Vector2D vp = temp2d->operator()(v);
 
-	temp2d.x = vp.x;
-	temp2d.y = vp.y;
+	temp2d->x = vp.x;
+	temp2d->y = vp.y;
 
-	return temp2d;
+	return *temp2d;
 }
 
 rigid2d::Transform2D & rigid2d::Transform2D::operator*=(const rigid2d::Transform2D & rhs)
