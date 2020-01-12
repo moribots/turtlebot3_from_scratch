@@ -47,7 +47,12 @@ int main()
 	rigid2d::Vector2D v;
 	rigid2d::operator>>(std::cin, v);
 
-	std::cout << "\nNow, enter the frame of this vector (a, b, or c)\n" << std::endl;
+	std::cout << "\nNow, enter a Twist as instructed below\n" << std::endl;
+
+	rigid2d::Twist2D tw;
+	rigid2d::operator>>(std::cin, tw);
+
+	std::cout << "\nNow, enter the frame of these inputs (a, b, or c)\n" << std::endl;
 	char vframe;
 	std::cin >> vframe;
 
@@ -55,6 +60,7 @@ int main()
 
 	if (vframe == 'a')
 	{
+		// VECTORS
 		rigid2d::Vector2D vb = Tba.operator()(v);
 		rigid2d::Vector2D vc = Tca.operator()(v);
 
@@ -67,8 +73,22 @@ int main()
 		std::cout << "\nDisplaying the Vector in frame c" << std::endl;
 		rigid2d::operator<<(std::cout, vc);
 
+		// TWISTS
+		rigid2d::Twist2D tw_b = tw.convert(Tba);
+		rigid2d::Twist2D tw_c = tw.convert(Tca);
+
+		std::cout << "\nDisplaying the Twist in frame a" << std::endl;
+		rigid2d::operator<<(std::cout, tw);
+
+		std::cout << "\nDisplaying the Twist in frame b" << std::endl;
+		rigid2d::operator<<(std::cout, tw_b);
+
+		std::cout << "\nDisplaying the Twist in frame c" << std::endl;
+		rigid2d::operator<<(std::cout, tw_c);
+
 	} else if (vframe == 'b')
 	{
+		// VECTORS
 		rigid2d::Vector2D va = Tab.operator()(v);
 		rigid2d::Vector2D vc = Tcb.operator()(v);
 
@@ -81,9 +101,25 @@ int main()
 		std::cout << "\nDisplaying the Vector in frame c" << std::endl;
 		rigid2d::operator<<(std::cout, vc);
 
+		// TWISTS
+		rigid2d::Twist2D tw_a = tw.convert(Tab);
+		rigid2d::Twist2D tw_c = tw.convert(Tcb);
+
+		std::cout << "\nDisplaying the Twist in frame a" << std::endl;
+		rigid2d::operator<<(std::cout, tw_a);
+
+		std::cout << "\nDisplaying the Twist in frame b" << std::endl;
+		rigid2d::operator<<(std::cout, tw);
+
+		std::cout << "\nDisplaying the Twist in frame c" << std::endl;
+		rigid2d::operator<<(std::cout, tw_c);
+
+
 
 	} else {
 		// assume frame is c
+
+		// VECTORS
 		rigid2d::Vector2D va = Tac.operator()(v);
 		rigid2d::Vector2D vb = Tbc.operator()(v);
 
@@ -95,6 +131,20 @@ int main()
 
 		std::cout << "\nDisplaying the Vector in frame c" << std::endl;
 		rigid2d::operator<<(std::cout, v);
+
+		// TWISTS
+		rigid2d::Twist2D tw_a = tw.convert(Tac);
+		rigid2d::Twist2D tw_b = tw.convert(Tbc);
+
+		std::cout << "\nDisplaying the Twist in frame a" << std::endl;
+		rigid2d::operator<<(std::cout, tw_a);
+
+		std::cout << "\nDisplaying the Twist in frame b" << std::endl;
+		rigid2d::operator<<(std::cout, tw_b);
+
+		std::cout << "\nDisplaying the Twist in frame c" << std::endl;
+		rigid2d::operator<<(std::cout, tw);
+
 	}
 
 

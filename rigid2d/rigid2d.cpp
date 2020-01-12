@@ -204,5 +204,55 @@ std::istream & rigid2d::operator>>(std::istream & is, rigid2d::Transform2D & tf)
 	return is;
 }
 
+rigid2d::Twist2D::Twist2D()
+{
+	w_z = 0;
+	v_x = 0;
+	v_y = 0;
+}
+
+rigid2d::Twist2D::Twist2D(double w_z_, double v_x_, double v_y_)
+{
+	w_z = w_z_;
+	v_x = v_x_;
+	v_y = v_y_;
+}
+
+rigid2d::Twist2D rigid2d::Twist2D::convert(const rigid2d::Transform2D & tf) const
+{
+	// create Twist2D
+	rigid2d::Twist2D* tw_s = new rigid2d::Twist2D(w_z\
+		, (v_x * tf.ctheta - v_y * tf.stheta + w_z * tf.y)\
+		, (v_y * tf.ctheta - v_x * tf.stheta + w_z * tf.x));
+	// notation: tw_b = twist object
+	// Vs = [AdTsb]Vb
+
+	return *tw_s;
+}
+
+std::ostream & rigid2d::operator<<(std::ostream & os, const rigid2d::Twist2D & tw)
+{
+	os << "v_x (m/s): " << tw.v_x << "\t" << "v_y (m/s): " << tw.v_y << "\t"\
+	<< "w_z (rad/s): " << tw.w_z << "\n";
+
+	return os;
+}
+
+std::istream & rigid2d::operator>>(std::istream & is, rigid2d::Twist2D & tw)
+{
+	// using friend function so that only this input fcn can overwrite
+	// private params of Twist2D
+	std::cout << "Enter v_x component of Twist2D" << std::endl;
+	is >> tw.v_x;
+
+	std::cout << "Enter v_y component of Twist2D" << std::endl;
+	is >> tw.v_y;
+
+	std::cout << "Enter w_z component of Twist2D" << std::endl;
+	is >> tw.w_z;
+
+	return is;
+}
+
 
 
