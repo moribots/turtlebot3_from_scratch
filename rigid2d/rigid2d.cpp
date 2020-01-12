@@ -1,6 +1,61 @@
 #include "rigid2d.hpp"
 #include <iostream>
 
+rigid2d::Vector2D::Vector2D()
+{
+    x = 0;
+    y = 0;
+    if (x != 0)
+    {
+    	norm_x = x / sqrt(pow(x, 2) + pow(y, 2));
+    } else {
+    	norm_x = 0;
+    }
+
+    if (y != 0)
+    {
+    	norm_y = y / sqrt(pow(x, 2) + pow(y, 2));
+    } else {
+    	norm_y = 0;
+    }
+}
+
+rigid2d::Vector2D::Vector2D(double x_, double y_)
+{
+    x = x_;
+    y = y_;
+    if (x != 0)
+    {
+    	norm_x = x / sqrt(pow(x, 2) + pow(y, 2));
+    } else {
+    	norm_x = 0;
+    }
+
+    if (y != 0)
+    {
+    	norm_y = y / sqrt(pow(x, 2) + pow(y, 2));
+    } else {
+    	norm_y = 0;
+    }
+}
+
+void rigid2d::Vector2D::normalize()
+{
+	if (x != 0)
+    {
+    	norm_x = x / sqrt(pow(x, 2) + pow(y, 2));
+    } else {
+    	norm_x = 0;
+    }
+
+    if (y != 0)
+    {
+    	norm_y = y / sqrt(pow(x, 2) + pow(y, 2));
+    } else {
+    	norm_y = 0;
+    }
+}
+
 std::ostream & rigid2d::operator<<(std::ostream & os, const rigid2d::Vector2D & v)
 {
 	os << "[" << v.x << " " << v.y << "]" << "\n";
@@ -15,6 +70,9 @@ std::istream & rigid2d::operator>>(std::istream & is, rigid2d::Vector2D & v)
 
 	std::cout << "Enter y component of Vector" << std::endl;
 	is >> v.y;
+
+	// compute norm
+	v.normalize();
 
 	return is;
 }

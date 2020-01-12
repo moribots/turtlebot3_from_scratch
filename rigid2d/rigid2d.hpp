@@ -71,6 +71,17 @@ namespace rigid2d
     {
         double x = 0.0;
         double y = 0.0;
+        double norm_x = 0.0;
+        double norm_y = 0.0;
+
+        // constructor
+        Vector2D();
+
+        // constructor
+        Vector2D(double x_, double y_);
+
+        // fcn prototype
+        void normalize();
     };
 
     /// \brief output a 2 dimensional vector as [xcomponent ycomponent]
