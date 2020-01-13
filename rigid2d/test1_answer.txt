@@ -29,7 +29,7 @@ Displaying Tbc
 dtheta (degrees): 0	dx: 2	dy: 2
 
 Displaying Tcb
-dtheta (degrees): -0	dx: -2	dy: -2
+dtheta (degrees): 0	dx: -2	dy: -2
 
 Displaying Tac
 dtheta (degrees): 90	dx: -1	dy: 3
@@ -47,7 +47,7 @@ Displaying the Vector in frame c
 [3, 3]
 
 Displaying the Twist in frame a
-w_z (rad/s): 1	v_x (m/s): 1	v_y (m/s): -3
+w_z (rad/s): 1	v_x (m/s): 1	v_y (m/s): 1
 
 Displaying the Twist in frame b
 w_z (rad/s): 1	v_x (m/s): 4	v_y (m/s): 4

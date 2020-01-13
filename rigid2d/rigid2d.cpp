@@ -135,6 +135,17 @@ rigid2d::Vector2D rigid2d::Transform2D::operator()(rigid2d::Vector2D v) const
 	vp.x = v.x * ctheta - v.y * stheta;
 	vp.y = v.x * stheta + v.y * ctheta;
 
+	// Check if anything is almost zero
+	if (almost_equal(vp.x, 0))
+	{
+		vp.x = 0;
+	}
+
+	if (almost_equal(vp.y, 0))
+	{
+		vp.y = 0;
+	}
+
 	return vp;
 }
 
@@ -157,6 +168,24 @@ rigid2d::Transform2D rigid2d::Transform2D::inv() const
 	temp2d.x = vp.x;
 	temp2d.y = vp.y;
 
+	// Check if anything is almost zero
+	if (almost_equal(temp2d.x, 0))
+	{
+		temp2d.x = 0;
+	}
+
+	if (almost_equal(temp2d.y, 0))
+	{
+		temp2d.y = 0;
+	}
+
+	if (almost_equal(temp2d.theta, 0))
+	{
+		temp2d.theta = 0;
+		temp2d.stheta = sin(temp2d.theta);
+		temp2d.ctheta = cos(temp2d.theta);
+	}
+
 	return temp2d;
 }
 
@@ -164,9 +193,28 @@ rigid2d::Transform2D & rigid2d::Transform2D::operator*=(const rigid2d::Transform
 {
 	x = ctheta * rhs.x - stheta * rhs.y + x;
 	y = stheta * rhs.x + ctheta * rhs.y + y;
-	theta = acos(ctheta * rhs.ctheta - stheta * rhs.stheta);
+	// theta = acos(ctheta * rhs.ctheta - stheta * rhs.stheta);
+	theta += rhs.theta;
 	ctheta = cos(theta);
 	stheta = sin(theta);
+
+	// Check if anything is almost zero
+	if (almost_equal(x, 0))
+	{
+		x = 0;
+	}
+
+	if (almost_equal(y, 0))
+	{
+		y = 0;
+	}
+
+	if (almost_equal(theta, 0))
+	{
+		theta = 0;
+		stheta = sin(theta);
+		ctheta = cos(theta);
+	}
 
 	// `this` is a pointer to our object, which we dereference for the object itself
 	return *this;
@@ -175,14 +223,14 @@ rigid2d::Transform2D & rigid2d::Transform2D::operator*=(const rigid2d::Transform
 rigid2d::Transform2D rigid2d::operator*(rigid2d::Transform2D lhs, const rigid2d::Transform2D & rhs)
 {
 	// call operator*=() member function of lhs object (just above)
-	lhs.operator*=(rhs);
+	lhs*=rhs;
 	return lhs;
 }
 
 std::ostream & rigid2d::operator<<(std::ostream & os, const rigid2d::Transform2D & tf)
 {
 	/// dtheta (degrees): 90 dx: 3 dy: 5
-	os << "dtheta (degrees): " << tf.theta * 180.0 / rigid2d::PI << "\t" << "dx: " << tf.x << "\t"\
+	os << "dtheta (degrees): " << rigid2d::rad2deg(tf.theta) << "\t" << "dx: " << tf.x << "\t"\
 	<< "dy: " << tf.y << "\n";
 
 	return os;
@@ -193,7 +241,7 @@ std::istream & rigid2d::operator>>(std::istream & is, rigid2d::Transform2D & tf)
 	// using friend function so that only this input fcn can overwrite
 	// private params of Tranform2D
 	std::cout << "Enter theta component of Transform2D (degrees)" << std::endl;
-	float deg;
+	double deg;
 	is >> deg;
 
 	std::cout << "Enter x component of Transform2D" << std::endl;
@@ -202,7 +250,7 @@ std::istream & rigid2d::operator>>(std::istream & is, rigid2d::Transform2D & tf)
 	std::cout << "Enter y component of Transform2D" << std::endl;
 	is >> tf.y;
 
-	tf.theta = deg * rigid2d::PI / 180.0;
+	tf.theta = rigid2d::deg2rad(deg);
 	tf.stheta = sin(tf.theta);
 	tf.ctheta = cos(tf.theta);
 
@@ -231,6 +279,22 @@ rigid2d::Twist2D rigid2d::Twist2D::convert(const rigid2d::Transform2D & tf) cons
 		, (v_y * tf.ctheta + v_x * tf.stheta + w_z * tf.x));
 	// notation: tw_b = twist object
 	// Vs = [AdTsb]Vb
+
+	// Check if anything is almost zero
+	if (almost_equal(tw_s.w_z, 0))
+	{
+		tw_s.w_z = 0;
+	}
+
+	if (almost_equal(tw_s.v_x, 0))
+	{
+		tw_s.v_x = 0;
+	}
+
+	if (almost_equal(tw_s.v_y, 0))
+	{
+		tw_s.v_y = 0;
+	}
 
 	return tw_s;
 }
