@@ -31,7 +31,7 @@
               origin_rpy="0 0 0" origin_xyz="${L/2 - r} 0 0"
               size="${L} ${W - h} ${H}"
               matname="red_mat"
-              rgba="1 0 0 1"/>
+              rgba="1 0 0 0.8"/>
 
   <!-- Rear Right Wheel -->
   <r_cyl name="rr_wheel"
@@ -39,7 +39,7 @@
               length="${h}"
               radius="${r}"
               matname="black_mat"
-              rgba="0 0 0 1"/>
+              rgba="0 0 0 0.8"/>
 
   <!-- Rear Left Wheel -->
   <r_cyl name="rl_wheel"
@@ -47,7 +47,7 @@
               length="${h}"
               radius="${r}"
               matname="black_mat"
-              rgba="0 0 0 1"/>
+              rgba="0 0 0 0.8"/>
 
   <!-- Top Caster Wheel -->
   <!-- <r_sph name="tc_wheel"
@@ -68,7 +68,7 @@
               origin_rpy="0 0 0" origin_xyz="0 0 0"
               radius="${r_bc}"
               matname="green_mat"
-              rgba="0 1 0 1"/>
+              rgba="0 1 0 0.8"/>
   
   <!-- Joints -->
   <frame_joint name="basefootprint_base" type="fixed"

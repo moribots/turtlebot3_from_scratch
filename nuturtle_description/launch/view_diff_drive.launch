@@ -14,7 +14,7 @@
        and publish the joint values on /joint_states. Optional launch using use_jsp_gui:=1 --> 
   <arg name="use_jsp_gui" default="True" doc="Launch the joint_state_publisher gui to publish joint angles"/>
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <param name="use_gui" value="$(arg use_jsp_gui)" />
+    <param name="use_gui" value="$(eval use_jsp_gui)" />
   </node>
 
   <!-- load diff_drive_bot parameters to parameter server -->
