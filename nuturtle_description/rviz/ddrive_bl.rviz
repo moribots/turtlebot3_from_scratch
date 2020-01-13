@@ -8,7 +8,6 @@ Panels:
         - /Status1
         - /TF1
         - /TF1/Frames1
-        - /TF1/Frames1/base_link1
         - /TF1/Tree1
       Splitter Ratio: 0.5
     Tree Height: 555
@@ -131,7 +130,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: base_footprint
+    Fixed Frame: base_link
     Frame Rate: 30
   Name: root
   Tools:
@@ -170,10 +169,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.3603980243206024
+      Pitch: 0.05039801448583603
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.4585700035095215
+      Yaw: 5.653567314147949
     Saved: ~
 Window Geometry:
   Displays:
@@ -191,5 +190,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 406
-  Y: 50
+  X: 405
+  Y: 15
