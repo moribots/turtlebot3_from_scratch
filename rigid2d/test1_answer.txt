@@ -47,10 +47,10 @@ Displaying the Vector in frame c
 [3, 3]
 
 Displaying the Twist in frame a
-w_z (rad/s): 1	v_x (m/s): 1	v_y (m/s): 1
+w_z (rad/s): 1	v_x (m/s): -2	v_y (m/s): 2
 
 Displaying the Twist in frame b
-w_z (rad/s): 1	v_x (m/s): 4	v_y (m/s): 4
+w_z (rad/s): 1	v_x (m/s): 2	v_y (m/s): 2
 
 Displaying the Twist in frame c
 w_z (rad/s): 1	v_x (m/s): 2	v_y (m/s): 2
