@@ -6,32 +6,48 @@
 
 int main()
 {	
-	std::cout << "Enter Transform Tab as instructed below\n" << std::endl;
+	std::cout << "Enter Transform Tab as instructed below:" << std::endl;
 
 	rigid2d::Transform2D Tab;
 	rigid2d::operator>>(std::cin, Tab);
 
-	std::cout << "\nEnter Transform Tbc as instructed below\n" << std::endl;
+	std::cout << "\nEnter Transform Tbc as instructed below:" << std::endl;
 
 	rigid2d::Transform2D Tbc;
 	rigid2d::operator>>(std::cin, Tbc);
 
 	// Now we calculate Tab, Tbc (given), and Tac, Tca
 	rigid2d::Transform2D Tac {rigid2d::operator*(Tab, Tbc)};
-	rigid2d::Transform2D Tca {Tac.inv()};
+
+	// rigid2d::Transform2D Tca {Tac.inv()};
 	// Also calculate Tba and Tcb
 	rigid2d::Transform2D Tba {Tab.inv()};
 	rigid2d::Transform2D Tcb {Tbc.inv()};
+	rigid2d::Transform2D Tca {rigid2d::operator*(Tcb, Tba)};
+
+	std::cout << "\nNow, enter a Vector as instructed below:" << std::endl;
+
+	rigid2d::Vector2D v;
+	rigid2d::operator>>(std::cin, v);
+
+	std::cout << "\nNow, enter a Twist as instructed below:" << std::endl;
+
+	rigid2d::Twist2D tw;
+	rigid2d::operator>>(std::cin, tw);
+
+	std::cout << "\nNow, enter the frame of these inputs (a, b, or c):" << std::endl;
+	char vframe;
+	std::cin >> vframe;
 
 	// Now display each Transform 2D: Tab, Tbc, Tac, Tca
 	std::cout << "\nDisplaying Tab" << std::endl;
 	rigid2d::operator<<(std::cout, Tab);
 
-	std::cout << "\nDisplaying Tbc" << std::endl;
-	rigid2d::operator<<(std::cout, Tbc);
-
 	std::cout << "\nDisplaying Tba" << std::endl;
 	rigid2d::operator<<(std::cout, Tba);
+
+	std::cout << "\nDisplaying Tbc" << std::endl;
+	rigid2d::operator<<(std::cout, Tbc);
 
 	std::cout << "\nDisplaying Tcb" << std::endl;
 	rigid2d::operator<<(std::cout, Tcb);
@@ -42,22 +58,7 @@ int main()
 	std::cout << "\nDisplaying Tca" << std::endl;
 	rigid2d::operator<<(std::cout, Tca);
 
-	std::cout << "\nNow, enter a Vector as instructed below\n" << std::endl;
-
-	rigid2d::Vector2D v;
-	rigid2d::operator>>(std::cin, v);
-
-	std::cout << "\nNow, enter a Twist as instructed below\n" << std::endl;
-
-	rigid2d::Twist2D tw;
-	rigid2d::operator>>(std::cin, tw);
-
-	std::cout << "\nNow, enter the frame of these inputs (a, b, or c)\n" << std::endl;
-	char vframe;
-	std::cin >> vframe;
-
 	// Now, output vector in frames a, b, and c depending on response (frame)
-
 	if (vframe == 'a')
 	{
 		// VECTORS

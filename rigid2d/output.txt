@@ -1,0 +1,56 @@
+Enter Transform Tab as instructed below:
+Enter theta component of Transform2D (degrees)
+Enter x component of Transform2D
+Enter y component of Transform2D
+
+Enter Transform Tbc as instructed below:
+Enter theta component of Transform2D (degrees)
+Enter x component of Transform2D
+Enter y component of Transform2D
+
+Now, enter a Vector as instructed below:
+Enter x component of Vector
+Enter y component of Vector
+
+Now, enter a Twist as instructed below:
+Enter w_z component of Twist2D (rad/s)
+Enter v_x component of Twist2D
+Enter v_y component of Twist2D
+
+Now, enter the frame of these inputs (a, b, or c):
+
+Displaying Tab
+dtheta (degrees): 90	dx: 1	dy: 1
+
+Displaying Tba
+dtheta (degrees): -90	dx: -1	dy: 1
+
+Displaying Tbc
+dtheta (degrees): 0	dx: 2	dy: 2
+
+Displaying Tcb
+dtheta (degrees): -0	dx: -2	dy: -2
+
+Displaying Tac
+dtheta (degrees): 90	dx: -1	dy: 3
+
+Displaying Tca
+dtheta (degrees): 90	dx: -3	dy: -1
+
+Displaying the Vector in frame a
+[-3, 3]
+
+Displaying the Vector in frame b
+[3, 3]
+
+Displaying the Vector in frame c
+[3, 3]
+
+Displaying the Twist in frame a
+w_z (rad/s): 1	v_x (m/s): 1	v_y (m/s): 1
+
+Displaying the Twist in frame b
+w_z (rad/s): 1	v_x (m/s): 4	v_y (m/s): 4
+
+Displaying the Twist in frame c
+w_z (rad/s): 1	v_x (m/s): 2	v_y (m/s): 2
