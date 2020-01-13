@@ -2,8 +2,6 @@
 # Library: rigid2d
 Author: Maurice Rahme
 
-## Library Summary
-
 ## C.002 Questions
 
 1. What is the difference between a `class` and a `struct` in C++?
