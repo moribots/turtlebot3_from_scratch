@@ -9,3 +9,4 @@ srv_gen/
 *.o
 *.so
 *.a
+rigid2d_test
