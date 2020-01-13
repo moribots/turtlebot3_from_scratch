@@ -271,8 +271,8 @@ rigid2d::Twist2D rigid2d::Twist2D::convert(const rigid2d::Transform2D & tf) cons
 {
 	// create Twist2D
 	rigid2d::Twist2D tw_s = rigid2d::Twist2D(w_z\
-		, (v_x * tf.ctheta - v_y * tf.stheta)\
-		, (v_y * tf.ctheta + v_x * tf.stheta));
+		, (v_x * tf.ctheta - v_y * tf.stheta + w_z * tf.y)\
+		, (v_y * tf.ctheta + v_x * tf.stheta + w_z * tf.x));
 	// notation: tw_b = twist object
 	// Vs = [AdTsb]Vb
 
