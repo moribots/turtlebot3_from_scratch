@@ -28,7 +28,7 @@
   <link name="base_footprint"/>
   <!-- Base Link -->
   <r_box name="base_link"
-              origin_rpy="0 0 0" origin_xyz="0 0 0"
+              origin_rpy="0 0 0" origin_xyz="${L/2 - r} 0 0"
               size="${L} ${W - h} ${H}"
               matname="red_mat"
               rgba="1 0 0 1"/>
@@ -72,12 +72,12 @@
   
   <!-- Joints -->
   <frame_joint name="basefootprint_base" type="fixed"
-                    origin_rpy="0 0 0" origin_xyz="0 0 ${H}"
+                    origin_rpy="0 0 0" origin_xyz="0 0 ${r}"
                     parent="base_footprint" child="base_link"/>
   <!-- Joint 1: Base - RR Wheel -->      
   <wheel_joint name="right_wheel_axle" type="continuous"
                     axis_xyz="0 1 0"
-                    origin_rpy="0 0 0" origin_xyz="${r-L/2} -${W/2} 0"
+                    origin_rpy="0 0 0" origin_xyz="0 -${W/2} 0"
                     parent="base_link" child="rr_wheel"
                     effort="100"
                     velocity="100"
@@ -87,7 +87,7 @@
   <!-- Joint 2: Base - RL Wheel -->      
   <wheel_joint name="left_wheel_axle" type="continuous"
                     axis_xyz="0 1 0"
-                    origin_rpy="0 0 0" origin_xyz="${r-L/2} ${W/2} 0"
+                    origin_rpy="0 0 0" origin_xyz="0 ${W/2} 0"
                     parent="base_link" child="rl_wheel"
                     effort="100"
                     velocity="100"
@@ -107,7 +107,7 @@
   <!-- Joint 4: Base - BC Wheel -->      
   <wheel_joint name="base_bc" type="fixed"
                     axis_xyz="1 1 1"
-                    origin_rpy="0 0 0" origin_xyz="${L/2 - r_bc} 0 -${H/2 + r_bc}"
+                    origin_rpy="0 0 0" origin_xyz="${L/2 + r - r_bc} 0 -${H/2 + r_bc}"
                     parent="base_link" child="ball_caster"
                     effort="0"
                     velocity="100"
