@@ -65,10 +65,10 @@ std::ostream & rigid2d::operator<<(std::ostream & os, const rigid2d::Vector2D & 
 
 std::istream & rigid2d::operator>>(std::istream & is, rigid2d::Vector2D & v)
 {
-	std::cout << "Enter x component of Vector" << std::endl;
+	std::cout << "Enter x:" << std::endl;
 	is >> v.x;
 
-	std::cout << "Enter y component of Vector" << std::endl;
+	std::cout << "Enter y:" << std::endl;
 	is >> v.y;
 
 	// compute norm
@@ -132,8 +132,8 @@ rigid2d::Vector2D rigid2d::Transform2D::operator()(rigid2d::Vector2D v) const
 
 	Vector2D vp;
 
-	vp.x = v.x * ctheta - v.y * stheta;
-	vp.y = v.x * stheta + v.y * ctheta;
+	vp.x = v.x * ctheta - v.y * stheta + x;
+	vp.y = v.x * stheta + v.y * ctheta + y;
 
 	// Check if anything is almost zero
 	if (almost_equal(vp.x, 0))
@@ -160,13 +160,9 @@ rigid2d::Transform2D rigid2d::Transform2D::inv() const
 	temp2d.theta = atan2(temp2d.stheta, temp2d.ctheta);
 	temp2d.ctheta = cos(temp2d.theta);
 
-	// create Vector2D to for inverse operation
-	rigid2d::Vector2D v = rigid2d::Vector2D(-temp2d.x, -temp2d.y);
 	// this performs p' = -R.T*p (pg90 modern robotics)
-	rigid2d::Vector2D vp = temp2d.operator()(v);
-
-	temp2d.x = vp.x;
-	temp2d.y = vp.y;
+	temp2d.x = -(temp2d.ctheta * x - temp2d.stheta * y);
+	temp2d.y = -(temp2d.stheta * x + temp2d.ctheta * y);
 
 	// Check if anything is almost zero
 	if (almost_equal(temp2d.x, 0))
@@ -240,14 +236,14 @@ std::istream & rigid2d::operator>>(std::istream & is, rigid2d::Transform2D & tf)
 {
 	// using friend function so that only this input fcn can overwrite
 	// private params of Tranform2D
-	std::cout << "Enter theta component of Transform2D (degrees)" << std::endl;
+	std::cout << "Enter theta in degrees:" << std::endl;
 	double deg;
 	is >> deg;
 
-	std::cout << "Enter x component of Transform2D" << std::endl;
+	std::cout << "Enter x:" << std::endl;
 	is >> tf.x;
 
-	std::cout << "Enter y component of Transform2D" << std::endl;
+	std::cout << "Enter y:" << std::endl;
 	is >> tf.y;
 
 	tf.theta = rigid2d::deg2rad(deg);
@@ -311,13 +307,13 @@ std::istream & rigid2d::operator>>(std::istream & is, rigid2d::Twist2D & tw)
 {
 	// using friend function so that only this input fcn can overwrite
 	// private params of Twist2D
-	std::cout << "Enter w_z component of Twist2D (rad/s)" << std::endl;
+	std::cout << "Enter w_z in rad/s:" << std::endl;
 	is >> tw.w_z;
 
-	std::cout << "Enter v_x component of Twist2D" << std::endl;
+	std::cout << "Enter v_x in m/s:" << std::endl;
 	is >> tw.v_x;
 
-	std::cout << "Enter v_y component of Twist2D" << std::endl;
+	std::cout << "Enter v_y in m/s:" << std::endl;
 	is >> tw.v_y;
 
 	return is;
