@@ -2,7 +2,7 @@
 #include <vector>    // vector
 #include <string>    // string
 #include <math.h>
-#include "rigid2d.hpp"
+#include "rigid2d/rigid2d.hpp"
 
 int main()
 {	

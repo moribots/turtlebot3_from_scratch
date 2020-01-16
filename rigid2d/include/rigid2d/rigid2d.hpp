@@ -21,6 +21,8 @@ namespace rigid2d
     /// Note: the fabs function in <cmath> (c++ equivalent of math.h) will
     /// be useful here
     // constexpr are all define in .hpp
+    // constexpr allows fcn to be run at compile time and interface with 
+    // static_assert tests.
     constexpr bool almost_equal(double d1, double d2, double epsilon=1.0e-12)
     {
         if (fabs(d1 - d2) < epsilon)
