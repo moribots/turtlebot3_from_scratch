@@ -13,7 +13,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  rostest
 )
+
+# if (CATKIN_ENABLE_TESTING)
+#     add_rostest_gtest(the_rostest tests/the_test_launchfile.test test/unit_test.cpp)
+#     target_link_libraries(the_rostest ${catkin_LIBRARIES} ${PROJECT_NAME})
+# endif()
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -201,10 +208,15 @@ install(DIRECTORY include/${PROJECT_NAME}/
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_rigid2d.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/${PROJECT_NAME}_test.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+if (CATKIN_ENABLE_TESTING)
+    catkin_add_gtest(${PROJECT_NAME}_test tests/${PROJECT_NAME}_test.cpp)
+    target_link_libraries(${PROJECT_NAME}_test ${catkin_Libraries} gtest_main ${PROJECT_NAME})
+endif()

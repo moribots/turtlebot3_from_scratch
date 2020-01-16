@@ -5,38 +5,29 @@ rigid2d::Vector2D::Vector2D()
 {
     x = 0;
     y = 0;
-    if (x != 0)
-    {
-    	norm_x = x / sqrt(pow(x, 2) + pow(y, 2));
-    } else {
-    	norm_x = 0;
-    }
-
-    if (y != 0)
-    {
-    	norm_y = y / sqrt(pow(x, 2) + pow(y, 2));
-    } else {
-    	norm_y = 0;
-    }
+    norm_x = 0;
+    norm_y = 0;
+    rigid2d::Vector2D::normalize();
 }
 
 rigid2d::Vector2D::Vector2D(double x_, double y_)
 {
     x = x_;
     y = y_;
-    if (x != 0)
-    {
-    	norm_x = x / sqrt(pow(x, 2) + pow(y, 2));
-    } else {
-    	norm_x = 0;
-    }
+    rigid2d::Vector2D::normalize();
+    // if (x != 0)
+    // {
+    // 	norm_x = x / sqrt(pow(x, 2) + pow(y, 2));
+    // } else {
+    // 	norm_x = 0;
+    // }
 
-    if (y != 0)
-    {
-    	norm_y = y / sqrt(pow(x, 2) + pow(y, 2));
-    } else {
-    	norm_y = 0;
-    }
+    // if (y != 0)
+    // {
+    // 	norm_y = y / sqrt(pow(x, 2) + pow(y, 2));
+    // } else {
+    // 	norm_y = 0;
+    // }
 }
 
 void rigid2d::Vector2D::normalize()
