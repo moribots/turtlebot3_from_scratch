@@ -2,12 +2,16 @@
 Author: Maurice Rahme
 
 # Tasks Submitted
+<!-- TODO: general cleanup of rigid2d.cpp (constructor calls) -->
+<!-- TODO: cleanup namespace -->
 
 C.005
 
 C.006 - need to write more unit tests
 
-C.007 - need to add displacement fcn
+C.007
+
+C.008 - need to write unit tests
 
 C.009 - need to write unit tests
 

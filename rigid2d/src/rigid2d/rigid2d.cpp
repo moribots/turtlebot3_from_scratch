@@ -1,6 +1,7 @@
 #include "rigid2d/rigid2d.hpp"
 #include <iostream>
 
+// Vector2D
 rigid2d::Vector2D::Vector2D()
 {
     x = 0;
@@ -128,6 +129,37 @@ std::istream & rigid2d::operator>>(std::istream & is, rigid2d::Vector2D & v)
 	return is;
 }
 
+// Transform2DS
+rigid2d::Transform2DS::Transform2DS()
+{
+    theta = 0;
+    x = 0;
+    y = 0;
+}
+
+rigid2d::Transform2DS::Transform2DS(double theta_, double x_, double y_)
+{
+	theta = theta_;
+    x = x_;
+    y = y_;
+}
+
+// Screw2D
+rigid2d::Screw2D::Screw2D()
+{
+    w_z = 0;
+    v_x = 0;
+    v_y = 0;
+}
+
+rigid2d::Screw2D::Screw2D(double w_z_, double v_x_, double v_y_)
+{
+	w_z = w_z_;
+    v_x = v_x_;
+    v_y = v_y_;
+}
+
+// Transform2D
 rigid2d::Transform2D::Transform2D()
 {
 	// Below are values of class params for ID Transform.
@@ -236,6 +268,52 @@ rigid2d::Transform2D rigid2d::Transform2D::inv() const
 	return temp2d;
 }
 
+rigid2d::Transform2D rigid2d::Transform2D::integrateTwist(const rigid2d::Twist2D & tw) const
+{
+	// init theta dot
+	// note theta = theta dot because we integrate for one timestep
+	double th = 0;
+
+	// Initialize Screw
+	rigid2d::Screw2D S = rigid2d::Screw2D();
+
+	// Check if w = 0 or not
+	if (almost_equal(tw.w_z, 0))
+	{
+		// Twist is mixed angular and linear
+		S.w_z = tw.w_z / fabs(tw.w_z);
+		S.v_x = tw.v_x / fabs(tw.w_z);
+		S.v_y = tw.v_y / fabs(tw.w_z);
+		// init theta dot
+		// note theta = theta dot because we integrate for one timestep
+		th = fabs(tw.w_z);
+	} else {
+		// Twist is purely linear
+		S.w_z = 0;
+		S.v_x = tw.v_x / sqrt(pow(tw.v_x, 2) + pow(tw.v_y, 2));
+		S.v_y = tw.v_y / sqrt(pow(tw.v_x, 2) + pow(tw.v_y, 2));
+		// init theta dot
+		// note theta = theta dot because we integrate for one timestep
+		th = sqrt(pow(tw.v_x, 2) + pow(tw.v_y, 2));
+	}
+	// Calculate new transform
+	rigid2d::Transform2D T = rigid2d::Transform2D(\
+		atan2(1 - (1 - cos(th)) * pow(S.w_z, 2), sin(th) * S.w_z)\
+		, cos(atan2(1 - (1 - cos(th)) * pow(S.w_z, 2), sin(th) * S.w_z))\
+		, sin(cos(atan2(1 - (1 - cos(th)) * pow(S.w_z, 2), sin(th) * S.w_z)))\
+		, S.v_x * (th - (th - sin(th)) * pow(S.w_z, 2))\
+		- S.v_y * (1 - cos(th)) * S.w_z\
+		, S.v_x * (1 - cos(th)) * S.w_z\
+		+ S.v_y * (th - (th - sin(th)) * pow(S.w_z, 2)));
+	return T;
+}
+
+rigid2d::Transform2DS rigid2d::Transform2D::displacement() const
+{
+	rigid2d::Transform2DS T = rigid2d::Transform2DS(theta, x, y);
+	return T;
+}
+
 rigid2d::Transform2D & rigid2d::Transform2D::operator*=(const rigid2d::Transform2D & rhs)
 {
 	x = ctheta * rhs.x - stheta * rhs.y + x;
@@ -304,6 +382,7 @@ std::istream & rigid2d::operator>>(std::istream & is, rigid2d::Transform2D & tf)
 	return is;
 }
 
+// Twist2D
 rigid2d::Twist2D::Twist2D()
 {
 	w_z = 0;

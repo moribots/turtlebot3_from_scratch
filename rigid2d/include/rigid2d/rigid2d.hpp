@@ -93,10 +93,10 @@ namespace rigid2d
     /// \brief A 2-Dimensional Vector
     struct Vector2D
     {
-        double x = 0.0;
-        double y = 0.0;
-        double norm_x = 0.0;
-        double norm_y = 0.0;
+        double x;
+        double y;
+        double norm_x;
+        double norm_y;
 
         // \brief constructor for Vector2D with no inputs, creates a zero vector
         Vector2D();
@@ -181,6 +181,32 @@ namespace rigid2d
     /// https://en.cppreference.com/w/cpp/io/basic_istream/get
     std::istream & operator>>(std::istream & is, Vector2D & v);
 
+    /// \brief Struct version of Transform2D to return private params
+    struct Transform2DS
+    {
+        double theta, x, y; // angle, sin, cos, x, and y
+
+        // \brief constructor for Transform2DS with no inputs, creates a zero vector
+        Transform2DS();
+
+        // \brief constructor for Transform2DS with inputs
+        Transform2DS(double theta_, double x_, double y_);
+    };
+
+    /// \brief Screw Axis
+    struct Screw2D
+    {
+        double w_z, v_x, v_y;
+
+        // \brief constructor for Screw2D with no inputs, creates a zero vector
+        Screw2D();
+
+        // \brief constructor for Screw2D with inputs
+        Screw2D(double w_z_, double v_x_, double v_y_);
+    };
+
+    // declare Twist2D here so Transform2D can see it
+    class Twist2D;
     /// \brief a rigid body transformation in 2 dimensions
     class Transform2D
     {
@@ -211,8 +237,18 @@ namespace rigid2d
         Vector2D operator()(Vector2D v) const;
 
         /// \brief invert the transformation
-        /// \return the inverse transformation. 
+        /// \return the inverse transformation
         Transform2D inv() const;
+
+        /// \brief compute transformation corresponding to a rigid body
+        /// following a constant twist for one time unit
+        /// \param tw - Twist2D which the transform follows
+        /// \return new transformation of a rigid body following a twist
+        Transform2D integrateTwist(const Twist2D & tw) const;
+
+        /// \brief return theta, x, y of Transform
+        /// \return Transform2DS struct with theta, x, y values. 
+        rigid2d::Transform2DS displacement() const;
 
         /// \brief compose this transform with another and store the result 
         /// in this object
@@ -258,6 +294,8 @@ namespace rigid2d
     /// \brief a two-dimensional twist
     class Twist2D
     {
+    /// \brief declare Transform2D as friend so it can access Twist2D's private params
+    friend class Transform2D;
     public:
         /// \brief Create a zero-Twist
         Twist2D();
