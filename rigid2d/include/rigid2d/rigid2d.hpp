@@ -52,6 +52,21 @@ namespace rigid2d
         return rad * 180.0 / PI;
     }
 
+    /// \brief wraps an angle between +- PI
+    /// \param rad - angle in radians
+    /// \returns the wrapped angle in radians
+    constexpr double normalize_angle(double rad)
+    {
+        double lim  = std::floor((rad + PI) / (2 * PI));
+        rad = rad + PI - lim * 2 * PI;
+        if (rad < 0)
+        {
+            rad += 2 * PI;
+        }
+        rad -= PI;
+        return rad;
+    }
+
     /// static_assertions test compile time assumptions.
     /// You should write at least one more test for each function
     /// You should also purposely (and temporarily) make one of these tests fail
@@ -67,6 +82,13 @@ namespace rigid2d
     static_assert(almost_equal(deg2rad(rad2deg(2.1)), 2.1), "deg2rad failed");
     static_assert(almost_equal(rad2deg(deg2rad(2.1)), 2.1), "rad2deg failed");
 
+    static_assert(almost_equal(normalize_angle(deg2rad(270)), normalize_angle(deg2rad(-90))), "normalize_angle failed");
+    static_assert(almost_equal(normalize_angle(deg2rad(360)), normalize_angle(deg2rad(0))), "normalize_angle failed");
+    static_assert(almost_equal(normalize_angle(deg2rad(370)), normalize_angle(deg2rad(10))), "normalize_angle failed");
+    static_assert(almost_equal(normalize_angle(deg2rad(350)), normalize_angle(deg2rad(-10))), "normalize_angle failed");
+    static_assert(almost_equal(normalize_angle(deg2rad(150)), normalize_angle(deg2rad(150))), "normalize_angle failed");
+    static_assert(almost_equal(normalize_angle(deg2rad(-150)), normalize_angle(deg2rad(-150))), "normalize_angle failed");
+
 
     /// \brief A 2-Dimensional Vector
     struct Vector2D
@@ -76,15 +98,73 @@ namespace rigid2d
         double norm_x = 0.0;
         double norm_y = 0.0;
 
-        // constructor
+        // \brief constructor for Vector2D with no inputs, creates a zero vector
         Vector2D();
 
-        // constructor
+        // \brief constructor for Vector2D with inputs
         Vector2D(double x_, double y_);
 
-        // fcn prototype
+        // \brief fcn prototype to compute the norm of Vector2D
         void normalize();
+
+        /// \brief perform vector addition
+        /// \param rhs - the vector to add
+        /// \returns a reference to the newly transformed operator
+        Vector2D & operator+=(const Vector2D & rhs);
+
+        /// \brief perform vector subtraction
+        /// \param rhs - the vector to subtract
+        /// \returns a reference to the newly transformed operator
+        Vector2D & operator-=(const Vector2D & rhs);
+
+        /// \brief perform scalar multiplication on a vector
+        /// \param rhs - the vector to add
+        /// \returns a reference to the newly transformed operator
+        Vector2D & operator*=(const double & scalar);
     };
+
+    /// \brief compute the length of a Vector2D
+    /// \param v - the Vector2D whose length is computed
+    /// \returns a length (double)
+    // add const to end of member function if it doesn't change data members
+    double length(const Vector2D & v);
+
+    /// \brief compute the distance between two Vector2Ds
+    /// \param v1 - the first Vector2D
+    /// \param v2 - the second Vector2D
+    /// \returns a distance (double)
+    double distance(const Vector2D & v1, const Vector2D & v2);
+
+    /// \brief compute the angle of a Vector2D
+    /// \param v - the Vector2D whose angle is computed
+    /// \returns a angle (double)
+    double angle(const Vector2D & v);
+
+    /// \brief perform vector addition
+    /// \param lhs - the vector to be added to
+    /// \param rhs - the vector to add (const)
+    /// \returns a reference to the newly transformed operator
+    Vector2D operator+(Vector2D lhs, const Vector2D & rhs);
+
+    /// \brief perform vector subtraction
+    /// \param lhs - the vector to be subtracted from
+    /// \param rhs - the vector to subtract (const)
+    /// \returns a reference to the newly transformed operator
+    Vector2D operator-(Vector2D lhs, const Vector2D & rhs);
+
+    /// \brief perform scalar multiplication on a vector from LHS
+    /// \param v - the vector
+    /// \param scalar - the scalar
+    /// \return the scaled Vector2D
+    /// HINT: This function can be implemented in terms of *=
+    Vector2D operator*(Vector2D v, const double & scalar);
+
+    /// \brief perform scalar multiplication on a vector from RHS
+    /// \param v - the vector
+    /// \param scalar - the scalar
+    /// \return the scaled Vector2D
+    /// HINT: This function can be implemented in terms of *=
+    Vector2D operator*(const double & scalar, Vector2D v);
 
     /// \brief output a 2 dimensional vector as [xcomponent ycomponent]
     /// os - stream to output to

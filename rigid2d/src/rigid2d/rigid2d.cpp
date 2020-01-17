@@ -15,19 +15,6 @@ rigid2d::Vector2D::Vector2D(double x_, double y_)
     x = x_;
     y = y_;
     rigid2d::Vector2D::normalize();
-    // if (x != 0)
-    // {
-    // 	norm_x = x / sqrt(pow(x, 2) + pow(y, 2));
-    // } else {
-    // 	norm_x = 0;
-    // }
-
-    // if (y != 0)
-    // {
-    // 	norm_y = y / sqrt(pow(x, 2) + pow(y, 2));
-    // } else {
-    // 	norm_y = 0;
-    // }
 }
 
 void rigid2d::Vector2D::normalize()
@@ -46,6 +33,79 @@ void rigid2d::Vector2D::normalize()
     	norm_y = 0;
     }
 }
+
+double rigid2d::length(const rigid2d::Vector2D & v)
+{
+	return sqrt(pow(v.x, 2) + pow(v.y, 2));
+}
+
+double rigid2d::distance(const rigid2d::Vector2D & v1, const rigid2d::Vector2D & v2)
+{
+	return sqrt(pow(v1.x - v2.x, 2) + pow(v1.y - v2.y, 2));
+}
+
+double rigid2d::angle(const rigid2d::Vector2D & v)
+{
+	return atan(v.y / v.x);
+}
+
+rigid2d::Vector2D & rigid2d::Vector2D::operator+=(const rigid2d::Vector2D & rhs)
+{
+	x += rhs.x;
+	y += rhs.y;
+	rigid2d::Vector2D::normalize();
+	
+	return *this;
+}
+
+rigid2d::Vector2D rigid2d::operator+(rigid2d::Vector2D lhs, const rigid2d::Vector2D & rhs)
+{
+	// call operator+=() member function of lhs object (just above)
+	lhs+=rhs;
+	return lhs;
+}
+
+rigid2d::Vector2D & rigid2d::Vector2D::operator-=(const rigid2d::Vector2D & rhs)
+{
+	x -= rhs.x;
+	y -= rhs.y;
+	rigid2d::Vector2D::normalize();
+	
+	return *this;
+}
+
+rigid2d::Vector2D rigid2d::operator-(rigid2d::Vector2D lhs, const rigid2d::Vector2D & rhs)
+{
+	// call operator-=() member function of lhs object (just above)
+	lhs-=rhs;
+	return lhs;
+}
+
+rigid2d::Vector2D & rigid2d::Vector2D::operator*=(const double & scalar)
+{
+	x *= scalar;
+	y *= scalar;
+	rigid2d::Vector2D::normalize();
+	
+	return *this;
+}
+
+rigid2d::Vector2D rigid2d::operator*(rigid2d::Vector2D v, const double & scalar)
+{
+	// alternate definition (left multiply)
+	// call operator*=() member function of lhs object (just above)
+	v*=scalar;
+	return v;
+}
+
+rigid2d::Vector2D rigid2d::operator*(const double & scalar, rigid2d::Vector2D v)
+{
+	// alternate definition (right multiply)
+	// call operator*=() member function of lhs object (just above)
+	v*=scalar;
+	return v;
+}
+
 
 std::ostream & rigid2d::operator<<(std::ostream & os, const rigid2d::Vector2D & v)
 {

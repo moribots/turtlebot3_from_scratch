@@ -29,6 +29,21 @@ TEST(rigid2d_lib, VectorNormalization)
 	ASSERT_FLOAT_EQ(v1.norm_y, 1.41421356237309/2.0); // test norm based on my calc
 }
 
+TEST(rigid2d_lib, Transform2DInput)
+{
+	// make sure input is read correctly
+
+	rigid2d::Transform2D T;
+
+	std::string input = "90 1 1";
+	std::stringstream ss_in(input);
+
+	ss_in >> T;
+
+	// compare raw input to ss_in input
+	ASSERT_EQ(ss_in.str(), input);
+}
+
 int main(int argc, char * argv[])
 {
     testing::InitGoogleTest(&argc, argv);

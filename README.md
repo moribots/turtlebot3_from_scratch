@@ -5,6 +5,14 @@ Author: Maurice Rahme
 
 C.005
 
+C.006 - need to write more unit tests
+
+C.007 - need to add displacement fcn
+
+C.009 - need to write unit tests
+
+C.010
+
 # Tasks Completed
 
 0.000
