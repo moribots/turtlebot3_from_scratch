@@ -198,6 +198,7 @@ TEST(rigid2d_lib, TransformInv)
 
 TEST(rigid2d_lib, TransformIntegrateTwist)
 {
+	// w_z = 0
 	rigid2d::Transform2D Tac;
 	std::string input1 = "90 -1 3";
 	std::stringstream in_s1(input1);
@@ -211,12 +212,29 @@ TEST(rigid2d_lib, TransformIntegrateTwist)
 	// Integrate
 	rigid2d::Transform2D Tac_twisted = Tac.integrateTwist(tw);
 
-	std::string output = "dtheta (degrees): 90	dx: -2	dy: 4\n";
-	std::stringstream out_s;
-	out_s << Tac_twisted;
+	std::string output1 = "dtheta (degrees): 90	dx: -2	dy: 4\n";
+	std::stringstream out_s1;
+	out_s1 << Tac_twisted;
 
 	// compare raw output to out_s input
-	ASSERT_EQ(out_s.str(), output);
+	ASSERT_EQ(out_s1.str(), output1);
+
+	// w_z != 0
+
+	rigid2d::Twist2D tw2;
+	std::string input3 = "1 1 1";
+	std::stringstream in_s3(input3);
+	in_s3 >> tw2;
+
+	// Integrate
+	Tac_twisted = Tac.integrateTwist(tw2);
+
+	std::string output2 = "dtheta (degrees): 147.296\tdx: -2.30117\tdy: 3.38177\n";
+	std::stringstream out_s2;
+	out_s2 << Tac_twisted;
+
+	// compare raw output to out_s input
+	ASSERT_EQ(out_s2.str(), output2);
 }
 
 TEST(rigid2d_lib, TransformDisplacement)

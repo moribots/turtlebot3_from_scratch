@@ -11,7 +11,7 @@ C.006
 
 C.007
 
-C.008 - need to add one more test (case where w != 0)
+C.008
 
 C.009
 
