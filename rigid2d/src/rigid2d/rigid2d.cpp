@@ -278,7 +278,7 @@ rigid2d::Transform2D rigid2d::Transform2D::integrateTwist(const rigid2d::Twist2D
 	rigid2d::Screw2D S = rigid2d::Screw2D();
 
 	// Check if w = 0 or not
-	if (almost_equal(tw.w_z, 0))
+	if (!almost_equal(tw.w_z, 0))
 	{
 		// Twist is mixed angular and linear
 		S.w_z = tw.w_z / fabs(tw.w_z);
@@ -297,14 +297,17 @@ rigid2d::Transform2D rigid2d::Transform2D::integrateTwist(const rigid2d::Twist2D
 		th = sqrt(pow(tw.v_x, 2) + pow(tw.v_y, 2));
 	}
 	// Calculate new transform
-	rigid2d::Transform2D T = rigid2d::Transform2D(\
-		atan2(1 - (1 - cos(th)) * pow(S.w_z, 2), sin(th) * S.w_z)\
-		, cos(atan2(1 - (1 - cos(th)) * pow(S.w_z, 2), sin(th) * S.w_z))\
-		, sin(cos(atan2(1 - (1 - cos(th)) * pow(S.w_z, 2), sin(th) * S.w_z)))\
+	rigid2d::Transform2D T_twist = rigid2d::Transform2D(\
+		atan2(sin(th) * S.w_z, 1 - (1 - cos(th)) * pow(S.w_z, 2))\
+		, cos(atan2(sin(th) * S.w_z, 1 - (1 - cos(th)) * pow(S.w_z, 2)))\
+		, sin(atan2(sin(th) * S.w_z, 1 - (1 - cos(th)) * pow(S.w_z, 2)))\
 		, S.v_x * (th - (th - sin(th)) * pow(S.w_z, 2))\
 		- S.v_y * (1 - cos(th)) * S.w_z\
 		, S.v_x * (1 - cos(th)) * S.w_z\
 		+ S.v_y * (th - (th - sin(th)) * pow(S.w_z, 2)));
+
+	rigid2d::Transform2D T_original(theta, ctheta, stheta, x, y);
+	rigid2d::Transform2D T = T_original * T_twist;
 	return T;
 }
 

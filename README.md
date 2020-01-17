@@ -7,13 +7,13 @@ Author: Maurice Rahme
 
 C.005
 
-C.006 - need to write more unit tests
+C.006
 
-C.007 - need to write unit test
+C.007
 
-C.008 - need to write unit tests
+C.008 - need to add one more test (case where w != 0)
 
-C.009 - need to write unit tests
+C.009
 
 C.010
 

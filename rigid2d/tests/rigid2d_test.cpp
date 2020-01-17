@@ -10,7 +10,7 @@ TEST(rigid2d_lib, VectorIO)
 	std::stringstream in_s(input);
 
 	std::string output = "[1, 1]\n";
-	std::stringstream out_s(output);
+	std::stringstream out_s;
 
 	in_s >> v;
 	out_s << v;
@@ -152,7 +152,7 @@ TEST(rigid2d_lib, TransformIO)
 	std::stringstream in_s(input);
 
 	std::string output = "dtheta (degrees): 90	dx: 1	dy: 1\n";
-	std::stringstream out_s(output);
+	std::stringstream out_s;
 
 	in_s >> T;
 	out_s << T;
@@ -165,22 +165,93 @@ TEST(rigid2d_lib, TransformIO)
 
 TEST(rigid2d_lib, TransformVector)
 {
+	rigid2d::Transform2D Tac;
+	std::string input = "90 -1 3";
+	std::stringstream in_s(input);
+	in_s >> Tac;
+
+	rigid2d::Vector2D vc(3, 3);
+	rigid2d::Vector2D va = Tac(vc);
+
+	std::stringstream out_1;
+	out_1 << va;
+	std::stringstream out_2("[-4, 6]\n");
+
+	ASSERT_EQ(out_1.str(), out_2.str());
 }
 
 TEST(rigid2d_lib, TransformInv)
 {
+	rigid2d::Transform2D Tac;
+	std::string input = "90 -1 3";
+	std::stringstream in_s(input);
+	in_s >> Tac;
+
+	rigid2d::Transform2D Tca = Tac.inv();
+
+	std::stringstream out_1;
+	out_1 << Tca;
+	std::stringstream out_2("dtheta (degrees): -90	dx: -3	dy: -1\n");
+
+	ASSERT_EQ(out_1.str(), out_2.str());
 }
 
 TEST(rigid2d_lib, TransformIntegrateTwist)
 {
+	rigid2d::Transform2D Tac;
+	std::string input1 = "90 -1 3";
+	std::stringstream in_s1(input1);
+	in_s1 >> Tac;
+
+	rigid2d::Twist2D tw;
+	std::string input2 = "0 1 1";
+	std::stringstream in_s2(input2);
+	in_s2 >> tw;
+
+	// Integrate
+	rigid2d::Transform2D Tac_twisted = Tac.integrateTwist(tw);
+
+	std::string output = "dtheta (degrees): 90	dx: -2	dy: 4\n";
+	std::stringstream out_s;
+	out_s << Tac_twisted;
+
+	// compare raw output to out_s input
+	ASSERT_EQ(out_s.str(), output);
 }
 
 TEST(rigid2d_lib, TransformDisplacement)
 {
+	rigid2d::Transform2D Tac;
+	std::string input = "90 -1 3";
+	std::stringstream in_s(input);
+	in_s >> Tac;
+
+	rigid2d::Transform2DS Tdisp = Tac.displacement();
+
+	ASSERT_FLOAT_EQ(Tdisp.theta, rigid2d::PI / 2);
+	ASSERT_FLOAT_EQ(Tdisp.x, -1);
+	ASSERT_FLOAT_EQ(Tdisp.y, 3);
 }
 
 TEST(rigid2d_lib, TransformCompose)
 {
+	rigid2d::Transform2D Tab;
+	std::string input1 = "90 1 1";
+	std::stringstream in_s1(input1);
+	in_s1 >> Tab;
+
+	rigid2d::Transform2D Tbc;
+	std::string input2 = "0 2 2";
+	std::stringstream in_s2(input2);
+	in_s2 >> Tbc;
+
+	rigid2d::Transform2D Tac = Tab * Tbc;
+
+	std::stringstream out_1;
+	out_1 << Tac;
+	std::stringstream out_2("dtheta (degrees): 90	dx: -1	dy: 3\n");
+
+	ASSERT_EQ(out_1.str(), out_2.str());
 }
 
 TEST(rigid2d_lib, TwistIO)
@@ -192,7 +263,7 @@ TEST(rigid2d_lib, TwistIO)
 	std::stringstream in_s(input);
 
 	std::string output = "w_z (rad/s): 1	v_x (m/s): 1	v_y (m/s): 1\n";
-	std::stringstream out_s(output);
+	std::stringstream out_s;
 
 	in_s >> tw;
 	out_s << tw;
@@ -205,6 +276,19 @@ TEST(rigid2d_lib, TwistIO)
 
 TEST(rigid2d_lib, TwistConvert)
 {
+	rigid2d::Transform2D Tac;
+	std::string input = "90 -1 3";
+	std::stringstream in_s(input);
+	in_s >> Tac;
+
+	rigid2d::Twist2D twc(1, 2, 2);
+	rigid2d::Twist2D twa = twc.convert(Tac);
+
+	std::stringstream out_1;
+	out_1 << twa;
+	std::stringstream out_2("w_z (rad/s): 1	v_x (m/s): 1	v_y (m/s): 3\n");
+
+	ASSERT_EQ(out_1.str(), out_2.str());
 }
 
 int main(int argc, char * argv[])
