@@ -132,6 +132,7 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/${PROJECT_NAME}.cpp
+  src/${PROJECT_NAME}/diff_drive.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -157,8 +158,8 @@ add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catk
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
    ${PROJECT_NAME}_node # this is my node that will use below libraries
-   ${PROJECT_NAME} # this a the library that my node will use
-   ${catkin_LIBRARIES} # this a the library that my node will use
+   ${PROJECT_NAME} # this a library that my node will use
+   ${catkin_LIBRARIES} # this a library that my node will use
 )
 
 #############

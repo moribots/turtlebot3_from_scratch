@@ -38,15 +38,80 @@ DiffDrive::DiffDrive()
 	wheel_base = 0.1;
 	wheel_radius = 0.025;
 	rigid2d::WheelVelocities wheel_vel();
-
 }
 
 DiffDrive::DiffDrive(rigid2d::Pose2D pose_, double wheel_base_, double wheel_radius_)
 {
-	rigid2d::Pose2D pose - pose_;
+	pose = pose_;
 	wheel_base = wheel_base_;
 	wheel_radius = wheel_radius_;
 	rigid2d::WheelVelocities wheel_vel();
 }
 
+
+WheelVelocities DiffDrive::twistToWheels(rigid2d::Twist2D tw)
+{
+	WheelVelocities wheel_vel(((-tw.w_z * wheel_base / 2) + tw.v_x) / wheel_radius,
+							  ((tw.w_z * wheel_base / 2) + tw.v_x) / wheel_radius);
+	return wheel_vel;
+}
+
+rigid2d::Twist2D DiffDrive::wheelsToTwist(rigid2d::WheelVelocities vel)
+{
+	rigid2d::Twist2D twist((-vel.ul + vel.ur) / wheel_base, (vel.ul + vel.ur) / 2, 0);
+	return twist;
+}
+
+rigid2d::WheelVelocities DiffDrive::updateOdometry(double left, double right)
+{
+	// Update Wheel Velocities
+	wheel_vel.ul = left - wl_ang;
+	wheel_vel.ur = right - wr_ang;
+
+	// Update Wheel Angles
+	wl_ang += left;
+	wl_ang = normalize_encoders(wl_ang);
+	wr_ang += right;
+	wl_ang = normalize_encoders(wr_ang);
+
+	// Now call feedforward to update odometry
+	DiffDrive::feedforward();
+
+	return wheel_vel;
+}
+
+void DiffDrive::feedforward()
+{
+	// Update odometry by calculating Tbb' = exp(Vb)
+	rigid2d::Twist2D Vb = DiffDrive::wheelsToTwist(wheel_vel);
+
+	// Now integrate Twist to get Tbb', first create Transform2D
+	rigid2d::Transform2D Tb(pose.theta, cos(pose.theta), sin(pose.theta), pose.x, pose.y);
+	rigid2d::Transform2D Tbbp = Tb.integrateTwist(Vb);
+	// Use Transform2DS to return private Transform2D params
+	rigid2d::Transform2DS TbbpS = Tbbp.displacement();
+	// Update Pose
+	pose.theta = TbbpS.theta;
+	pose.x = TbbpS.x;
+	pose.y = TbbpS.y;
+}
+
+rigid2d::Pose2D DiffDrive::get_pose()
+{
+	return pose;
+}
+
+rigid2d::WheelVelocities DiffDrive::wheelVelocities() const
+{
+	return wheel_vel;
+}
+
+void DiffDrive::reset(rigid2d::Pose2D pos)
+{
+	pose = pos;
+	wheel_vel = rigid2d::WheelVelocities();
+	wl_ang = 0;
+	wr_ang = 0;
+}
+																																			
 }

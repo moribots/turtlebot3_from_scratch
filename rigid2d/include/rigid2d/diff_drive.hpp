@@ -10,6 +10,14 @@
 
 namespace rigid2d
 {
+// wraps encoder angles from 0 to 2PI
+constexpr double normalize_encoders(double rad)
+{
+    double min = 0;
+    double max = 2 * PI - min;
+    rad -= min;
+    return rad - (std::floor(rad / max) * max) + min;
+}
 
 /// \brief A 2-Dimensional Pose
 struct Pose2D
@@ -57,7 +65,7 @@ public:
     /// \param twist - the desired twist in the body frame of the robot
     /// \returns - the wheel velocities to use
     /// \throws std::exception
-    rigid2d::WheelVelocities twistToWheels();
+    rigid2d::WheelVelocities twistToWheels(rigid2d::Twist2D tw);
 
     /// \brief determine the body twist of the robot from its wheel velocities
     /// \param vel - the velocities of the wheels, assumed to be held constant
@@ -70,21 +78,21 @@ public:
     /// \param right - the right encoder angle (in radians)
     /// \return the velocities of each wheel, assuming that they have been
     /// constant since the last call to updateOdometry
-    rigid2d::WheelVelocities updateOdometry();
+    rigid2d::WheelVelocities updateOdometry(double left, double right);
 
     /// \brief update the odometry of the diff drive robot, assuming that
     /// it follows the given body twist for one time  unit
-    /// \param cmd - the twist command to send to the robot
+    /// \param Vb - the twist command to send to the robot
     void feedforward();
 
     /// \brief get the current pose of the robot
-    rigid2d::Pose2D pose();
+    rigid2d::Pose2D get_pose();
 
     /// \brief get the wheel speeds, based on the last encoder update
     rigid2d::WheelVelocities wheelVelocities() const;
 
-    /// \brief reset the robot to the given position/orientation
-    void reset(rigid2d::Pose2D ps);
+    /// \brief reset the robot to the given position/orientation with 0 vel
+    void reset(rigid2d::Pose2D pos);
 private:
     double wheel_base, wheel_radius;
     rigid2d::WheelVelocities wheel_vel;
@@ -92,5 +100,6 @@ private:
     rigid2d::Pose2D pose;
 
 };
+}
 
 #endif

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "rigid2d/rigid2d.hpp"
+#include "rigid2d/diff_drive.hpp"
 
 TEST(rigid2d_lib, VectorIO)
 {
