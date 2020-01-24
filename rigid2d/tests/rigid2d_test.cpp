@@ -481,6 +481,16 @@ TEST(diff_drive, Feedforward)
 	ASSERT_NEAR(pose.theta, 0.785398, 1e-3);
 	ASSERT_NEAR(pose.x, 0.900316, 1e-3);
 	ASSERT_NEAR(pose.y, 0.372923, 1e-3);
+
+	// Zero Test
+	// reset driver
+	driver.reset(pose_reset);
+	Vb.reassign(0, 0, 0);
+	driver.feedforward(Vb);
+	pose = driver.get_pose();
+	ASSERT_NEAR(pose.theta, 0, 1e-3);
+	ASSERT_NEAR(pose.x, 0, 1e-3);
+	ASSERT_NEAR(pose.y, 0, 1e-3);
 }
 
 int main(int argc, char * argv[])
