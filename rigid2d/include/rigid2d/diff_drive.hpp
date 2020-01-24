@@ -64,7 +64,7 @@ public:
     ///        move with the desired linear and angular velocities
     /// \param twist - the desired twist in the body frame of the robot
     /// \returns - the wheel velocities to use
-    /// \throws std::exception
+    /// \throws std::exception if Twist has y component.
     rigid2d::WheelVelocities twistToWheels(rigid2d::Twist2D Vb);
 
     /// \brief determine the body twist of the robot from its wheel velocities
@@ -87,6 +87,9 @@ public:
 
     /// \brief get the current pose of the robot
     rigid2d::Pose2D get_pose();
+
+    /// \brief set DiffDrive instance's static parameters such as wheel base and radius
+    void set_static(double wheel_base_, double wheel_radius_);
 
     /// \brief get the wheel speeds, based on the last encoder update
     rigid2d::WheelVelocities wheelVelocities() const;

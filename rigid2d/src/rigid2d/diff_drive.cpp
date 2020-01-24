@@ -51,9 +51,15 @@ DiffDrive::DiffDrive(rigid2d::Pose2D pose_, double wheel_base_, double wheel_rad
 
 WheelVelocities DiffDrive::twistToWheels(rigid2d::Twist2D Vb)
 {
+	if (Vb.v_y != 0)
+	{
+		throw std::invalid_argument("Twist cannot have a y velocity component for the DiffDrive robot.");
+		return wheel_vel;
+	} else {
 	WheelVelocities wheel_vel(((-Vb.w_z * wheel_base / 2) + Vb.v_x) / wheel_radius,
 							  ((Vb.w_z * wheel_base / 2) + Vb.v_x) / wheel_radius);
 	return wheel_vel;
+	}
 }
 
 rigid2d::Twist2D DiffDrive::wheelsToTwist(rigid2d::WheelVelocities vel)
@@ -99,6 +105,12 @@ void DiffDrive::feedforward(rigid2d::Twist2D Vb)
 rigid2d::Pose2D DiffDrive::get_pose()
 {
 	return pose;
+}
+
+void DiffDrive::set_static(double wheel_base_, double wheel_radius_)
+{
+	wheel_base = wheel_base_;
+	wheel_radius = wheel_radius_;
 }
 
 rigid2d::WheelVelocities DiffDrive::wheelVelocities() const
