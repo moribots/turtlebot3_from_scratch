@@ -75,10 +75,12 @@ rigid2d::WheelVelocities DiffDrive::updateOdometry(double left, double right)
 	wheel_vel.ur = right - wr_ang;
 
 	// Update Wheel Angles
-	wl_ang += left;
-	wl_ang = normalize_encoders(wl_ang);
-	wr_ang += right;
-	wl_ang = normalize_encoders(wr_ang);
+	left = normalize_encoders(left);
+	wl_ang = left;
+	std::cout << left << std::endl;
+	right = normalize_encoders(right);
+	wr_ang = right;
+	std::cout << right << std::endl;
 
 	// Now call feedforward to update odometry
 	rigid2d::Twist2D Vb = DiffDrive::wheelsToTwist(wheel_vel);
@@ -124,6 +126,13 @@ void DiffDrive::reset(rigid2d::Pose2D pos)
 	wheel_vel = rigid2d::WheelVelocities();
 	wl_ang = 0;
 	wr_ang = 0;
+}
+
+std::ostream & operator<<(std::ostream & os, const rigid2d::DiffDrive & driver)
+{
+	os << "wl (rad): " << driver.wl_ang << "\t" << "wr: " << driver.wr_ang << "\n";
+
+	return os;
 }
 																																			
 }

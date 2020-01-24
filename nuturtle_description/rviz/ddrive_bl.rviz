@@ -63,13 +63,15 @@ Visualization Manager:
         ball_caster:
           Value: false
         base_footprint:
-          Value: false
+          Value: true
         base_link:
+          Value: true
+        odom:
           Value: true
         rl_wheel:
           Value: true
         rr_wheel:
-          Value: false
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -84,6 +86,8 @@ Visualization Manager:
               {}
             rr_wheel:
               {}
+        odom:
+          {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -130,7 +134,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: base_link
+    Fixed Frame: odom
     Frame Rate: 30
   Name: root
   Tools:
@@ -154,25 +158,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 6.5433759689331055
+      Distance: 5.644588947296143
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.4029657542705536
-        Y: 0.35510125756263733
-        Z: 0.3702932894229889
+        X: -0.2803495526313782
+        Y: 0.5960462093353271
+        Z: 0.5435671806335449
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.05039801448583603
+      Pitch: 0.09539827704429626
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.653567314147949
+      Yaw: 4.568577766418457
     Saved: ~
 Window Geometry:
   Displays:
@@ -190,5 +194,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 405
-  Y: 15
+  X: 400
+  Y: 0
