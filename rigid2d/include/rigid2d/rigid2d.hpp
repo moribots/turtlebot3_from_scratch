@@ -311,6 +311,9 @@ namespace rigid2d
         /// \return the converted twist. 
         Twist2D convert(const Transform2D & tf) const;
 
+        /// \brief reassign Twist2D values
+        void reassign(double w_z_, double v_x_, double v_y_);
+
         /// \brief \see operator<<(...) (declared outside this class)
         /// for a description.
         /// friend tag allows non-member functions to access private params.
@@ -321,7 +324,6 @@ namespace rigid2d
         /// friend tag allows non-member functions to access private params.
         friend std::istream & operator>>(std::istream & is, Twist2D & tw);
 
-    private:
         double v_x, v_y, w_z; // linear and angular components
     };
 
@@ -334,7 +336,7 @@ namespace rigid2d
 
     /// \brief Read a twist from stdin
     /// Should be able to read input either as output by operator<< or
-    /// as 3 numbers (v_x, v_y, w_z) separated by spaces or newlines
+    /// as 3 numbers (w_z, v_x, v_y) separated by spaces or newlines
     std::istream & operator>>(std::istream & is, Twist2D & tw);
 }
 

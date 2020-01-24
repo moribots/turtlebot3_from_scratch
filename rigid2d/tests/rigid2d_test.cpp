@@ -236,6 +236,22 @@ TEST(rigid2d_lib, TransformIntegrateTwist)
 
 	// compare raw output to out_s input
 	ASSERT_EQ(out_s2.str(), output2);
+
+	// Zero Twist
+	rigid2d::Twist2D tw3;
+	std::string input4 = "0 0 0";
+	std::stringstream in_s4(input4);
+	in_s4 >> tw3;
+
+	// Integrate
+	Tac_twisted = Tac.integrateTwist(tw3);
+
+	std::string output3 = "dtheta (degrees): 90\tdx: -1\tdy: 3\n";
+	std::stringstream out_s3;
+	out_s3 << Tac_twisted;
+
+	// compare raw output to out_s input
+	ASSERT_EQ(out_s3.str(), output3);
 }
 
 TEST(rigid2d_lib, TransformDisplacement)
@@ -308,6 +324,163 @@ TEST(rigid2d_lib, TwistConvert)
 	std::stringstream out_2("w_z (rad/s): 1	v_x (m/s): 1	v_y (m/s): 3\n");
 
 	ASSERT_EQ(out_1.str(), out_2.str());
+}
+
+TEST(diff_drive, TwistToWheels)
+{
+	rigid2d::Twist2D Vb(1, 0, 0);
+	rigid2d::DiffDrive driver;
+
+	// Rotation Test
+	rigid2d::WheelVelocities vel = driver.twistToWheels(Vb);
+	ASSERT_NEAR(vel.ul, -25, 1e-6);
+  	ASSERT_NEAR(vel.ur, 25, 1e-6);
+
+  	// Translation Test
+  	Vb.reassign(0, 1, 0);
+  	vel = driver.twistToWheels(Vb);
+  	ASSERT_NEAR(vel.ul, 50, 1e-6);
+  	ASSERT_NEAR(vel.ur, 50, 1e-6);
+
+  	// Mixed Motion Test
+  	Vb.reassign(1, 1, 0);
+  	vel = driver.twistToWheels(Vb);
+  	ASSERT_NEAR(vel.ul, 25, 1e-6);
+  	ASSERT_NEAR(vel.ur, 75, 1e-6);
+
+  	// Zero Test
+  	Vb.reassign(0, 0, 0);
+  	vel = driver.twistToWheels(Vb);
+  	ASSERT_NEAR(vel.ul, 0, 1e-6);
+  	ASSERT_NEAR(vel.ur, 0, 1e-6);
+}
+
+TEST(diff_drive, WheelsToTwist)
+{
+	rigid2d::WheelVelocities vel(10, 10);
+	rigid2d::DiffDrive driver;
+
+	// Translation Test
+	rigid2d::Twist2D Vb = driver.wheelsToTwist(vel);
+	ASSERT_NEAR(Vb.w_z, 0, 1e-6);
+  	ASSERT_NEAR(Vb.v_x, 10, 1e-6);
+  	ASSERT_NEAR(Vb.v_y, 0, 1e-6);
+
+  	// Rotation Test
+	vel.ul = -10;
+	vel.ur = 10;
+	Vb = driver.wheelsToTwist(vel);
+	ASSERT_NEAR(Vb.w_z, 20, 1e-6);
+  	ASSERT_NEAR(Vb.v_x, 0, 1e-6);
+  	ASSERT_NEAR(Vb.v_y, 0, 1e-6);
+
+	// Mixed Motion Test
+	vel.ul = 0;
+	vel.ur = 10;
+	Vb = driver.wheelsToTwist(vel);
+	ASSERT_NEAR(Vb.w_z, 10, 1e-6);
+  	ASSERT_NEAR(Vb.v_x, 5, 1e-6);
+  	ASSERT_NEAR(Vb.v_y, 0, 1e-6);
+
+  	// Zero Test
+  	vel.ul = 0;
+	vel.ur = 0;
+	Vb = driver.wheelsToTwist(vel);
+	ASSERT_NEAR(Vb.w_z, 0, 1e-6);
+  	ASSERT_NEAR(Vb.v_x, 0, 1e-6);
+  	ASSERT_NEAR(Vb.v_y, 0, 1e-6);
+
+}
+
+TEST(diff_drive, UpdateOdometry)
+{
+	// Translation Test
+	rigid2d::WheelVelocities vel;
+	rigid2d::DiffDrive driver;
+	// both wheels rotate 2pi
+	double left_wheel = 2 * rigid2d::PI;
+	double right_wheel = 2 * rigid2d::PI;
+	vel = driver.updateOdometry(left_wheel, right_wheel);
+	rigid2d::Pose2D pose = driver.get_pose();
+	ASSERT_NEAR(vel.ul, 6.28319, 1e-3);
+	ASSERT_NEAR(vel.ur, 6.28319, 1e-3);
+	ASSERT_NEAR(pose.theta, 0, 1e-3);
+	ASSERT_NEAR(pose.x, 6.28319, 1e-3);
+	ASSERT_NEAR(pose.y, 0, 1e-3);
+
+	// Rotation Test
+	// reset driver
+	rigid2d::Pose2D pose_reset;
+	driver.reset(pose_reset);
+	left_wheel = -rigid2d::PI/4;
+	right_wheel = rigid2d::PI/4;
+	vel = driver.updateOdometry(left_wheel, right_wheel);
+	pose = driver.get_pose();
+	ASSERT_NEAR(vel.ul, -0.785398, 1e-3);
+	ASSERT_NEAR(vel.ur, 0.785398, 1e-3);
+	ASSERT_NEAR(pose.theta, 1.5708, 1e-3);
+	ASSERT_NEAR(pose.x, 0, 1e-3);
+	ASSERT_NEAR(pose.y, 0, 1e-3);
+
+	// Mixed Motion Test
+	// reset driver
+	driver.reset(pose_reset);
+	left_wheel = 0;
+	right_wheel = rigid2d::PI / 4;
+	vel = driver.updateOdometry(left_wheel, right_wheel);
+	pose = driver.get_pose();
+	ASSERT_NEAR(vel.ul, 0, 1e-3);
+	ASSERT_NEAR(vel.ur, 0.785398, 1e-3);
+	ASSERT_NEAR(pose.theta, 0.785398, 1e-3);
+	ASSERT_NEAR(pose.x, 0.353553, 1e-3);
+	ASSERT_NEAR(pose.y, 0.146447, 1e-3);
+
+	// Zero Vel Test
+	// reset driver
+	driver.reset(pose_reset);
+	left_wheel = 0;
+	right_wheel = 0;
+	vel = driver.updateOdometry(left_wheel, right_wheel);
+	pose = driver.get_pose();
+	ASSERT_NEAR(vel.ul, 0, 1e-3);
+	ASSERT_NEAR(vel.ur, 0, 1e-3);
+	ASSERT_NEAR(pose.theta, 0, 1e-3);
+	ASSERT_NEAR(pose.x, 0, 1e-3);
+	ASSERT_NEAR(pose.y, 0, 1e-3);
+}
+
+TEST(diff_drive, Feedforward)
+{
+	rigid2d::DiffDrive driver;
+	rigid2d::Twist2D Vb(0, 1, 0);
+
+	// Translation Test
+	driver.feedforward(Vb);
+	rigid2d::Pose2D pose = driver.get_pose();
+	ASSERT_NEAR(pose.theta, 0, 1e-3);
+	ASSERT_NEAR(pose.x, 1, 1e-3);
+	ASSERT_NEAR(pose.y, 0, 1e-3);
+
+	// Rotation Test
+	// reset driver
+	rigid2d::Pose2D pose_reset;
+	driver.reset(pose_reset);
+	Vb.reassign(0, 1, 0);
+	driver.feedforward(Vb);
+	pose = driver.get_pose();
+	ASSERT_NEAR(pose.theta, 0, 1e-3);
+	ASSERT_NEAR(pose.x, 1, 1e-3);
+	ASSERT_NEAR(pose.y, 0, 1e-3);
+
+	// Mixed Motion Test
+	// reset driver
+	driver.reset(pose_reset);
+	Vb.reassign(rigid2d::PI / 4, 1, 0);
+	driver.feedforward(Vb);
+	pose = driver.get_pose();
+	ASSERT_NEAR(pose.theta, 0.785398, 1e-3);
+	ASSERT_NEAR(pose.x, 0.900316, 1e-3);
+	ASSERT_NEAR(pose.y, 0.372923, 1e-3);
 }
 
 int main(int argc, char * argv[])

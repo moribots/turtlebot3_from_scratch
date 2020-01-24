@@ -35,8 +35,8 @@ WheelVelocities::WheelVelocities(double ul_, double ur_)
 DiffDrive::DiffDrive()
 {
 	rigid2d::Pose2D pose();
-	wheel_base = 0.1;
-	wheel_radius = 0.025;
+	wheel_base = 1.0;
+	wheel_radius = 0.02;
 	rigid2d::WheelVelocities wheel_vel();
 }
 
@@ -49,10 +49,10 @@ DiffDrive::DiffDrive(rigid2d::Pose2D pose_, double wheel_base_, double wheel_rad
 }
 
 
-WheelVelocities DiffDrive::twistToWheels(rigid2d::Twist2D tw)
+WheelVelocities DiffDrive::twistToWheels(rigid2d::Twist2D Vb)
 {
-	WheelVelocities wheel_vel(((-tw.w_z * wheel_base / 2) + tw.v_x) / wheel_radius,
-							  ((tw.w_z * wheel_base / 2) + tw.v_x) / wheel_radius);
+	WheelVelocities wheel_vel(((-Vb.w_z * wheel_base / 2) + Vb.v_x) / wheel_radius,
+							  ((Vb.w_z * wheel_base / 2) + Vb.v_x) / wheel_radius);
 	return wheel_vel;
 }
 
@@ -75,15 +75,15 @@ rigid2d::WheelVelocities DiffDrive::updateOdometry(double left, double right)
 	wl_ang = normalize_encoders(wr_ang);
 
 	// Now call feedforward to update odometry
-	DiffDrive::feedforward();
+	rigid2d::Twist2D Vb = DiffDrive::wheelsToTwist(wheel_vel);
+	DiffDrive::feedforward(Vb);
 
 	return wheel_vel;
 }
 
-void DiffDrive::feedforward()
+void DiffDrive::feedforward(rigid2d::Twist2D Vb)
 {
 	// Update odometry by calculating Tbb' = exp(Vb)
-	rigid2d::Twist2D Vb = DiffDrive::wheelsToTwist(wheel_vel);
 
 	// Now integrate Twist to get Tbb', first create Transform2D
 	rigid2d::Transform2D Tb(pose.theta, cos(pose.theta), sin(pose.theta), pose.x, pose.y);

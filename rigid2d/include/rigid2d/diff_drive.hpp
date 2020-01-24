@@ -65,7 +65,7 @@ public:
     /// \param twist - the desired twist in the body frame of the robot
     /// \returns - the wheel velocities to use
     /// \throws std::exception
-    rigid2d::WheelVelocities twistToWheels(rigid2d::Twist2D tw);
+    rigid2d::WheelVelocities twistToWheels(rigid2d::Twist2D Vb);
 
     /// \brief determine the body twist of the robot from its wheel velocities
     /// \param vel - the velocities of the wheels, assumed to be held constant
@@ -83,7 +83,7 @@ public:
     /// \brief update the odometry of the diff drive robot, assuming that
     /// it follows the given body twist for one time  unit
     /// \param Vb - the twist command to send to the robot
-    void feedforward();
+    void feedforward(rigid2d::Twist2D Vb);
 
     /// \brief get the current pose of the robot
     rigid2d::Pose2D get_pose();

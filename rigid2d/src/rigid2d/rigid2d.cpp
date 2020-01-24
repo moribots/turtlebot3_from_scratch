@@ -290,8 +290,15 @@ rigid2d::Transform2D rigid2d::Transform2D::integrateTwist(const rigid2d::Twist2D
 	} else {
 		// Twist is purely linear
 		S.w_z = 0;
-		S.v_x = tw.v_x / sqrt(pow(tw.v_x, 2) + pow(tw.v_y, 2));
-		S.v_y = tw.v_y / sqrt(pow(tw.v_x, 2) + pow(tw.v_y, 2));
+		// Check if both linear components zero to avoid divide by zero
+		if (almost_equal(tw.v_x, 0) && almost_equal(tw.v_y, 0))
+		{
+			S.v_x = 0;
+			S.v_y = 0;
+		} else {
+			S.v_x = tw.v_x / sqrt(pow(tw.v_x, 2) + pow(tw.v_y, 2));
+			S.v_y = tw.v_y / sqrt(pow(tw.v_x, 2) + pow(tw.v_y, 2));
+		}
 		// init theta dot
 		// note theta = theta dot because we integrate for one timestep
 		th = sqrt(pow(tw.v_x, 2) + pow(tw.v_y, 2));
@@ -426,6 +433,13 @@ rigid2d::Twist2D rigid2d::Twist2D::convert(const rigid2d::Transform2D & tf) cons
 	}
 
 	return tw_s;
+}
+
+void rigid2d::Twist2D::reassign(double w_z_, double v_x_, double v_y_)
+{
+	w_z = w_z_;
+	v_x = v_x_;
+	v_y = v_y_;
 }
 
 std::ostream & rigid2d::operator<<(std::ostream & os, const rigid2d::Twist2D & tw)
