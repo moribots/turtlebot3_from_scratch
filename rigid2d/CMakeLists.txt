@@ -12,8 +12,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  message_generation
+  nav_msgs
   roscpp
   rostest
+  sensor_msgs
   tf
 )
 

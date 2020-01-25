@@ -1,5 +1,5 @@
 /// \file
-/// \brief Main: Publishes Odometry messages
+/// \brief Main: Publishes Fake Encoder Messages
 ///
 /// PARAMETERS:
 /// PUBLISHES:
@@ -54,12 +54,19 @@ int main(int argc, char** argv)
   // Init Publisher
   ros::Publisher js_pub = nh.advertise<sensor_msgs::JointState>("/joint_states", 1);
 
+  // Init Time
+  ros::Time current_time;
+  current_time = ros::Time::now();
+
   // Main While
   while (ros::ok())
   {
   	ros::spinOnce();
+    current_time = ros::Time::now();
 
     sensor_msgs::JointState js;
+
+    js.header.stamp = current_time;
 
     // js stores vectors, so we push back the name corresp. to left wheel joint
     js.name.push_back(wl_fid_);
@@ -72,8 +79,8 @@ int main(int argc, char** argv)
     js.position.push_back(w_ang.ur);
 
     // now publish
-    std::cout << w_ang.ul << std::endl;
-    std::cout << w_ang.ur << std::endl;
+    // std::cout << w_ang.ul << std::endl;
+    // std::cout << w_ang.ur << std::endl;
 
     js_pub.publish(js);
 

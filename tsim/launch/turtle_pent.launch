@@ -1,0 +1,10 @@
+<launch>
+   <node name="roaming_turtle" pkg="turtlesim" type="turtlesim_node" />
+   <node name="turtle_way_node" pkg="tsim" type="turtle_way_node" output="screen"/>
+   <!-- Load Params -->
+   <rosparam command="load" file="$(find tsim)/config/turtle_way.yaml" />
+   <arg name="plot_gui" default="False" doc="argument to specify whether pose error plot should be shown (1) or not (0)"/>
+   <group if="$(arg plot_gui)">
+      <node name="err_plot" pkg="rqt_plot" type="rqt_plot" args="pose_error/x_error pose_error/y_error pose_error/theta_error" />
+    </group>
+</launch>

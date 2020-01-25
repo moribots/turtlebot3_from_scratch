@@ -180,6 +180,8 @@ bool TurtleRect::traj_resetCallback(std_srvs::Empty::Request&, std_srvs::Empty::
   // Publish
   vel_publisher_.publish(twist_);
   ros::Duration(0.5).sleep();
+
+  return true;
 }
 
 void TurtleRect::poseCallback(const turtlesim::PoseConstPtr &msg)

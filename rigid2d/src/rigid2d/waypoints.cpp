@@ -29,7 +29,7 @@ namespace rigid2d
 	Twist2D Waypoints::nextWaypoint(const DiffDrive & driver)
 	{
 		Twist2D Vb(0, 0, 0);
-		float threshold = 0.01;
+		float threshold = 0.08;
 		float goal_x = waypoints[0].x;
 		float goal_y = waypoints[0].y;
 		float goal_head = atan2(goal_y - driver.pose.y, goal_x- driver.pose.x);
@@ -51,7 +51,9 @@ namespace rigid2d
 				// calculate angular twist
 				float h_err = goal_head - driver.pose.theta;
 				float P_h = 3;
-				Twist2D Vb(P_h * h_err, 0, 0);
+				float w_z = P_h * h_err;
+				if (w_z > 0.5) {w_z = 0.5;}
+				Twist2D Vb(w_z, 0, 0);
 			}
 			break;
 
@@ -69,7 +71,9 @@ namespace rigid2d
       			// calculate translational twist
       			float d_err = sqrt(pow(goal_x - driver.pose.x, 2) + pow(goal_y - driver.pose.y, 2));
 				float P_l = 3;
-				Twist2D Vb(0, P_l * d_err, 0);
+				float v_x = P_l * d_err;
+				if (v_x > 0.5) {v_x = 0.5;}
+				Twist2D Vb(0, v_x, 0);
       		}
 			break;
 		}

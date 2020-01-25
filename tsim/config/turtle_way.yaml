@@ -1,0 +1,12 @@
+# waypoint x coords for pentagon
+waypoint_x: [3, 7, 7, 5, 3]
+
+# waypoint y coords for pentagon
+waypoint_y: [2, 2, 7, 10, 7]
+
+# frequency of control loop
+frequency: 60
+
+# threshold for heading and position
+threshold : 0.08
+
