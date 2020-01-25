@@ -52,6 +52,7 @@ namespace rigid2d
         /// \brief create a DiffDrive model
         class DiffDrive
     {
+    friend class Waypoints;
     public:
         /// \brief the default constructor creates a robot at (0,0,0), with a fixed wheel base and wheel radius
         DiffDrive();

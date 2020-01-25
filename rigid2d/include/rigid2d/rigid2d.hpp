@@ -299,6 +299,7 @@ namespace rigid2d
     /// \brief declare Transform2D as friend so it can access Twist2D's private params
     friend class Transform2D;
     friend class DiffDrive;
+    friend class Waypoints;
     public:
         /// \brief Create a zero-Twist
         Twist2D();
