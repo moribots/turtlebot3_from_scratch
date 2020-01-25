@@ -50,10 +50,12 @@ namespace rigid2d
 			} else {
 				// calculate angular twist
 				float h_err = goal_head - driver.pose.theta;
-				float P_h = 3;
+				float P_h = 10;
 				float w_z = P_h * h_err;
 				if (w_z > 0.5) {w_z = 0.5;}
+				else if (w_z < 0.5) {w_z = -0.5;}
 				Twist2D Vb(w_z, 0, 0);
+				return Vb;
 			}
 			break;
 
@@ -70,10 +72,12 @@ namespace rigid2d
       		} else {
       			// calculate translational twist
       			float d_err = sqrt(pow(goal_x - driver.pose.x, 2) + pow(goal_y - driver.pose.y, 2));
-				float P_l = 3;
+				float P_l = 10;
 				float v_x = P_l * d_err;
 				if (v_x > 0.5) {v_x = 0.5;}
+				else if (v_x < 0.5) {v_x = -0.5;}
 				Twist2D Vb(0, v_x, 0);
+				return Vb;
       		}
 			break;
 		}

@@ -131,22 +131,27 @@ int main(int argc, char** argv)
 
     // Compute next required twist
     Twist2D Vb = waypoints.nextWaypoint(driver);
-    std::cout << Vb;
+    Twist2D Vb_turtle = Vb;
+    // std::cout << Vb;
+    // Scale twist by frequency
+    Vb.w_z /= (float)frequency;
+    Vb.v_x /= (float)frequency;
     // Update internal model of robot motion
     driver.feedforward(Vb);
 
     // Publish twist
     geometry_msgs::Twist tw;
-    tw.linear.x = Vb.v_x;
-    tw.linear.y = Vb.v_y;
+    tw.linear.x = Vb_turtle.v_x;
+    tw.linear.y = Vb_turtle.v_y;
     tw.linear.z = 0;
     tw.angular.x = 0;
     tw.angular.y = 0;
-    tw.angular.z = Vb.w_z;
+    tw.angular.z = Vb_turtle.w_z;
     vel_pub.publish(tw);
 
     // Publish pose error
     Pose2D driver_pose = driver.get_pose();
+    std::cout << driver_pose.x << "\t" << driver_pose.y << "\t" << driver_pose.theta << std::endl;
     float theta_err = abs(abs(pose.theta) - abs(driver_pose.theta));
     float x_err = abs(pose.x - driver_pose.x);
     float y_err = abs(pose.y - driver_pose.y);
