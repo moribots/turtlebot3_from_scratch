@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 {
   // Vars
   std::string o_fid_, b_fid_, wl_fid_, wr_fid_;
-  float wbase_, wrad_;
+  float wbase_, wrad_, frequency;
 
   ros::init(argc, argv, "odometer_node"); // register the node on ROS
   ros::NodeHandle nh("~"); // get a handle to ROS
@@ -53,6 +53,7 @@ int main(int argc, char** argv)
   nh.param<std::string>("right_wheel_joint", wr_fid_, "right_wheel_axle");
   nh.param<float>("/wheel_base", wbase_, 1.5);
   nh.param<float>("/wheel_radius", wrad_, 0.5);
+  frequency = 60;
   // Set Driver Wheel Base and Radius
   driver.set_static(1.5, 0.5);
 
@@ -66,6 +67,8 @@ int main(int argc, char** argv)
   // Init Time
   ros::Time current_time;
   current_time = ros::Time::now();
+
+  ros::Rate rate(frequency);
 
   // Main While
   while (ros::ok())
@@ -105,6 +108,8 @@ int main(int argc, char** argv)
     odom.twist.twist.angular.z = Vb.w_z;
     // Publish the Message
     odom_pub.publish(odom);
+
+    rate.sleep();
   }
 
   return 0;

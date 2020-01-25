@@ -54,11 +54,11 @@ namespace rigid2d
 			if ((fabs(goal_head - driver.pose.theta) <= threshold / 2.0))
 			{
 				// std::cout << "H ERR: " << fabs(goal_head - driver.pose.theta) << "\tTHRESH: " << threshold << std::endl;
-				std::cout << "GOAL H: " << goal_head << "\tCURRENT H: "<< driver.pose.theta << std::endl;
-				std::cout << "ANG DONE" << std::endl;
+				// std::cout << "GOAL H: " << goal_head << "\tCURRENT H: "<< driver.pose.theta << std::endl;
+				// std::cout << "ANG DONE" << std::endl;
 				lin_ang = 1;
 			} else {
-				std::cout << "GOAL H: " << goal_head << "\tCURRENT H: "<< driver.pose.theta << std::endl;
+				// std::cout << "GOAL H: " << goal_head << "\tCURRENT H: "<< driver.pose.theta << std::endl;
 				// calculate angular twist
 				float h_err = goal_head - driver.pose.theta;
 				// Wrap head error to avoid unecessary turns
@@ -79,7 +79,7 @@ namespace rigid2d
 			if (fabs(goal_y - driver.pose.y) <= threshold \
           	&& fabs(goal_x - driver.pose.x) <= threshold)
       		{
-      		std::cout << "LIN DONE" << std::endl;
+      		// std::cout << "LIN DONE" << std::endl;
         	lin_ang = 0;
         	// done = 1;
       		} else if ((fabs(goal_head - driver.pose.theta) > threshold / 2.0)){

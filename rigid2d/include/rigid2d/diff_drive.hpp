@@ -6,17 +6,30 @@
 
 namespace rigid2d
 {
-    // wraps encoder angles from 0 to 2PI
+    // wraps encoder angles from 0 to 2PI or 0 to -2PI
     constexpr double normalize_encoders(double rad)
     {
-        double min = 0;
-        double max = 2 * PI - min;
-        rad -= min;
-        return rad - (std::floor(rad / max) * max) + min;
+        double result = rad;
+        if (rad > 0)
+        {
+            double min = 0;
+            double max = 2 * PI - min;
+            rad -= min;
+            result = rad - (std::floor(rad / max) * max) + min;
+        } else if (rad < 0){
+            rad = fabs(rad);
+            double min = 0;
+            double max = 2 * PI - min;
+            rad -= min;
+            result = - (rad - (std::floor(rad / max) * max) + min);
+        } else {
+            result = 0;
+        }
+        return result;
     }
 
     static_assert(almost_equal(normalize_encoders(deg2rad(370)), (deg2rad(10))), "normalize_encoders failed");
-    static_assert(almost_equal((deg2rad(350)), normalize_encoders(deg2rad(-10))), "normalize_encoders failed");
+    static_assert(almost_equal((deg2rad(-350)), normalize_encoders(deg2rad(-350))), "normalize_encoders failed");
 
     /// \brief A 2-Dimensional Pose
     struct Pose2D

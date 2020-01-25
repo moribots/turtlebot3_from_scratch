@@ -19,10 +19,13 @@
 // GLOBAL VARS
 rigid2d::WheelVelocities w_ang;
 rigid2d::DiffDrive driver;
+double frequency = 60;
+bool callback_flag = false;
 
 void vel_callback(const geometry_msgs::Twist &tw)
 { //ConstPtr is a smart pointer which knows to de-allocate memory
-  rigid2d::Twist2D Vb(tw.angular.z, tw.linear.x, tw.linear.y);
+  rigid2d::Twist2D Vb(tw.angular.z / (double)frequency, tw.linear.x / (double)frequency,\
+                      tw.linear.y / (double)frequency);
   driver.feedforward(Vb);
   // Note this is WheelVelocities type but actually contains
   // wheel angles
@@ -30,6 +33,8 @@ void vel_callback(const geometry_msgs::Twist &tw)
 
   w_ang.ul = rigid2d::normalize_encoders(w_ang.ul);
   w_ang.ur = rigid2d::normalize_encoders(w_ang.ur);
+
+  callback_flag = true;
 }
 
 int main(int argc, char** argv)
@@ -58,31 +63,39 @@ int main(int argc, char** argv)
   ros::Time current_time;
   current_time = ros::Time::now();
 
+  ros::Rate rate(frequency);
   // Main While
   while (ros::ok())
   {
   	ros::spinOnce();
     current_time = ros::Time::now();
 
-    sensor_msgs::JointState js;
+    if (callback_flag == true)
+    {
+      sensor_msgs::JointState js;
 
-    js.header.stamp = current_time;
+      js.header.stamp = current_time;
 
-    // js stores vectors, so we push back the name corresp. to left wheel joint
-    js.name.push_back(wl_fid_);
-    // then we insert the left wheel encoder value
-    js.position.push_back(w_ang.ul);
+      // js stores vectors, so we push back the name corresp. to left wheel joint
+      js.name.push_back(wl_fid_);
+      // then we insert the left wheel encoder value
+      js.position.push_back(w_ang.ul);
 
-    // repeat with right wheel. Note order must be consistent between name pushback and
-    // encoder value pushback
-    js.name.push_back(wr_fid_);
-    js.position.push_back(w_ang.ur);
+      // repeat with right wheel. Note order must be consistent between name pushback and
+      // encoder value pushback
+      js.name.push_back(wr_fid_);
+      js.position.push_back(w_ang.ur);
 
-    // now publish
-    // std::cout << w_ang.ul << std::endl;
-    // std::cout << w_ang.ur << std::endl;
+      // now publish
+      // std::cout << w_ang.ul << std::endl;
+      // std::cout << w_ang.ur << std::endl;
 
-    js_pub.publish(js);
+      js_pub.publish(js);
+
+      callback_flag = false;
+
+    }
+    rate.sleep();
 
   }
 

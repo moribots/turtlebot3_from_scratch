@@ -91,8 +91,8 @@ rigid2d::WheelVelocities DiffDrive::updateOdometry(double left, double right)
 	rigid2d::Transform2D Tbbp = Tb.integrateTwist(Vb);
 	// Use Transform2DS to return private Transform2D params
 	rigid2d::Transform2DS TbbpS = Tbbp.displacement();
-	// Update Pose
-	pose.theta = TbbpS.theta;
+	// Update Pose and Wrap between +- PI
+	pose.theta = normalize_angle(TbbpS.theta);
 	pose.x = TbbpS.x;
 	pose.y = TbbpS.y;
 
@@ -107,8 +107,8 @@ void DiffDrive::feedforward(rigid2d::Twist2D Vb)
 	rigid2d::Transform2D Tbbp = Tb.integrateTwist(Vb);
 	// Use Transform2DS to return private Transform2D params
 	rigid2d::Transform2DS TbbpS = Tbbp.displacement();
-	// Update Pose
-	pose.theta = TbbpS.theta;
+	// Update Pose and Wrap between +- PI
+	pose.theta = normalize_angle(TbbpS.theta);
 	pose.x = TbbpS.x;
 	pose.y = TbbpS.y;
 	// Update Wheel Angles
