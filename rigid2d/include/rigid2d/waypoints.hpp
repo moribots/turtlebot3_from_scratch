@@ -25,7 +25,7 @@ namespace rigid2d
         /// motion when necessary
         /// \param DiffDrive - instance of robot for which we compute a Twist2D
         /// \returns Twist2D required to follow the current waypoint
-        Twist2D nextWaypoint(const DiffDrive & driver);
+        Twist2D nextWaypoint(DiffDrive & driver);
 
     private:
         std::vector<Vector2D> waypoints;

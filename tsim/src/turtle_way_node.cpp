@@ -151,7 +151,7 @@ int main(int argc, char** argv)
 
     // Publish pose error
     Pose2D driver_pose = driver.get_pose();
-    std::cout << driver_pose.x << "\t" << driver_pose.y << "\t" << driver_pose.theta << std::endl;
+    // std::cout << driver_pose.x << "\t" << driver_pose.y << "\t" << driver_pose.theta << std::endl;
     float theta_err = abs(abs(pose.theta) - abs(driver_pose.theta));
     float x_err = abs(pose.x - driver_pose.x);
     float y_err = abs(pose.y - driver_pose.y);
