@@ -9,23 +9,19 @@ namespace rigid2d
     // wraps encoder angles from 0 to 2PI or 0 to -2PI
     constexpr double normalize_encoders(double rad)
     {
-        double result = rad;
-        if (rad > 0)
-        {
-            double min = 0;
-            double max = 2 * PI - min;
-            rad -= min;
-            result = rad - (std::floor(rad / max) * max) + min;
-        } else if (rad < 0){
-            rad = fabs(rad);
-            double min = 0;
-            double max = 2 * PI - min;
-            rad -= min;
-            result = - (rad - (std::floor(rad / max) * max) + min);
-        } else {
-            result = 0;
-        }
-        return result;
+        if (rad >= 0)
+            {
+            // Positive Wrap
+            double q  = std::floor(rad / (2*PI));
+            rad = (rad) - q * 2*PI;
+            if (rad < 0) {rad += 2*PI;}
+            return rad;
+            }
+            // Negative Wrap
+            double q  = std::floor(rad / (2*PI));
+            rad = (rad) - q * 2*PI;
+            if (rad > 0) {rad -= 2*PI;}
+            return rad;
     }
 
     static_assert(almost_equal(normalize_encoders(deg2rad(370)), (deg2rad(10))), "normalize_encoders failed");

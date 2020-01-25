@@ -29,9 +29,9 @@ E.004
 
 TO FIX: E.005
 
-TODO: B.005
+B.005
 
-TODO: B.006
+TO FIX: B.006
 
 # Tasks Completed
 
