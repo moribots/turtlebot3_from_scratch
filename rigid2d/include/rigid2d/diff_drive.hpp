@@ -2,10 +2,6 @@
 #define DIFFDRIVE_INCLUDE_GUARD_HPP
 /// \file
 /// \brief Library DiffDrive robot kinematics and odometry.
-
-#include<iosfwd> // contains forward definitions for iostream objects
-#include<cmath>
-#include<iostream>
 #include "rigid2d/rigid2d.hpp"
 
 namespace rigid2d

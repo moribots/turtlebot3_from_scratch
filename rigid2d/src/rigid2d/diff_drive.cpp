@@ -1,5 +1,4 @@
 #include "rigid2d/diff_drive.hpp"
-#include <iostream>
 
 namespace rigid2d
 {

@@ -1,70 +1,75 @@
 #include "rigid2d/waypoints.hpp"
-#include <iostream>
 
 namespace rigid2d
 {
-	Waypoints()
+	Waypoints::Waypoints()
 	{
 		// Waypoint 0
-		rigid2d::Vector2D w0(3.0, 2.0);
+		Vector2D w0(3.0, 2.0);
 		// Waypoint 1
-		rigid2d::Vector2D w1(7.0, 2.0);
+		Vector2D w1(7.0, 2.0);
 		// Waypoint 2
-		rigid2d::Vector2D w2(7.0, 7.0);
+		Vector2D w2(7.0, 7.0);
 		// Waypoint 3
-		rigid2d::Vector2D w3(3.0, 7.0);
-		waypoints = {w0, w1, w2, w3};
+		Vector2D w3(3.0, 7.0);
+		std::vector<Vector2D> v{w0, w1, w2, w3};
+		waypoints = v;
 
-		done = false;
-		lin_ang = false;
+		done = 0;
+		lin_ang = 0;
 	}
 
-	Waypoints(std::vector<rigid2d::Vector2D> waypoints_)
+	Waypoints::Waypoints(const std::vector<Vector2D> & waypoints_)
 	{
 		waypoints = waypoints_;
-		done = false;
-		lin_ang = false;
+		done = 0;
+		lin_ang = 0;
 	}
 
-	rigid2d::Twist2D nextWaypoint(const rigid2d::DiffDrive && driver)
+	Twist2D Waypoints::nextWaypoint(const DiffDrive & driver)
 	{
-		threshold = 0.01;
-		// done true: compute Twist2D
-		// done false: select next waypoint
+		Twist2D Vb(0, 0, 0);
+		float threshold = 0.01;
+		float goal_x = waypoints[0].x;
+		float goal_y = waypoints[0].y;
+		float goal_head = atan2(goal_y - driver.pose.y, goal_x- driver.pose.x);
+		// done 0: compute Twist2D
+		// done 1: select next waypoint
 		switch(done)
 		{
-
-		case false:
-		// wpt 0
-		// !TODO!: atan2 using driver pos and waypoint
-		// calculate heading based on atan2(dy,dx);
-		float goal_x = waypoint[0].x;
-		float goal_y = waypoint[0].y;
-		float goal_head = atan2(goal_y - driver.pose.y, goal_x- driver.pose.x);
-
-		// lin_ang true: angular motion
-		// lin_ang false: linear motion
+		case 0:
+		// lin_ang 0: angular motion
+		// lin_ang 1: linear motion
 		switch(lin_ang)
 		{
-			case true:
+			case 0:
 			// check if heading appropriate
 			if ((abs(goal_head - driver.pose.theta) <= threshold / 3.0))
 			{
-				lin_ang = false;
+				lin_ang = 1;
 			} else {
 				// calculate angular twist
+				float h_err = goal_head - driver.pose.theta;
+				float P_h = 3;
+				Twist2D Vb(P_h * h_err, 0, 0);
 			}
 			break;
 
-			case false:
+			case 1:
 			// Check if goal reached
 			if (abs(goal_y - driver.pose.y) <= threshold \
           	&& abs(goal_x - driver.pose.x) <= threshold)
       		{
-        	lin_ang = true;
-        	done = true;
+        	lin_ang = 0;
+        	done = 1;
+      		} else if (!(abs(goal_head - driver.pose.theta) <= threshold / 3.0)){
+      			// Double check for appropriate heading
+      			lin_ang = 0;
       		} else {
       			// calculate translational twist
+      			float d_err = sqrt(pow(goal_x - driver.pose.x, 2) + pow(goal_y - driver.pose.y, 2));
+				float P_l = 3;
+				Twist2D Vb(0, P_l * d_err, 0);
       		}
 			break;
 		}
@@ -73,23 +78,23 @@ namespace rigid2d
 		&& abs(goal_y - driver.pose.y) <= threshold \
 		&& abs(goal_head - driver.pose.theta) <= threshold / 3.0)
 		{
-		done = true;
+		done = 1;
 		}
 		break;
 
-		case true:
+		case 1:
 		// rotate performs the following ex: {0, 1, 2, 3} --> {1, 2, 3, 0}
 		// subsequent calls: {2, 3, 0, 1} --> {3, 0, 1, 2} --> {0, 1, 2, 3}
 		std::rotate(waypoints.begin(), waypoints.begin() + 1, waypoints.end() );
-		// set done flag to false
-		done = false;
+		// set done flag to 0
+		done = 0;
 		break;
 
 		default:
-		// reset done flag to false
-		done = false;
+		// reset done flag to 0
+		done = 0;
 
 		}
-
+	return Vb;
 	}																												
 }
