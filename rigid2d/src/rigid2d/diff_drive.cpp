@@ -77,22 +77,16 @@ rigid2d::WheelVelocities DiffDrive::updateOdometry(double left, double right)
 	// Update Wheel Angles
 	left = normalize_encoders(left);
 	wl_ang = left;
-	std::cout << left << std::endl;
+	// std::cout << left << std::endl;
 	right = normalize_encoders(right);
 	wr_ang = right;
-	std::cout << right << std::endl;
+	// std::cout << right << std::endl;
 
 	// Now call feedforward to update odometry
 	rigid2d::Twist2D Vb = DiffDrive::wheelsToTwist(wheel_vel);
-	DiffDrive::feedforward(Vb);
 
-	return wheel_vel;
-}
-
-void DiffDrive::feedforward(rigid2d::Twist2D Vb)
-{
+	// Same thing as feedforward fcn...
 	// Update odometry by calculating Tbb' = exp(Vb)
-
 	// Now integrate Twist to get Tbb', first create Transform2D
 	rigid2d::Transform2D Tb(pose.theta, cos(pose.theta), sin(pose.theta), pose.x, pose.y);
 	rigid2d::Transform2D Tbbp = Tb.integrateTwist(Vb);
@@ -102,11 +96,38 @@ void DiffDrive::feedforward(rigid2d::Twist2D Vb)
 	pose.theta = TbbpS.theta;
 	pose.x = TbbpS.x;
 	pose.y = TbbpS.y;
+
+	return wheel_vel;
+}
+
+void DiffDrive::feedforward(rigid2d::Twist2D Vb)
+{
+	// Update odometry by calculating Tbb' = exp(Vb)
+	// Now integrate Twist to get Tbb', first create Transform2D
+	rigid2d::Transform2D Tb(pose.theta, cos(pose.theta), sin(pose.theta), pose.x, pose.y);
+	rigid2d::Transform2D Tbbp = Tb.integrateTwist(Vb);
+	// Use Transform2DS to return private Transform2D params
+	rigid2d::Transform2DS TbbpS = Tbbp.displacement();
+	// Update Pose
+	pose.theta = TbbpS.theta;
+	pose.x = TbbpS.x;
+	pose.y = TbbpS.y;
+	// Update Wheel Angles
+	wheel_vel = DiffDrive::twistToWheels(Vb);
+	wl_ang += wheel_vel.ul;
+	wr_ang += wheel_vel.ur;
+
 }
 
 rigid2d::Pose2D DiffDrive::get_pose()
 {
 	return pose;
+}
+
+rigid2d::WheelVelocities DiffDrive::get_ang()
+{
+	rigid2d::WheelVelocities w_ang(wl_ang, wr_ang);
+	return w_ang;
 }
 
 void DiffDrive::set_static(double wheel_base_, double wheel_radius_)

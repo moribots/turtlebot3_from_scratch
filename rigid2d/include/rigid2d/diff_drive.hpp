@@ -91,6 +91,9 @@ namespace rigid2d
         /// \brief get the current pose of the robot
         rigid2d::Pose2D get_pose();
 
+        /// \brief get the current wheel angles (overloading WheelVelocities struct)
+        rigid2d::WheelVelocities get_ang();
+
         /// \brief set DiffDrive instance's static parameters such as wheel base and radius
         void set_static(double wheel_base_, double wheel_radius_);
 

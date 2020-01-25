@@ -144,6 +144,7 @@ add_library(${PROJECT_NAME}
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
+add_executable(fake_diff_encoders_node src/fake_diff_encoders_node.cpp)
 add_executable(odometer_node src/odometer_node.cpp)
 add_executable(${PROJECT_NAME}_node src/${PROJECT_NAME}_node.cpp)
 
@@ -151,6 +152,7 @@ add_executable(${PROJECT_NAME}_node src/${PROJECT_NAME}_node.cpp)
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
+set_target_properties(fake_diff_encoders_node PROPERTIES OUTPUT_NAME fake_diff_encoders_node PREFIX "")
 set_target_properties(odometer_node PROPERTIES OUTPUT_NAME odometer_node PREFIX "")
 set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_node PREFIX "")
 
@@ -160,6 +162,11 @@ add_dependencies(odometer_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPO
 add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
+target_link_libraries(
+   fake_diff_encoders_node # this is my node that will use below libraries
+   ${PROJECT_NAME} # this a library that my node will use
+   ${catkin_LIBRARIES} # this a library that my node will use
+)
 target_link_libraries(
    odometer_node # this is my node that will use below libraries
    ${PROJECT_NAME} # this a library that my node will use
@@ -187,7 +194,7 @@ target_link_libraries(
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-install(TARGETS odometer_node ${PROJECT_NAME}_node
+install(TARGETS fake_diff_encoders_node odometer_node ${PROJECT_NAME}_node
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

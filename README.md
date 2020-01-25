@@ -2,7 +2,7 @@
 Author: Maurice Rahme
 
 # Tasks Submitted
-<!-- TODO: general cleanup of rigid2d.cpp (constructor calls) -->
+<!-- TODO: general cleanup of rigid2d.cpp/hpp and diff_drive.cpp/hpp (constructor calls) -->
 <!-- TODO: cleanup namespace -->
 
 C.005
@@ -22,6 +22,16 @@ E.000
 E.001
 
 E.002
+
+TODO: E.003
+
+E.004
+
+TODO: E.005
+
+TODO: B.005
+
+TODO: B.006
 
 # Tasks Completed
 
