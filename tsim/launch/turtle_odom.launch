@@ -3,17 +3,9 @@
 	<include file="$(find tsim)/launch/turtle_pent.launch"/> 
 
 	<!-- Include diff drive viewer without joint state publisher -->
-	<param name="robot_description" command="xacro '$(find nuturtle_description)/urdf/diff_drive.urdf.xacro'" />
-
-	<!-- The robot_state_publisher reads the urdf from /robot_description parameter
-	   and listens to joint information on the /joint_states topic -->
-	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
-
-	<!-- load diff_drive_bot parameters to parameter server -->
-	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml" />
-
-	<!-- rviz will enable us to see the robot. REQUIRED NODE - All other nodes terminate when RViz closes -->
-	<node name="rviz" pkg="rviz" type="rviz" required="True" args="-d $(find nuturtle_description)/rviz/ddrive_bl.rviz"/>
+	<include file="$(find nuturtle_description)/launch/view_diff_drive.launch">
+	<arg name="js_pub" value="False" />
+	</include> 
 
 	<!-- Fake Encoders Node -->
 	<node name="fake_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node"/>

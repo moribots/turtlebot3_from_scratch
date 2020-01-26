@@ -12,10 +12,13 @@
 
   <!-- The joint state publisher will be launched with a gui, read the urdf from /robot_description
        and publish the joint values on /joint_states. Optional launch using use_jsp_gui:=1 --> 
-  <arg name="use_jsp_gui" default="True" doc="Launch the joint_state_publisher gui to publish joint angles"/>
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <param name="use_gui" value="$(eval use_jsp_gui)" />
-  </node>
+  <arg name="js_pub" default="True" doc="Launch the joint_state_publisher"/>
+  <group if="$(arg js_pub)">
+    <arg name="use_jsp_gui" default="True" doc="Launch the joint_state_publisher GUI to publish joint angles manually"/>
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+      <param name="use_gui" value="$(eval use_jsp_gui)" />
+    </node>
+  </group>
 
   <!-- load diff_drive_bot parameters to parameter server -->
   <rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml" />

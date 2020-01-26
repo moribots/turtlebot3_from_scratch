@@ -27,11 +27,13 @@ E.003
 
 E.004
 
-TO FIX: E.005
+E.005
 
 B.005
 
-TO FIX: B.006
+B.006
+
+TODO: DOCUMENTATION!
 
 # Tasks Completed
 

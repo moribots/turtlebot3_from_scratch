@@ -52,7 +52,7 @@ int main(int argc, char** argv)
   ros::NodeHandle nh("~"); // get a handle to ROS
   // Init Private Parameters
   nh.param<std::string>("odom_frame_id", o_fid_, "odom");
-  nh.param<std::string>("body_frame_id", b_fid_, "base_link");
+  nh.param<std::string>("body_frame_id", b_fid_, "base_footprint");
   nh.param<std::string>("left_wheel_joint", wl_fid_, "left_wheel_axle");
   nh.param<std::string>("right_wheel_joint", wr_fid_, "right_wheel_axle");
   nh.param<float>("/wheel_base", wbase_, 1.5);
