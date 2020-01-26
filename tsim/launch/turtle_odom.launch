@@ -1,6 +1,8 @@
 <launch>
 	<!-- Include turtle_way node with plot -->
-	<include file="$(find tsim)/launch/turtle_pent.launch"/> 
+	<include file="$(find tsim)/launch/turtle_pent.launch">
+	<arg name="plot_gui" value="True"/>
+	</include> 
 
 	<!-- Include diff drive viewer without joint state publisher -->
 	<include file="$(find nuturtle_description)/launch/view_diff_drive.launch">

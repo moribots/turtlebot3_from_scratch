@@ -33,8 +33,6 @@ B.005
 
 B.006
 
-TODO: DOCUMENTATION!
-
 # Tasks Completed
 
 0.000
