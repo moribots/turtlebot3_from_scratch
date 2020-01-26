@@ -363,14 +363,14 @@ TEST(diff_drive, WheelsToTwist)
 	// Translation Test
 	rigid2d::Twist2D Vb = driver.wheelsToTwist(vel);
 	ASSERT_NEAR(Vb.w_z, 0, 1e-6);
-  	ASSERT_NEAR(Vb.v_x, 10, 1e-6);
+  	ASSERT_NEAR(Vb.v_x, 0.2, 1e-6);
   	ASSERT_NEAR(Vb.v_y, 0, 1e-6);
 
   	// Rotation Test
 	vel.ul = -10;
 	vel.ur = 10;
 	Vb = driver.wheelsToTwist(vel);
-	ASSERT_NEAR(Vb.w_z, 20, 1e-6);
+	ASSERT_NEAR(Vb.w_z, 0.4, 1e-6);
   	ASSERT_NEAR(Vb.v_x, 0, 1e-6);
   	ASSERT_NEAR(Vb.v_y, 0, 1e-6);
 
@@ -378,8 +378,8 @@ TEST(diff_drive, WheelsToTwist)
 	vel.ul = 0;
 	vel.ur = 10;
 	Vb = driver.wheelsToTwist(vel);
-	ASSERT_NEAR(Vb.w_z, 10, 1e-6);
-  	ASSERT_NEAR(Vb.v_x, 5, 1e-6);
+	ASSERT_NEAR(Vb.w_z, 0.2, 1e-6);
+  	ASSERT_NEAR(Vb.v_x, 0.1, 1e-6);
   	ASSERT_NEAR(Vb.v_y, 0, 1e-6);
 
   	// Zero Test
@@ -390,6 +390,23 @@ TEST(diff_drive, WheelsToTwist)
   	ASSERT_NEAR(Vb.v_x, 0, 1e-6);
   	ASSERT_NEAR(Vb.v_y, 0, 1e-6);
 
+}
+
+TEST(diff_drive, WheelsToTwistToWheels)
+{
+	rigid2d::Twist2D twist_in(0, 1, 0);
+	rigid2d::Twist2D twist_out;
+	rigid2d::WheelVelocities vel;
+	rigid2d::Pose2D pose;
+	double wheel_radius = 0.02;
+	double wheel_base = 1.0;
+	rigid2d::DiffDrive drive(pose, wheel_base, wheel_radius);
+	vel = drive.twistToWheels(twist_in);
+	twist_out = drive.wheelsToTwist(vel);
+
+	ASSERT_NEAR(twist_out.w_z, twist_in.w_z, 1e-6);
+  	ASSERT_NEAR(twist_out.v_x, twist_in.v_x, 1e-6);
+  	ASSERT_NEAR(twist_out.v_y, twist_in.v_y, 1e-6);
 }
 
 TEST(diff_drive, UpdateOdometry)
@@ -405,7 +422,7 @@ TEST(diff_drive, UpdateOdometry)
 	ASSERT_NEAR(vel.ul, 6.28319, 1e-3);
 	ASSERT_NEAR(vel.ur, 6.28319, 1e-3);
 	ASSERT_NEAR(pose.theta, 0, 1e-3);
-	ASSERT_NEAR(pose.x, 6.28319, 1e-3);
+	ASSERT_NEAR(pose.x, 0.12566, 1e-3);
 	ASSERT_NEAR(pose.y, 0, 1e-3);
 
 	// Rotation Test
@@ -418,7 +435,7 @@ TEST(diff_drive, UpdateOdometry)
 	pose = driver.get_pose();
 	ASSERT_NEAR(vel.ul, -0.785398, 1e-3);
 	ASSERT_NEAR(vel.ur, 0.785398, 1e-3);
-	ASSERT_NEAR(pose.theta, 1.5708, 1e-3);
+	ASSERT_NEAR(pose.theta, 0.03145159, 1e-3);
 	ASSERT_NEAR(pose.x, 0, 1e-3);
 	ASSERT_NEAR(pose.y, 0, 1e-3);
 
@@ -431,9 +448,9 @@ TEST(diff_drive, UpdateOdometry)
 	pose = driver.get_pose();
 	ASSERT_NEAR(vel.ul, 0, 1e-3);
 	ASSERT_NEAR(vel.ur, 0.785398, 1e-3);
-	ASSERT_NEAR(pose.theta, 0.785398, 1e-3);
-	ASSERT_NEAR(pose.x, 0.353553, 1e-3);
-	ASSERT_NEAR(pose.y, 0.146447, 1e-3);
+	ASSERT_NEAR(pose.theta, 0.015707, 1e-3);
+	ASSERT_NEAR(pose.x, 0.007853, 1e-3);
+	ASSERT_NEAR(pose.y, 6.1683e-057, 1e-3);
 
 	// Zero Vel Test
 	// reset driver

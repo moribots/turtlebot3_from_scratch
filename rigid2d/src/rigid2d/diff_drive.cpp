@@ -63,7 +63,10 @@ WheelVelocities DiffDrive::twistToWheels(rigid2d::Twist2D Vb)
 
 rigid2d::Twist2D DiffDrive::wheelsToTwist(rigid2d::WheelVelocities vel)
 {
-	rigid2d::Twist2D twist((-vel.ul + vel.ur) / wheel_base, (vel.ul + vel.ur) / 2, 0);
+	// pg 547 Modern Robotics
+	rigid2d::Twist2D twist(wheel_radius * (-vel.ul + vel.ur) / wheel_base,\
+						   wheel_radius * (vel.ul + vel.ur) / 2,\
+						   0);
 	return twist;
 }
 
