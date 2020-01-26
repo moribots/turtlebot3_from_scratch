@@ -62,8 +62,6 @@ Visualization Manager:
         All Enabled: false
         ball_caster:
           Value: false
-        base_footprint:
-          Value: true
         base_link:
           Value: true
         odom:
@@ -79,14 +77,13 @@ Visualization Manager:
       Show Names: true
       Tree:
         odom:
-          base_footprint:
-            base_link:
-              ball_caster:
-                {}
-              rl_wheel:
-                {}
-              rr_wheel:
-                {}
+          base_link:
+            ball_caster:
+              {}
+            rl_wheel:
+              {}
+            rr_wheel:
+              {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -104,10 +101,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        base_footprint:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         base_link:
           Alpha: 1
           Show Axes: false
@@ -157,25 +150,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 15.652889251708984
+      Distance: 26.411113739013672
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.2803495526313782
-        Y: 0.5960462093353271
-        Z: 0.5435671806335449
+        X: 2.9570627212524414
+        Y: 5.3398613929748535
+        Z: 0.548431396484375
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5853983759880066
+      Pitch: 1.5697963237762451
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.393573760986328
+      Yaw: 4.7085652351379395
     Saved: ~
 Window Geometry:
   Displays:
@@ -193,5 +186,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 399
-  Y: 0
+  X: 20
+  Y: 59

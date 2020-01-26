@@ -29,7 +29,9 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
 {
   //ConstPtr is a smart pointer which knows to de-allocate memory
   wl_enc = js->position.at(0);
+  // wl_enc = rigid2d::normalize_encoders(js->position.at(0));
   wr_enc = js->position.at(1);
+  // wr_enc = rigid2d::normalize_encoders(js->position.at(1));
 	w_vel = driver.updateOdometry(wl_enc, wr_enc);
 	// ROS_INFO("wheel vel")
 	Vb = driver.wheelsToTwist(w_vel);

@@ -31,8 +31,8 @@ void vel_callback(const geometry_msgs::Twist &tw)
   // wheel angles
   w_ang = driver.get_ang();
 
-  w_ang.ul = rigid2d::normalize_encoders(w_ang.ul);
-  w_ang.ur = rigid2d::normalize_encoders(w_ang.ur);
+  // w_ang.ul = rigid2d::normalize_encoders(w_ang.ul);
+  // w_ang.ur = rigid2d::normalize_encoders(w_ang.ur);
 
   callback_flag = true;
 }
