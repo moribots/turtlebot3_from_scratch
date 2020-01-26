@@ -1,10 +1,34 @@
 /// \file
-/// \brief Main: Makes turtlesim modeled as diff drive robot follow trajectory specified by user inputs
+/// \brief Makes turtlesim modeled as Diff Drive robot follow a user-specified trajectory in turtle_way.yaml
 ///
 /// PARAMETERS:
+///   waypoint_x (vector<float>): x-coordinates of the waypoints to visit
+///   waypoint_y (vector<float>): y-coordinates of the waypoints to visit
+///   frequency (int): frequency of control loop.
+///   threshold (float): specifies when the target pose has been reached.
+///
+///   pose (turtlesim::Pose): turtle position as read by turtle1/pose topic
+///   driver_pose (rigid2d::Pose2D): modeled diff drive robot pose based on feedforward prediction
+///
+///   x_error (float): turtle position error in x between read and predicted values.
+///   y_error (float): turtle position error in y between read and predicted values.
+///   theta_error (float): turtle position error in theta between read and predicted values.
+///   pose_error (PoseError): custom message that stores x_error, y_error and theta_error.
+///   tw (Twist): used to publish linear and angular velocities to turtle1/cmd_vel.
+///
+///   Vb (rigid2d::Twist2D): scaled from tw based on loop rate to predict simulated diff drive robot path
+///   driver (rigid2d::DiffDrive): model of the diff drive robot
+///   waypoints_ (vector<rigid2d::Vector2D>): intermediate storage of waypoints combined using waypoint_x and y
+///   waypoints (rigid2d::Waypoints): stores waypoints to visit and returns rigid2d::Twist2D required to do so
+///
 /// PUBLISHES:
+///   turtle1/cmd_vel (geometry_msgs::Twist): publishes a twist with linear (x) and angular (z) velocities to command turtle
+///   pose_error (tsim:PoseError): publishes pose error in x, y, and theta for plotting
 /// SUBSCRIBES:
-/// SERVICES:
+///   turtle1/pose (turtlesim::Pose): feceives the x, y, and theta position of the turtle from turtlesim.
+///
+/// FUNCTIONS:
+///   poseCallback (void): callback for turtle1/pose subscriber, which records the turtle's pose for use elsewhere.
 
 #include <ros/ros.h>
 #include <turtlesim/Pose.h>
@@ -28,11 +52,21 @@ using namespace rigid2d;
 // GLOBAL VARS
 Pose2D pose;
 
-void poseCallback(const turtlesim::PoseConstPtr &tw)
-{ //ConstPtr is a smart pointer which knows to de-allocate memory
-  pose.x = tw->x;
-  pose.y = tw->y;
-  pose.theta = tw->theta;
+void poseCallback(const turtlesim::PoseConstPtr &pos)
+{ 
+  /// \brief turtle1/pose subscriber callback. Records turtle1 pose (x, y, theta)
+  ///
+  /// \param pos (turtlesim::Pose): turtle1's pose in x, y, and theta.
+  /// \returns pose (turtlesim::Pose)
+  /** 
+  * This function runs every time we get a turtlesim::Pose message on the "turtle1/pose" topic.
+  * We generally use the const <message>ConstPtr &msg syntax to prevent our node from accidentally
+  * changing the message, in the case that another node is also listening to it.
+  */
+  //ConstPtr is a smart pointer which knows to de-allocate memory
+  pose.x = pos->x;
+  pose.y = pos->y;
+  pose.theta = pos->theta;
 }
 
 int main(int argc, char** argv)

@@ -1,10 +1,31 @@
 /// \file
-/// \brief Main: Publishes Odometry messages
+/// \brief Main: Publishes Odometry messages for diff drive robot based on wheel joint states
 ///
 /// PARAMETERS:
+///   o_fid_ (string): parent frame ID for the published tf transform
+///   o_fid_ (string): child frame ID for the published tf transform
+///   wbase_ (float): wheel base of modeled diff drive robot
+///   wrad_ (float): wheel radius of modeled diff drive robot
+///   frequency (int): frequency of control loop.
+///   callback_flag (bool): specifies whether to send a new transform (only when new pose is read)
+///
+///   pose (rigid2d::Pose2D): modeled diff drive robot pose based on read wheel encoder angles
+///   wl_enc (float): left wheel encoder angles
+///   wr_enc (float): right wheel encoder angles
+///   driver (rigid2d::DiffDrive): model of the diff drive robot
+///   Vb (rigid2d::Twist2D): read from driver instances to publish to odom message
+///   w_vel (rigid2d::WheelVelocities): wheel velocities used to calculate ddrive robot twist
+///
+///   odom_tf (geometry_msgs::TransformStamped): odometry frame transform used to update RViz sim
+///   odom (nav_msgs::Odometry): odometry message containing pose and twist published to odom topic
+///
 /// PUBLISHES:
+///   odom (nav_msgs::Odometry): publishes odometry message containing pose(x,y,z) and twist(lin,ang)
 /// SUBSCRIBES:
-/// SERVICES:
+///   /joint_states (sensor_msgs::JointState), which records the ddrive robot's joint states
+///
+/// FUNCTIONS:
+///   js_callback (void): callback for /joint_states subscriber, which records the ddrive robot's joint states
 
 #include <ros/ros.h>
 #include<sensor_msgs/JointState.h>
@@ -27,6 +48,15 @@ bool callback_flag = false;
 
 void js_callback(const sensor_msgs::JointState::ConstPtr &js)
 {
+  /// \brief /joint_states subscriber callback. Records left and right wheel angles
+  ///
+  /// \param js (sensor_msgs::JointState): the left and right wheel joint angles
+  /// \returns pose (rigid2d::Pose2D): modeled diff drive robot pose based on read wheel encoder angles
+  /** 
+  * This function runs every time we get a geometry_msgs::Twist message on the "/joint_states" topic.
+  * We generally use the const <message>ConstPtr &msg syntax to prevent our node from accidentally
+  * changing the message, in the case that another node is also listening to it.
+  */
   //ConstPtr is a smart pointer which knows to de-allocate memory
   wl_enc = js->position.at(0);
   // wl_enc = rigid2d::normalize_encoders(js->position.at(0));
@@ -45,7 +75,7 @@ int main(int argc, char** argv)
 /// The Main Function ///
 {
   // Vars
-  std::string o_fid_, b_fid_, wl_fid_, wr_fid_;
+  std::string o_fid_, b_fid_;
   float wbase_, wrad_, frequency;
 
   ros::init(argc, argv, "odometer_node"); // register the node on ROS
@@ -53,8 +83,6 @@ int main(int argc, char** argv)
   // Init Private Parameters
   nh.param<std::string>("odom_frame_id", o_fid_, "odom");
   nh.param<std::string>("body_frame_id", b_fid_, "base_footprint");
-  nh.param<std::string>("left_wheel_joint", wl_fid_, "left_wheel_axle");
-  nh.param<std::string>("right_wheel_joint", wr_fid_, "right_wheel_axle");
   nh.param<float>("/wheel_base", wbase_, 1.5);
   nh.param<float>("/wheel_radius", wrad_, 0.5);
   frequency = 60;
