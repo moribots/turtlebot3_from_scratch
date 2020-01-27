@@ -18,7 +18,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rostest
   sensor_msgs
-  tf
+  tf2
+  tf2_ros
 )
 
 # if (CATKIN_ENABLE_TESTING)

@@ -30,7 +30,9 @@
 #include <ros/ros.h>
 #include<sensor_msgs/JointState.h>
 #include<nav_msgs/Odometry.h>
-#include <tf/transform_broadcaster.h>
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 #include<string>
 
@@ -94,7 +96,7 @@ int main(int argc, char** argv)
   // Init Publisher
   ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 1);
   // Init Transform Broadcaster
-  tf::TransformBroadcaster odom_broadcaster;
+  tf2_ros::TransformBroadcaster odom_broadcaster;
 
   // Init Time
   ros::Time current_time;
@@ -120,7 +122,10 @@ int main(int argc, char** argv)
       odom_tf.transform.translation.x = pose.x;
       odom_tf.transform.translation.y = pose.y;
       odom_tf.transform.translation.z = 0;
-      geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(pose.theta);
+      // use tf2 to create transform
+      tf2::Quaternion q;
+      q.setRPY(0, 0, pose.theta);
+      geometry_msgs::Quaternion odom_quat = tf2::toMsg(q);
       odom_tf.transform.rotation = odom_quat;
       // Send the Transform
       odom_broadcaster.sendTransform(odom_tf);

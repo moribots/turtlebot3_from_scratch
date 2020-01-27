@@ -1,7 +1,8 @@
 <launch>
 	<!-- Include turtle_way node with plot -->
+	<arg name="plot_gui" default="False" doc="argument to specify whether pose error plot should be shown (1) or not (0)"/>
 	<include file="$(find tsim)/launch/turtle_pent.launch">
-	<arg name="plot_gui" value="True"/>
+	<arg name="plot_gui" value="$(eval plot_gui)"/>
 	</include> 
 
 	<!-- Include diff drive viewer without joint state publisher -->
