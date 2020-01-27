@@ -1,0 +1,8 @@
+# Left wheel joint name
+left_wheel_joint: "left_wheel_axle"
+# Right wheel joint name
+right_wheel_joint: "right_wheel_axle"
+# Odom frame ID
+odom_frame_id: "odom"
+# Body frame ID
+body_frame_id: "base_footprint"

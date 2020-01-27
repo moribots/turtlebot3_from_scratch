@@ -76,14 +76,14 @@ int main(int argc, char** argv)
   float wbase_, wrad_;
 
   ros::init(argc, argv, "fake_diff_encoders_node"); // register the node on ROS
-  ros::NodeHandle nh("~"); // get a handle to ROS
+  ros::NodeHandle nh("~odometer_node"); // get a handle to ROS
   // Init Private Parameters
-  nh.param<std::string>("left_wheel_joint", wl_fid_, "left_wheel_axle");
-  nh.param<std::string>("right_wheel_joint", wr_fid_, "right_wheel_axle");
+  nh.param<std::string>("/odometer_node/left_wheel_joint", wl_fid_, "left_wheel_axle");
+  nh.param<std::string>("/odometer_node/right_wheel_joint", wr_fid_, "right_wheel_axle");
   nh.param<float>("/wheel_base", wbase_, 1.5);
   nh.param<float>("/wheel_radius", wrad_, 0.5);
   // Set Driver Wheel Base and Radius
-  driver.set_static(1.5, 0.5);
+  driver.set_static(wbase_, wrad_);
 
   // Init Subscriber
   ros::Subscriber vel_sub = nh.subscribe("/turtle1/cmd_vel", 1, vel_callback);

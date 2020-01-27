@@ -81,13 +81,13 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "odometer_node"); // register the node on ROS
   ros::NodeHandle nh("~"); // get a handle to ROS
   // Init Private Parameters
-  nh.param<std::string>("odom_frame_id", o_fid_, "odom");
-  nh.param<std::string>("body_frame_id", b_fid_, "base_footprint");
+  nh.param<std::string>("/odom_frame_id", o_fid_, "odom");
+  nh.param<std::string>("/body_frame_id", b_fid_, "base_footprint");
   nh.param<float>("/wheel_base", wbase_, 1.5);
   nh.param<float>("/wheel_radius", wrad_, 0.5);
   frequency = 60;
   // Set Driver Wheel Base and Radius
-  driver.set_static(1.5, 0.5);
+  driver.set_static(wbase_, wrad_);
 
   // Init Subscriber
   ros::Subscriber js_sub = nh.subscribe("/joint_states", 1, js_callback);
