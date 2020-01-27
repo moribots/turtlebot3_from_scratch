@@ -68,13 +68,17 @@ Contains the parameters for executing the rectangular trajectory.
 * `frequency (int)`: frequency of control loop.
 * `threshold (float)`: specifies when the target pose has been reached.
 
-## Resultant Plot
+## Resultant Plot for turtle_rect_node
 
 ![plot](media/plot.png)
 
 Note that the plot increases in drift over time as the forward propagated controls would result in several superimposed but slanted rectangular trajectories (as you saw from Josh ealier today) were it not for the feedback control implemented here to stop and start the linear and angular velocity commands. The error plot hence descibres the difference between pure feedforward control and the implementation done here. Calling the `traj_reset` service resets this error to zero temporarily, before re-commencing the trajectory and ensuing in drift as seen below.
 
 ![plot](media/reset.png)
+
+## Resultant Plot for turtle_way_node
+
+![plotway](media/plot_way.png)
 
 
 
