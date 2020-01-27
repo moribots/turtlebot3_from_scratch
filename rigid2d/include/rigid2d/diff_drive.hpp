@@ -71,12 +71,14 @@ namespace rigid2d
 
         /// \brief determine the wheel velocities required to make the robot
         ///        move with the desired linear and angular velocities
+        ///        See Eqn 1.1 and 1.2 in Kinematics_Derivation.pdf in doc directory
         /// \param twist - the desired twist in the body frame of the robot
         /// \returns - the wheel velocities to use
         /// \throws std::exception if Twist has y component.
         rigid2d::WheelVelocities twistToWheels(rigid2d::Twist2D Vb);
 
         /// \brief determine the body twist of the robot from its wheel velocities
+        ///        See Eqn 2 in Kinematics_Derivation.pdf in doc directory
         /// \param vel - the velocities of the wheels, assumed to be held constant
         ///  for one time unit
         /// \returns twist in the original body frame of the robot

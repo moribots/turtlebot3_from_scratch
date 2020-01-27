@@ -50,6 +50,7 @@ DiffDrive::DiffDrive(rigid2d::Pose2D pose_, double wheel_base_, double wheel_rad
 
 WheelVelocities DiffDrive::twistToWheels(rigid2d::Twist2D Vb)
 {
+	// Eqn 1.1 and 1.2 in Kinematics_Derivation.pdf
 	if (Vb.v_y != 0)
 	{
 		throw std::invalid_argument("Twist cannot have a y velocity component for the DiffDrive robot.");
@@ -64,6 +65,7 @@ WheelVelocities DiffDrive::twistToWheels(rigid2d::Twist2D Vb)
 rigid2d::Twist2D DiffDrive::wheelsToTwist(rigid2d::WheelVelocities vel)
 {
 	// pg 547 Modern Robotics
+	// Eqn 2 in Kinematics_Derivation.pdf
 	rigid2d::Twist2D twist(wheel_radius * (-vel.ul + vel.ur) / wheel_base,\
 						   wheel_radius * (vel.ul + vel.ur) / 2,\
 						   0);
