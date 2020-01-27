@@ -44,7 +44,6 @@
 ///   taken from https://magiccvs.byu.edu/wiki/#!ros_tutorials/c++_node_class.md
 
 #include "tsim/turtle_rect.h"
-#define PI 3.14159265
 
 namespace turtle_rect
 {
