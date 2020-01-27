@@ -12,7 +12,9 @@ A separate launchfile within this package makes the turtlesim trace a pentagon b
 
 Resultant Simulation for both launchfiles respectively:
 
-![tsim](media/traj_rect.gif) ![tsimrviz](media/dd_turtle.gif)
+![tsim](media/traj_rect.gif)
+
+![tsimrviz](media/dd_turtle.gif)
 
 ## Launch Instructions
 To launch the `turtle_rect` node without showing the position error plot, run: `roslaunch tsim trect.launch`.
