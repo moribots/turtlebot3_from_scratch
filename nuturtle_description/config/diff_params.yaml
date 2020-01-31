@@ -1,14 +1,29 @@
 # width of the wheels
-wheel_width: 0.5
+wheel_width: 0.009
 
 # radius of the wheels
-wheel_radius: 0.5
+wheel_radius: 0.033
 
 # distance between the center wheels
-wheel_base: 1.5
+wheel_base: 0.16
 
 # length of the main chassis link
-chassis_length: 2
+chassis_length: 0.138
 
 # thickness of the plate that forms the chassis
-chassis_thickness: 0.5
+chassis_thickness: 0.033
+
+# Number of encoder ticks per wheel revolution, 12 bit per 360deg so 4096 ticks  per rev
+encoder_ticks_per_rev: 4096
+
+# Translational velocity in m/s (max)
+tran_vel_max: 0.22
+
+# Rotational velocity in rad/s (max)
+rot_vel_max: 2.84
+
+# Rotational Velocity of the motor in rad/s (max)
+motor_rot_max: 6.35492
+
+# Maximum motor power (command to send ints to ESC for output between +- 265)
+motor_pwr_max: 265

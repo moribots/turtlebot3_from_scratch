@@ -33,6 +33,7 @@
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include "rigid2d/SetPose.h"
 
 #include<string>
 
@@ -73,6 +74,27 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
   callback_flag = true;
 }
 
+bool set_poseCallback(rigid2d::SetPose::Request& req, rigid2d::SetPose::Response& res)
+/// \brief set_pose service callback. Sets the turtlebot's pose belief to desired value.
+///
+/// \param x (float32): desired x pose.
+/// \param y (float32): desired y pose.
+/// \param theta (float32): desired theta pose.
+/// \returns result (bool): True or False.
+{
+  // Update pose to match service request
+  pose.x = req.x;
+  pose.y = req.y;
+  pose.theta = req.theta;
+
+  // Set Result to true
+  res.result = true;
+
+  callback_flag = true;
+
+  return res.result;
+}
+
 int main(int argc, char** argv)
 /// The Main Function ///
 {
@@ -91,6 +113,8 @@ int main(int argc, char** argv)
   // Set Driver Wheel Base and Radius
   driver.set_static(wbase_, wrad_);
 
+  // Init Service Server
+  ros::ServiceServer set_pose_server = nh.advertiseService("set_pose", set_poseCallback);
   // Init Subscriber
   ros::Subscriber js_sub = nh.subscribe("/joint_states", 1, js_callback);
   // Init Publisher
