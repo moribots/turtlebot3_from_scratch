@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(tsim)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-Wall -Wextra -pipe)
+add_compile_options(-Wall -Wextra -pipe -Wno-psabi)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -175,6 +175,8 @@ ${catkin_LIBRARIES} # this a library that my node will use
 #############
 ## Install ##
 #############
+
+install(DIRECTORY launch/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
 
 # all install targets should use catkin DESTINATION variables
 # See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
