@@ -2,6 +2,6 @@
 	<!-- load diff_drive_bot parameters to parameter server -->
   <rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml" />
   <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
-  <node pkg="nuturtle_robot" type="turtle_interface" name="turtle_interface" />
-  <test test-name="turtle_interface_test" pkg="nuturtle_robot" type="turtle_interface_test" />
+  <node pkg="nuturtle_robot" type="turtle_interface" name="turtle_interface" output="screen"/>
+  <test test-name="turtle_interface_test" pkg="nuturtle_robot" type="turtle_interface_test"/>
 </launch>

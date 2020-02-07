@@ -24,6 +24,7 @@
 
 // GLOBAL VARS
 rigid2d::WheelVelocities w_vel;
+rigid2d::WheelVelocities w_vel_measured;
 rigid2d::WheelVelocities w_ang;
 rigid2d::DiffDrive driver;
 double frequency = 60;
@@ -32,6 +33,7 @@ bool sensor_flag = false;
 float max_lin_vel_ = 0;
 float max_ang_vel_ = 0;
 float motor_rot_max_ = 0;
+float encoder_ticks_per_rev_ = 0;
 
 void vel_callback(const geometry_msgs::Twist &tw)
 {
@@ -90,6 +92,17 @@ void sensor_callback(const nuturtlebot::SensorData &sns)
 {
   w_ang.ul = sns.left_encoder;
   w_ang.ur = sns.right_encoder;
+
+  // Now convert encoder values (0-4096 to 0-2pi)
+  float m = (2 * rigid2d::PI) / (encoder_ticks_per_rev_);
+  float b = (2 * rigid2d::PI - encoder_ticks_per_rev_ * m);
+
+  w_ang.ul = w_ang.ul * m + b; 
+  w_ang.ur = w_ang.ur * m + b;
+
+  // Get wheel velocities based on encoder data
+  w_vel_measured = driver.updateOdometry(w_ang.ul, w_ang.ur);
+
   sensor_flag = true;
 }
 
@@ -103,13 +116,14 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "turtle_interface"); // register the node on ROS
   ros::NodeHandle nh; // get a handle to ROS
   // Parameters
-  nh.param<std::string>("/left_wheel_joint", wl_fid_, "left_wheel_axle");
-  nh.param<std::string>("/right_wheel_joint", wr_fid_, "right_wheel_axle");
+  nh.param<std::string>("/odometer_node/left_wheel_joint", wl_fid_, "left_wheel_axle");
+  nh.param<std::string>("/odometer_node/right_wheel_joint", wr_fid_, "right_wheel_axle");
   nh.getParam("/wheel_base", wbase_);
   nh.getParam("/wheel_radius", wrad_);
   nh.getParam("/tran_vel_max", max_lin_vel_);
   nh.getParam("/rot_vel_max", max_ang_vel_);
   nh.getParam("/motor_rot_max", motor_rot_max_);
+  nh.getParam("/encoder_ticks_per_rev", encoder_ticks_per_rev_);
   // Set Driver Wheel Base and Radius
   driver.set_static(wbase_, wrad_);
 
@@ -141,11 +155,13 @@ int main(int argc, char** argv)
       js.name.push_back(wl_fid_);
       // then we insert the left wheel encoder value
       js.position.push_back(w_ang.ul);
+      js.velocity.push_back(w_vel_measured.ul);
 
       // repeat with right wheel. Note order must be consistent between name pushback and
       // encoder value pushback
       js.name.push_back(wr_fid_);
       js.position.push_back(w_ang.ur);
+      js.velocity.push_back(w_vel_measured.ur);
 
       // now publish
       // std::cout << w_ang.ul << std::endl;
