@@ -37,7 +37,7 @@ void vel_callback(const geometry_msgs::Twist &tw)
 {
 
   // Cap Angular Twist
-  float ang_vel = tw.angular.z / (double)frequency;
+  float ang_vel = tw.angular.z;
   if (ang_vel > max_ang_vel_)
   {
     ang_vel = max_ang_vel_;
@@ -46,7 +46,7 @@ void vel_callback(const geometry_msgs::Twist &tw)
     ang_vel = -max_ang_vel_;
   }
   // Cap Linear Twist
-  float lin_vel = tw.linear.x / (double)frequency;
+  float lin_vel = tw.linear.x;
   if (lin_vel > max_lin_vel_)
   {
     lin_vel = max_lin_vel_;
@@ -55,7 +55,7 @@ void vel_callback(const geometry_msgs::Twist &tw)
     lin_vel = -max_lin_vel_;
   }
 
-  rigid2d::Twist2D Vb(ang_vel, lin_vel, tw.linear.y / (double)frequency);
+  rigid2d::Twist2D Vb(ang_vel, lin_vel, tw.linear.y);
   // Get Wheel Velocities
   w_vel = driver.twistToWheels(Vb);
 
@@ -75,6 +75,13 @@ void vel_callback(const geometry_msgs::Twist &tw)
   {
     w_vel.ur = - motor_rot_max_;
   }
+
+  // Now convert wheel vel to integers from -44 to 44
+  float m = (44. - - 44.) / (motor_rot_max_ * 2.);
+  float b = (44. - motor_rot_max_ * m);
+
+  w_vel.ul = w_vel.ul * m + b;
+  w_vel.ur = w_vel.ur * m + b;
 
   vel_flag = true;
 }
@@ -96,8 +103,8 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "turtle_interface"); // register the node on ROS
   ros::NodeHandle nh; // get a handle to ROS
   // Parameters
-  nh.param<std::string>("/odometer_node/left_wheel_joint", wl_fid_, "left_wheel_axle");
-  nh.param<std::string>("/odometer_node/right_wheel_joint", wr_fid_, "right_wheel_axle");
+  nh.param<std::string>("/left_wheel_joint", wl_fid_, "left_wheel_axle");
+  nh.param<std::string>("/right_wheel_joint", wr_fid_, "right_wheel_axle");
   nh.getParam("/wheel_base", wbase_);
   nh.getParam("/wheel_radius", wrad_);
   nh.getParam("/tran_vel_max", max_lin_vel_);
@@ -152,8 +159,8 @@ int main(int argc, char** argv)
     {
       nuturtlebot::WheelCommands wc;
 
-      wc.left_velocity = w_vel.ul;
-      wc.right_velocity = w_vel.ur;
+      wc.left_velocity = std::round(w_vel.ul);
+      wc.right_velocity = std::round(w_vel.ur);
 
       wvel_pub.publish(wc);
 

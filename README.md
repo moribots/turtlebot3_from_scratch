@@ -5,33 +5,21 @@ Author: Maurice Rahme
 <!-- TODO: general cleanup of rigid2d.cpp/hpp and diff_drive.cpp/hpp (constructor calls) -->
 <!-- TODO: cleanup namespace -->
 
-C.005
+A.005
 
-C.006
+E.006
 
-C.007
+F.000
 
-C.008
+F.001
 
-C.009
+F.002
 
-C.010
+F.003
 
-E.000
+F.004
 
-E.001
-
-E.002
-
-E.003
-
-E.004
-
-E.005
-
-B.005
-
-B.006
+F.005
 
 # Tasks Completed
 
@@ -61,6 +49,10 @@ B.003
 
 B.004
 
+B.005
+
+B.006
+
 C.000
 
 C.001
@@ -70,3 +62,27 @@ C.002
 C.003
 
 C.004
+
+C.005
+
+C.006
+
+C.007
+
+C.008
+
+C.009
+
+C.010
+
+E.000
+
+E.001
+
+E.002
+
+E.003
+
+E.004
+
+E.005

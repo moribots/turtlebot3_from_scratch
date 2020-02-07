@@ -221,3 +221,8 @@ install(DIRECTORY include/${PROJECT_NAME}/
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+if (CATKIN_ENABLE_TESTING)
+    find_package(rostest REQUIRED)
+    add_rostest_gtest(turtle_interface_test tests/turtle_interface_test.test tests/turtle_interface_test.cpp)
+    target_link_libraries(turtle_interface_test ${catkin_LIBRARIES} gtest_main ${rigid2d_LIBRARIES} ${nuturtlebot_LIBRARIES})
+endif()
