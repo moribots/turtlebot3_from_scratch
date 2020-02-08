@@ -1,0 +1,22 @@
+<launch>
+
+	<arg name="robot" default="0" doc="Whether launchfile is run on turtlebot(1-5) directly (0) or on remote PC (X: 1-5)"/>
+
+	<include file="$(find nuturtle_robot)/launch/basic_remote.launch">
+		<arg name="robot" value="$(arg robot)"/>
+	</include>
+
+	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml" />
+
+	<node machine="turtlebot" pkg="nuturtle_robot" type="turtle_interface" name="turtle_interface" output="screen"/>
+
+	<node machine="turtlebot" pkg="nuturtle_robot" type="rotation" name="rotation" output="screen"/>
+
+	<!-- Odometer Node -->
+	<node name="odometer_node" pkg="rigid2d" type="odometer_node">
+		<rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
+	</node>
+
+<!-- <node machine="turtlebot" pkg="rigid2d" type="fake_diff_encoders_node" name="odometer_node"/> -->
+
+</launch>

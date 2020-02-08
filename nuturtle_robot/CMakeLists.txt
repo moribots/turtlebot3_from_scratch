@@ -60,11 +60,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
+add_service_files(
+  FILES
+  Rotation.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -146,20 +145,31 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(turtle_interface src/turtle_interface.cpp)
+add_executable(rotation src/rotation.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 set_target_properties(turtle_interface PROPERTIES OUTPUT_NAME turtle_interface PREFIX "")
+set_target_properties(rotation PROPERTIES OUTPUT_NAME rotation PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(turtle_interface ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(rotation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
 turtle_interface # this is my node that will use below libraries
+${rigid2d_LIBRARIES}
+${nuturtlebot_LIBRARIES}
+# ${PROJECT_NAME} # this a library that my node will use
+${catkin_LIBRARIES} # this a library that my node will use
+)
+
+target_link_libraries(
+rotation # this is my node that will use below libraries
 ${rigid2d_LIBRARIES}
 ${nuturtlebot_LIBRARIES}
 # ${PROJECT_NAME} # this a library that my node will use
@@ -184,7 +194,7 @@ install(DIRECTORY launch/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-install(TARGETS turtle_interface
+install(TARGETS turtle_interface rotation
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

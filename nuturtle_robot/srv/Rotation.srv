@@ -1,0 +1,9 @@
+# Desired motion (Rotational (0), Translational (1))
+bool rot_trans
+# Desired Rotation (CC (0), CCW(1))
+bool rot_direction
+# Desired Rotation (FWD (0), BKWD(1))
+bool trans_direction
+---
+# Result (Success/Fail)
+bool result

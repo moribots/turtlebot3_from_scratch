@@ -114,11 +114,11 @@ int main(int argc, char** argv)
   driver.set_static(wbase_, wrad_);
 
   // Init Service Server
-  ros::ServiceServer set_pose_server = nh.advertiseService("set_pose", set_poseCallback);
+  ros::ServiceServer set_pose_server = nh.advertiseService("/set_pose", set_poseCallback);
   // Init Subscriber
   ros::Subscriber js_sub = nh.subscribe("/joint_states", 1, js_callback);
   // Init Publisher
-  ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 1);
+  ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("/odom", 1);
   // Init Transform Broadcaster
   tf2_ros::TransformBroadcaster odom_broadcaster;
 
