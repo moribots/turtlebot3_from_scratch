@@ -107,8 +107,8 @@ int main(int argc, char** argv)
   // Init Private Parameters
   nh.param<std::string>("/odom_frame_id", o_fid_, "odom");
   nh.param<std::string>("/body_frame_id", b_fid_, "base_footprint");
-  nh.param<float>("/wheel_base", wbase_, 1.5);
-  nh.param<float>("/wheel_radius", wrad_, 0.5);
+  nh.getParam("/wheel_base", wbase_);
+  nh.getParam("/wheel_radius", wrad_);
   frequency = 60;
   // Set Driver Wheel Base and Radius
   driver.set_static(wbase_, wrad_);
@@ -140,6 +140,8 @@ int main(int argc, char** argv)
     {
       geometry_msgs::TransformStamped odom_tf;
       odom_tf.header.stamp = current_time;
+      ROS_INFO("body_frame_id %s", b_fid_.c_str());
+      ROS_INFO("odom_frame_id %s", o_fid_.c_str());
       odom_tf.header.frame_id = o_fid_;
       odom_tf.child_frame_id = b_fid_;
       // Pose

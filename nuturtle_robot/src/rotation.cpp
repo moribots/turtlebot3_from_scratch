@@ -34,8 +34,10 @@ bool cycle_trigger = false;
 int rotation_count = 0;
 int translation_count = 0;
 int pause_count = 0;
-int full_rots = 0;
-int full_trans = 0;
+
+// Set these higher than feasible so turtle doesn't start moving at launch
+int full_rots = 10000000;
+int full_trans = 1000000;
 
 float rot = 0;
 float trans = 0;
@@ -56,7 +58,7 @@ bool startCallback(nuturtle_robot::Rotation::Request& req, nuturtle_robot::Rotat
 void timerCallback(const ros::TimerEvent&, const ros::Publisher& vel_pub)
 {
 
-  if (full_rots != 20 && full_trans != 10)
+  if (full_rots < 20 && full_trans < 10)
   {
     geometry_msgs::Twist tw;
 

@@ -23,6 +23,10 @@
   <rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml" />
 
   <!-- rviz will enable us to see the robot. REQUIRED NODE - All other nodes terminate when RViz closes -->
-  <node name="rviz" pkg="rviz" type="rviz" required="True" args="-d $(find nuturtle_description)/rviz/ddrive_inspect.rviz"/>
+  <arg name="robot" default="1" doc="Whether launchfile is run on turtlebot(1-5) directly (0) or on remote PC (X: 1-5)"/>
+
+  <group if="$(eval arg('robot') != 0)">
+    <node name="rviz" pkg="rviz" type="rviz" required="True" args="-d $(find nuturtle_description)/rviz/ddrive_inspect.rviz"/>
+  </group>
 
 </launch>
