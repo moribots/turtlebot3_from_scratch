@@ -14,10 +14,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   message_generation
+  message_runtime
   nav_msgs
   roscpp
   rostest
   sensor_msgs
+  std_msgs
   tf2
   tf2_ros
 )
@@ -119,7 +121,7 @@ generate_messages(
 catkin_package(
 INCLUDE_DIRS include
 LIBRARIES ${PROJECT_NAME}
-CATKIN_DEPENDS roscpp
+CATKIN_DEPENDS message_runtime roscpp std_msgs
 #  DEPENDS system_lib
 )
 
