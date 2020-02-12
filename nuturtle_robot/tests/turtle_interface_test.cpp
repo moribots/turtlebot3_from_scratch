@@ -104,8 +104,8 @@ TEST(TurtleInterface, LinearWheelCmd)
 
 	}
 
-	ASSERT_EQ(wcmd_test.left_velocity, 21);
-	ASSERT_EQ(wcmd_test.right_velocity, 21);
+	ASSERT_EQ(wcmd_test.left_velocity, 126);
+	ASSERT_EQ(wcmd_test.right_velocity, 126);
 }
 
 // Testing cmd_vel --> wheel cmds
@@ -134,8 +134,8 @@ TEST(TurtleInterface, RotWheelCmd)
 
 	}
 
-	ASSERT_EQ(wcmd_test.left_velocity, -17);
-	ASSERT_EQ(wcmd_test.right_velocity, 17);
+	ASSERT_EQ(wcmd_test.left_velocity, -101);
+	ASSERT_EQ(wcmd_test.right_velocity, 101);
 }
 
 // Testing cmd_vel --> wheel cmds
@@ -165,8 +165,8 @@ TEST(TurtleInterface, MixedWheelCmd)
 
 	}
 
-	ASSERT_EQ(wcmd_test.left_velocity, 4);
-	ASSERT_EQ(wcmd_test.right_velocity, 38);
+	ASSERT_EQ(wcmd_test.left_velocity, 25);
+	ASSERT_EQ(wcmd_test.right_velocity, 227);
 }
 
 int main(int argc, char * argv[])

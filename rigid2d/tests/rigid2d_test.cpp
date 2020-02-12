@@ -415,24 +415,24 @@ TEST(diff_drive, UpdateOdometry)
 	rigid2d::WheelVelocities vel;
 	rigid2d::DiffDrive driver;
 	// both wheels rotate 2pi
-	double left_wheel = 2 * rigid2d::PI;
-	double right_wheel = 2 * rigid2d::PI;
+	double left_wheel = 0.5 * rigid2d::PI;
+	double right_wheel = 0.5 * rigid2d::PI;
 	vel = driver.updateOdometry(left_wheel, right_wheel);
 	rigid2d::Pose2D pose = driver.get_pose();
-	ASSERT_NEAR(vel.ul, 6.28319, 1e-3);
-	ASSERT_NEAR(vel.ur, 6.28319, 1e-3);
+	ASSERT_NEAR(vel.ul, rigid2d::PI / 2., 1e-3);
+	ASSERT_NEAR(vel.ur, rigid2d::PI / 2., 1e-3);
 	ASSERT_NEAR(pose.theta, 0, 1e-3);
-	ASSERT_NEAR(pose.x, 0.12566, 1e-3);
+	ASSERT_NEAR(pose.x, 0.031415926535897934, 1e-3);
 	ASSERT_NEAR(pose.y, 0, 1e-3);
 
 	// Rotation Test
 	// reset driver
 	rigid2d::Pose2D pose_reset;
-	driver.reset(pose_reset);
-	left_wheel = -rigid2d::PI/4;
-	right_wheel = rigid2d::PI/4;
-	vel = driver.updateOdometry(left_wheel, right_wheel);
-	pose = driver.get_pose();
+	rigid2d::DiffDrive driver2;
+	left_wheel = -rigid2d::PI/4.;
+	right_wheel = rigid2d::PI/4.;
+	vel = driver2.updateOdometry(left_wheel, right_wheel);
+	pose = driver2.get_pose();
 	ASSERT_NEAR(vel.ul, -0.785398, 1e-3);
 	ASSERT_NEAR(vel.ur, 0.785398, 1e-3);
 	ASSERT_NEAR(pose.theta, 0.03145159, 1e-3);
@@ -441,11 +441,11 @@ TEST(diff_drive, UpdateOdometry)
 
 	// Mixed Motion Test
 	// reset driver
-	driver.reset(pose_reset);
+	rigid2d::DiffDrive driver3;
 	left_wheel = 0;
-	right_wheel = rigid2d::PI / 4;
-	vel = driver.updateOdometry(left_wheel, right_wheel);
-	pose = driver.get_pose();
+	right_wheel = rigid2d::PI / 4.;
+	vel = driver3.updateOdometry(left_wheel, right_wheel);
+	pose = driver3.get_pose();
 	ASSERT_NEAR(vel.ul, 0, 1e-3);
 	ASSERT_NEAR(vel.ur, 0.785398, 1e-3);
 	ASSERT_NEAR(pose.theta, 0.015707, 1e-3);
@@ -454,11 +454,11 @@ TEST(diff_drive, UpdateOdometry)
 
 	// Zero Vel Test
 	// reset driver
-	driver.reset(pose_reset);
+	rigid2d::DiffDrive driver4;
 	left_wheel = 0;
 	right_wheel = 0;
-	vel = driver.updateOdometry(left_wheel, right_wheel);
-	pose = driver.get_pose();
+	vel = driver4.updateOdometry(left_wheel, right_wheel);
+	pose = driver4.get_pose();
 	ASSERT_NEAR(vel.ul, 0, 1e-3);
 	ASSERT_NEAR(vel.ur, 0, 1e-3);
 	ASSERT_NEAR(pose.theta, 0, 1e-3);

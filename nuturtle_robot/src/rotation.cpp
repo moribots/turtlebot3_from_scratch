@@ -102,7 +102,7 @@ int main(int argc, char** argv)
 /// The Main Function ///
 {
   // Vars
-  float frac_vel = 1;
+  float frac_vel = 0.2;
   float frequency = 110.;
   float max_lin_vel_;
   float max_ang_vel_;
@@ -122,8 +122,8 @@ int main(int argc, char** argv)
 
   // Init Service Client
   // SetPose Client
-  ros::ServiceClient set_pose_client = nh.serviceClient<rigid2d::SetPose>("/set_pose");
-  ros::service::waitForService("/set_pose", -1);
+  ros::ServiceClient set_pose_client = nh.serviceClient<rigid2d::SetPose>("set_pose");
+  ros::service::waitForService("set_pose", -1);
   // setup service parameters
   rigid2d::SetPose set_pose;
   set_pose.request.x = 0;
@@ -131,6 +131,10 @@ int main(int argc, char** argv)
   set_pose.request.theta = 0;
   // reset pose to zero
   set_pose_client.call(set_pose);
+  // Fake Client
+  ros::ServiceClient set_pose_client_fake = nh.serviceClient<rigid2d::SetPose>("fake/set_pose");
+  ros::service::waitForService("fake/set_pose", -1);
+  set_pose_client_fake.call(set_pose);
 
   // Init Publisher
   ros::Publisher vel_pub = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
@@ -139,7 +143,7 @@ int main(int argc, char** argv)
   ros::Timer timer = nh.createTimer(ros::Duration(1. / frequency), std::bind(&timerCallback, std::placeholders::_1, vel_pub));
 
   // Init Service Server
-  ros::ServiceServer start_server = nh.advertiseService("/start", startCallback);
+  ros::ServiceServer start_server = nh.advertiseService("start", startCallback);
 
   // Main While
   while (ros::ok())
@@ -148,8 +152,11 @@ int main(int argc, char** argv)
 
     if (start_called)
     {
+      ros::service::waitForService("set_pose", -1);
+      ros::service::waitForService("fake/set_pose", -1);
       // Call setpose service
       set_pose_client.call(set_pose);
+      set_pose_client_fake.call(set_pose);
       start_called = false;
       // Reset Timer
       timer_count = 0;

@@ -76,19 +76,22 @@ int main(int argc, char** argv)
   float wbase_, wrad_;
 
   ros::init(argc, argv, "fake_diff_encoders_node"); // register the node on ROS
-  ros::NodeHandle nh("~odometer_node"); // get a handle to ROS
-  // Init Private Parameters
-  nh.param<std::string>("/odometer_node/left_wheel_joint", wl_fid_, "left_wheel_axle");
-  nh.param<std::string>("/odometer_node/right_wheel_joint", wr_fid_, "right_wheel_axle");
-  nh.param<float>("/wheel_base", wbase_, 1.5);
-  nh.param<float>("/wheel_radius", wrad_, 0.5);
+  ros::NodeHandle nh_("~"); // PRIVATE handle to ROS
+  ros::NodeHandle nh; // PUBLIC handle to ROS
+  // Parameters
+  // Private
+  nh_.getParam("left_wheel_joint", wl_fid_);
+  nh_.getParam("right_wheel_joint", wr_fid_);
+  // Public
+  nh.getParam("/wheel_base", wbase_);
+  nh.getParam("/wheel_radius", wrad_);
   // Set Driver Wheel Base and Radius
   driver.set_static(wbase_, wrad_);
 
   // Init Subscriber
-  ros::Subscriber vel_sub = nh.subscribe("/turtle1/cmd_vel", 1, vel_callback);
+  ros::Subscriber vel_sub = nh.subscribe("turtle1/cmd_vel", 1, vel_callback);
   // Init Publisher
-  ros::Publisher js_pub = nh.advertise<sensor_msgs::JointState>("/joint_states", 1);
+  ros::Publisher js_pub = nh.advertise<sensor_msgs::JointState>("joint_states", 1);
 
   // Init Time
   ros::Time current_time;

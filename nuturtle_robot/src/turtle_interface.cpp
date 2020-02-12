@@ -78,9 +78,9 @@ void vel_callback(const geometry_msgs::Twist &tw)
     w_vel.ur = - motor_rot_max_;
   }
 
-  // Now convert wheel vel to integers from -44 to 44
-  float m = (44. - - 44.) / (motor_rot_max_ * 2.);
-  float b = (44. - motor_rot_max_ * m);
+  // Now convert wheel vel to integers from -265 to 265
+  float m = (265. - - 265.) / (motor_rot_max_ * 2.);
+  float b = (265. - motor_rot_max_ * m);
 
   w_vel.ul = w_vel.ul * m + b;
   w_vel.ur = w_vel.ur * m + b;
@@ -100,6 +100,10 @@ void sensor_callback(const nuturtlebot::SensorData &sns)
   w_ang.ul = w_ang.ul * m + b; 
   w_ang.ur = w_ang.ur * m + b;
 
+  // Normalize Encoder Values
+  w_ang.ul = rigid2d::normalize_angle(w_ang.ul);
+  w_ang.ur = rigid2d::normalize_angle(w_ang.ur);
+
   // Get wheel velocities based on encoder data
   w_vel_measured = driver.updateOdometry(w_ang.ul, w_ang.ur);
 
@@ -114,10 +118,13 @@ int main(int argc, char** argv)
   float wbase_, wrad_;
 
   ros::init(argc, argv, "turtle_interface"); // register the node on ROS
-  ros::NodeHandle nh; // get a handle to ROS
+  ros::NodeHandle nh_("~"); // PRIVATE handle to ROS
+  ros::NodeHandle nh; // PUBLIC handle to ROS
   // Parameters
-  nh.param<std::string>("/odometer_node/left_wheel_joint", wl_fid_, "left_wheel_axle");
-  nh.param<std::string>("/odometer_node/right_wheel_joint", wr_fid_, "right_wheel_axle");
+  // Private
+  nh_.getParam("left_wheel_joint", wl_fid_);
+  nh_.getParam("right_wheel_joint", wr_fid_);
+  // Public
   nh.getParam("/wheel_base", wbase_);
   nh.getParam("/wheel_radius", wrad_);
   nh.getParam("/tran_vel_max", max_lin_vel_);
@@ -128,11 +135,11 @@ int main(int argc, char** argv)
   driver.set_static(wbase_, wrad_);
 
   // Init Subscriber
-  ros::Subscriber vel_sub = nh.subscribe("/cmd_vel", 1, vel_callback);
-  ros::Subscriber sensor_sub = nh.subscribe("/sensor_data", 1, sensor_callback);
+  ros::Subscriber vel_sub = nh.subscribe("cmd_vel", 1, vel_callback);
+  ros::Subscriber sensor_sub = nh.subscribe("sensor_data", 1, sensor_callback);
   // Init Publisher
-  ros::Publisher js_pub = nh.advertise<sensor_msgs::JointState>("/joint_states", 1);
-  ros::Publisher wvel_pub = nh.advertise<nuturtlebot::WheelCommands>("/wheel_cmd", 1);
+  ros::Publisher js_pub = nh.advertise<sensor_msgs::JointState>("joint_states", 1);
+  ros::Publisher wvel_pub = nh.advertise<nuturtlebot::WheelCommands>("wheel_cmd", 1);
 
   // Init Time
   ros::Time current_time;

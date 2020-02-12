@@ -45,9 +45,10 @@ float wl_enc = 0;
 float wr_enc = 0;
 rigid2d::Twist2D Vb;
 rigid2d::WheelVelocities w_vel;
+rigid2d::Pose2D reset_pose;
 rigid2d::DiffDrive driver;
-rigid2d::Pose2D pose;
-bool callback_flag = false;
+bool callback_flag = true;
+bool service_flag = false;
 
 void js_callback(const sensor_msgs::JointState::ConstPtr &js)
 {
@@ -68,9 +69,13 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
 	w_vel = driver.updateOdometry(wl_enc, wr_enc);
 	// ROS_INFO("wheel vel")
 	Vb = driver.wheelsToTwist(w_vel);
-	pose = driver.get_pose();
   // Print Wheel Angles
 	// std::cout << driver;
+  if (service_flag == true)
+      {
+        // Reset Driver Pose
+        driver.reset(reset_pose);
+      }
   callback_flag = true;
 }
 
@@ -83,13 +88,14 @@ bool set_poseCallback(rigid2d::SetPose::Request& req, rigid2d::SetPose::Response
 /// \returns result (bool): True or False.
 {
   // Update pose to match service request
-  pose.x = req.x;
-  pose.y = req.y;
-  pose.theta = req.theta;
+  reset_pose.x = req.x;
+  reset_pose.y = req.y;
+  reset_pose.theta = req.theta;
 
   // Set Result to true
   res.result = true;
 
+  service_flag = true;
   callback_flag = true;
 
   return res.result;
@@ -103,10 +109,12 @@ int main(int argc, char** argv)
   float wbase_, wrad_, frequency;
 
   ros::init(argc, argv, "odometer_node"); // register the node on ROS
-  ros::NodeHandle nh("~"); // get a handle to ROS
+  ros::NodeHandle nh_("~"); // PRIVATE handle to ROS
+  ros::NodeHandle nh; // PUBLIC handle to ROS
   // Init Private Parameters
-  nh.param<std::string>("/odom_frame_id", o_fid_, "odom");
-  nh.param<std::string>("/body_frame_id", b_fid_, "base_footprint");
+  nh_.getParam("odom_frame_id", o_fid_);
+  nh_.getParam("body_frame_id", b_fid_);
+  // Init Global Parameters
   nh.getParam("/wheel_base", wbase_);
   nh.getParam("/wheel_radius", wrad_);
   frequency = 60;
@@ -114,11 +122,11 @@ int main(int argc, char** argv)
   driver.set_static(wbase_, wrad_);
 
   // Init Service Server
-  ros::ServiceServer set_pose_server = nh.advertiseService("/set_pose", set_poseCallback);
+  ros::ServiceServer set_pose_server = nh.advertiseService("set_pose", set_poseCallback);
   // Init Subscriber
-  ros::Subscriber js_sub = nh.subscribe("/joint_states", 1, js_callback);
+  ros::Subscriber js_sub = nh.subscribe("joint_states", 1, js_callback);
   // Init Publisher
-  ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("/odom", 1);
+  ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 1);
   // Init Transform Broadcaster
   tf2_ros::TransformBroadcaster odom_broadcaster;
 
@@ -136,46 +144,54 @@ int main(int argc, char** argv)
 
   	// Update and Publish Odom Transform
   	// Init Tf
-    if (callback_flag == true)
+    if (service_flag == true)
     {
-      geometry_msgs::TransformStamped odom_tf;
-      odom_tf.header.stamp = current_time;
-      ROS_INFO("body_frame_id %s", b_fid_.c_str());
-      ROS_INFO("odom_frame_id %s", o_fid_.c_str());
-      odom_tf.header.frame_id = o_fid_;
-      odom_tf.child_frame_id = b_fid_;
-      // Pose
-      odom_tf.transform.translation.x = pose.x;
-      odom_tf.transform.translation.y = pose.y;
-      odom_tf.transform.translation.z = 0;
-      // use tf2 to create transform
-      tf2::Quaternion q;
-      q.setRPY(0, 0, pose.theta);
-      geometry_msgs::Quaternion odom_quat = tf2::toMsg(q);
-      odom_tf.transform.rotation = odom_quat;
-      // Send the Transform
-      odom_broadcaster.sendTransform(odom_tf);
-
-      // Update and Publish Odom Msg
-      // Init Msg
-      nav_msgs::Odometry odom;
-      odom.header.stamp = current_time;
-      odom.header.frame_id = o_fid_;
-      // Pose
-      odom.pose.pose.position.x = pose.x;
-      odom.pose.pose.position.y = pose.y;
-      odom.pose.pose.position.z = 0.0;
-      odom.pose.pose.orientation = odom_quat;
-      // Twist
-      odom.child_frame_id = b_fid_;
-      odom.twist.twist.linear.x = Vb.v_x;
-      odom.twist.twist.linear.y = Vb.v_y;
-      odom.twist.twist.angular.z = Vb.w_z;
-      // Publish the Message
-      odom_pub.publish(odom);
-
-      callback_flag = false;
+      // Reset Driver Pose
+      driver.reset(reset_pose);
+      ROS_DEBUG("Reset Pose:");
+      ROS_DEBUG("pose x: %f", driver.get_pose().x);
+      ROS_DEBUG("pose y: %f", driver.get_pose().y);
+      ROS_DEBUG("pose theta: %f", driver.get_pose().theta);
+      service_flag = false;
     }
+    rigid2d::Pose2D pose;
+    pose = driver.get_pose();
+    geometry_msgs::TransformStamped odom_tf;
+    odom_tf.header.stamp = current_time;
+    ROS_DEBUG("body_frame_id %s", b_fid_.c_str());
+    ROS_DEBUG("odom_frame_id %s", o_fid_.c_str());
+    odom_tf.header.frame_id = o_fid_;
+    odom_tf.child_frame_id = b_fid_;
+    // Pose
+    odom_tf.transform.translation.x = pose.x;
+    odom_tf.transform.translation.y = pose.y;
+    odom_tf.transform.translation.z = 0;
+    // use tf2 to create transform
+    tf2::Quaternion q;
+    q.setRPY(0, 0, pose.theta);
+    geometry_msgs::Quaternion odom_quat = tf2::toMsg(q);
+    odom_tf.transform.rotation = odom_quat;
+    // Send the Transform
+    odom_broadcaster.sendTransform(odom_tf);
+
+    // Update and Publish Odom Msg
+    // Init Msg
+    nav_msgs::Odometry odom;
+    odom.header.stamp = current_time;
+    odom.header.frame_id = o_fid_;
+    // Pose
+    odom.pose.pose.position.x = pose.x;
+    odom.pose.pose.position.y = pose.y;
+    odom.pose.pose.position.z = 0.0;
+    odom.pose.pose.orientation = odom_quat;
+    // Twist
+    odom.child_frame_id = b_fid_;
+    odom.twist.twist.linear.x = Vb.v_x;
+    odom.twist.twist.linear.y = Vb.v_y;
+    odom.twist.twist.angular.z = Vb.w_z;
+    // Publish the Message
+    odom_pub.publish(odom);
+
 
     rate.sleep();
   }
