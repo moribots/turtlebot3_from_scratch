@@ -11,7 +11,9 @@
 	</include> 
 
 	<!-- Fake Encoders Node -->
-	<node name="fake_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node"/>
+	<node name="fake_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node">
+		<rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
+	</node>
 
 	<!-- Odometer Node -->
 	<node name="odometer_node" pkg="rigid2d" type="odometer_node">

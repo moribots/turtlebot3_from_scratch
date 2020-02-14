@@ -102,14 +102,16 @@ int main(int argc, char** argv)
 /// The Main Function ///
 {
   // Vars
-  float frac_vel = 0.2;
+  float frac_vel;
   float frequency = 110.;
   float max_lin_vel_;
   float max_ang_vel_;
 
   ros::init(argc, argv, "rotation"); // register the node on ROS
   ros::NodeHandle nh; // get a handle to ROS
+  ros::NodeHandle nh_("~"); // get a handle to ROS
   // Parameters
+  nh_.getParam("frac_vel", frac_vel);
   nh.getParam("/tran_vel_max", max_lin_vel_);
   nh.getParam("/rot_vel_max", max_ang_vel_);
 

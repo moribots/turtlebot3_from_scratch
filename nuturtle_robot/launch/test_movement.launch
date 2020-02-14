@@ -18,7 +18,9 @@
 	</node>
 
 	<!-- Rotation -->
-	<node machine="turtlebot" pkg="nuturtle_robot" type="rotation" name="rotation" output="screen"/>
+	<node machine="turtlebot" pkg="nuturtle_robot" type="rotation" name="rotation" output="screen">
+		<param name="frac_vel" value="0.2"/>
+	</node>
 
 	<!-- Odometer Node -->
 	<node name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
