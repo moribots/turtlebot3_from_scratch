@@ -111,6 +111,7 @@ int main(int argc, char** argv)
   Pose2D init_pose(waypoints_.at(0).x, waypoints_.at(0).y, 0);
   // Set initial pose
   driver.reset(init_pose);
+  Pose2D driver_pose = init_pose;
   driver.set_static(1.5, 0.5);
 
   // Init Publishers
@@ -164,7 +165,7 @@ int main(int argc, char** argv)
     current_time = ros::Time::now();
 
     // Compute next required twist
-    Twist2D Vb = waypoints.nextWaypoint(driver);
+    Twist2D Vb = waypoints.nextWaypoint(driver_pose);
     Twist2D Vb_turtle = Vb;
     // std::cout << Vb;
     // Scale twist by frequency
@@ -184,7 +185,7 @@ int main(int argc, char** argv)
     vel_pub.publish(tw);
 
     // Publish pose error
-    Pose2D driver_pose = driver.get_pose();
+    driver_pose = driver.get_pose();
     // std::cout << driver_pose.x << "\t" << driver_pose.y << "\t" << driver_pose.theta << std::endl;
     float theta_err = abs(abs(pose.theta) - abs(driver_pose.theta));
     float x_err = abs(pose.x - driver_pose.x);

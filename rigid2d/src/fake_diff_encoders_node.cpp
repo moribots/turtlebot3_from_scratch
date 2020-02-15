@@ -104,7 +104,7 @@ int main(int argc, char** argv)
   	ros::spinOnce();
     current_time = ros::Time::now();
 
-    if (callback_flag == true)
+    if (callback_flag)
     {
       sensor_msgs::JointState js;
 

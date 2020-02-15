@@ -1,12 +1,19 @@
 # waypoint x coords for pentagon
-waypoint_x: [3, 7, 7, 5, 3]
+# waypoint_x: [3, 7, 7, 5, 3]
+waypoint_x: [1, 1.5, 1.5, 1.25, 1]
 
 # waypoint y coords for pentagon
-waypoint_y: [2, 2, 7, 10, 7]
+# waypoint_y: [2, 2, 7, 10, 7]
+waypoint_y: [1, 1, 1.5, 2., 1.5]
 
 # frequency of control loop
-frequency: 60
+frequency: 60.
 
 # threshold for heading and position
-threshold : 0.08
+threshold : 0.02
 
+# Proportional control constant for angular veloicty
+P_h: 5.
+
+# Proportional control constant for linear velocity
+P_l: 5.

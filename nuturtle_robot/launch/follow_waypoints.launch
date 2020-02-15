@@ -1,0 +1,54 @@
+<launch>
+
+	<arg name="robot" default="0" doc="Whether launchfile is run on turtlebot(1-5) directly (0) or on remote PC (X: 1-5)"/>
+
+	<group if="$(eval arg('robot') != -1)">
+		<!-- RUN ON TURTLEBOT -->
+
+		<!-- Basic Remote Launch -->
+		<include file="$(find nuturtle_robot)/launch/basic_remote.launch">
+			<arg name="robot" value="$(arg robot)"/>
+		</include>
+
+		<!-- Turtle Interface - USE WHEN TURTLEBOT AVAILABLE -->
+		<node machine="turtlebot" pkg="nuturtle_robot" type="turtle_interface" name="turtle_interface" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<param name="right_wheel_joint" value="right_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+		</node>
+
+	</group>
+
+	<group if="$(eval arg('robot') == -1)">
+		<!-- Fake Encoders Node - USE FOR TESTING WHEN TURTLEBOT UNAVAILABLE -->
+		<node name="fake_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node" output="screen">
+			<rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
+			<remap from="turtle1/cmd_vel" to="cmd_vel" />
+		</node>
+	</group>
+
+	<!-- Load Diff Params Yaml -->
+	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml" />
+
+	<!-- Real Waypoint add machine tag to run on turtlebot, or remove to see log msgs -->
+	<node pkg="nuturtle_robot" type="real_waypoint" name="real_waypoint" output="screen">
+		<param name="frac_vel" value="0.2"/>
+		<rosparam command="load" file="$(find tsim)/config/turtle_way.yaml" />
+	</node>
+
+	<!-- Odometer Node -->
+	<node name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
+		<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+		<param name="odom_frame_id" value="odom" />
+		<param name="body_frame_id" value="base_footprint" /> 
+		<param name="right_wheel_joint" value="left_wheel_axle" />
+		<param name="left_wheel_joint" value="left_wheel_axle" />
+	</node>
+
+	<!-- Include diff drive viewer without joint state publisher -->
+	<include file="$(find nuturtle_description)/launch/view_diff_drive.launch">
+	<arg name="js_pub" value="False" />
+	<arg name="robot" value="$(arg robot)"/>
+	</include> 
+
+</launch>

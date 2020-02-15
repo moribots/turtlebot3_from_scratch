@@ -147,6 +147,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(turtle_interface src/turtle_interface.cpp)
 add_executable(rotation src/rotation.cpp)
+add_executable(real_waypoint src/real_waypoint.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -154,11 +155,13 @@ add_executable(rotation src/rotation.cpp)
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 set_target_properties(turtle_interface PROPERTIES OUTPUT_NAME turtle_interface PREFIX "")
 set_target_properties(rotation PROPERTIES OUTPUT_NAME rotation PREFIX "")
+set_target_properties(real_waypoint PROPERTIES OUTPUT_NAME real_waypoint PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(turtle_interface ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(rotation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(real_waypoint ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
@@ -171,6 +174,14 @@ ${catkin_LIBRARIES} # this a library that my node will use
 
 target_link_libraries(
 rotation # this is my node that will use below libraries
+${rigid2d_LIBRARIES}
+${nuturtlebot_LIBRARIES}
+# ${PROJECT_NAME} # this a library that my node will use
+${catkin_LIBRARIES} # this a library that my node will use
+)
+
+target_link_libraries(
+real_waypoint # this is my node that will use below libraries
 ${rigid2d_LIBRARIES}
 ${nuturtlebot_LIBRARIES}
 # ${PROJECT_NAME} # this a library that my node will use
@@ -195,7 +206,7 @@ install(DIRECTORY launch/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-install(TARGETS rotation turtle_interface
+install(TARGETS real_waypoint rotation turtle_interface
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

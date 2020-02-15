@@ -71,11 +71,6 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
 	Vb = driver.wheelsToTwist(w_vel);
   // Print Wheel Angles
 	// std::cout << driver;
-  if (service_flag == true)
-      {
-        // Reset Driver Pose
-        driver.reset(reset_pose);
-      }
   callback_flag = true;
 }
 
@@ -154,6 +149,9 @@ int main(int argc, char** argv)
       ROS_DEBUG("pose theta: %f", driver.get_pose().theta);
       service_flag = false;
     }
+
+    if (callback_flag)
+    {
     rigid2d::Pose2D pose;
     pose = driver.get_pose();
     geometry_msgs::TransformStamped odom_tf;
@@ -191,7 +189,8 @@ int main(int argc, char** argv)
     odom.twist.twist.angular.z = Vb.w_z;
     // Publish the Message
     odom_pub.publish(odom);
-
+    callback_flag = false;
+    }
 
     rate.sleep();
   }
