@@ -69,6 +69,10 @@ Visualization Manager:
           Value: false
         odom:
           Value: true
+        rl_wheel:
+          Value: true
+        rr_wheel:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -79,6 +83,10 @@ Visualization Manager:
           base_footprint:
             base_link:
               ball_caster:
+                {}
+              rl_wheel:
+                {}
+              rr_wheel:
                 {}
       Update Interval: 0
       Value: true
@@ -127,7 +135,7 @@ Visualization Manager:
       Marker Topic: visualization_marker
       Name: Marker
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
   Enabled: true
@@ -158,7 +166,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 13.515816688537598
+      Distance: 8.392166137695312
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1

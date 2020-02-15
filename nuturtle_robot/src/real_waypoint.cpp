@@ -173,6 +173,8 @@ int main(int argc, char** argv)
 
   ros::Rate rate(frequency);
 
+  bool started_cycle = false;
+
   // Main While
   while (ros::ok())
   {
@@ -183,8 +185,26 @@ int main(int argc, char** argv)
     {
       // Restart markers if one waypoint cycle done.
       if (fabs(waypoints_.at(0).x - pose.x) <= threshold_ \
-          && fabs(waypoints_.at(0).y - pose.y) <= threshold_)
-      {marker_id_counter = 0;} // Oevrwrite first marker
+          && fabs(waypoints_.at(0).y - pose.y) <= threshold_\
+          && started_cycle)
+      {
+        marker_id_counter = 0; // Oevrwrite first marker
+
+        // If heading from wpt -1 to wpt 0, then we have
+        // completed one cycle
+        // float final_head = atan2(waypoints_.at(0).y- waypoints_.back().y,
+        //                          waypoints_.at(0).x - waypoints_.back().x);
+        move = false; // one cycle complete
+        started_cycle = false;
+        ROS_INFO("ONE CYCLE COMPLETE.");
+      }
+
+      // Cycle has begun if first waypoint crossed
+      if (fabs(waypoints_.at(1).x - pose.x) <= threshold_ \
+          && fabs(waypoints_.at(1).y - pose.y) <= threshold_)
+      {
+        started_cycle = true;
+      }
 
       // Publish marker
       marker.header.stamp = ros::Time::now();

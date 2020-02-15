@@ -131,11 +131,12 @@ namespace rigid2d
 		break;
 
 		case 1:
+		std::cout << "----------------------------" << std::endl;
 		std::cout << "WAYPOINT REACHED: [" << waypoints.at(0).x << ", " << waypoints.at(0).y << "]" << std::endl;
 		// rotate performs the following ex: {0, 1, 2, 3} --> {1, 2, 3, 0}
 		// subsequent calls: {2, 3, 0, 1} --> {3, 0, 1, 2} --> {0, 1, 2, 3}
 		std::rotate(waypoints.begin(), waypoints.begin() + 1, waypoints.end() );
-		std::cout << "---------------------------------------------------------------------" << std::endl;
+		std::cout << "----------------------------" << std::endl;
 		std::cout << "NEXT WAYPOINT: [" << waypoints.at(0).x << ", " << waypoints.at(0).y << "]" << std::endl;
 		// set done flag to 0
 		done = 0;
