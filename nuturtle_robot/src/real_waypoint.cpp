@@ -1,12 +1,40 @@
 /// \file
-/// \brief Makes turtlesim modeled as Diff Drive robot follow a user-specified trajectory in real_waypoint.yaml
+/// \brief Makes the turtlebot3 follow a series of waypoints using closed-loop odometer-based feedback control.
 ///
 /// PARAMETERS:
+///   waypoint_x (vector<float>): x-coordinates of the waypoints to visit
+///   waypoint_y (vector<float>): y-coordinates of the waypoints to visit
+///   frequency (int): frequency of control loop.
+///   threshold (float): specifies when the target pose has been reached.
+///   v_x_max_ (float): turtlebot3's maximum linear velocity
+///   w_z_max_ (float): turtlebot3's maximum rotational velocity
+///   frac_vel (float): fraction to be used of the turtlebot3's maximum linear and angular velocities
+///
+///   pose (rigid2d::Pose2D): modeled diff drive robot pose based on feedforward prediction
+///   move (bool): flag to allow or prevent the publishing of Twists to cmd_vel
+///   callback_flag (bool): flag to indicate that odometry message has been received
+///   tw (Twist): used to publish linear and angular velocities to turtle1/cmd_vel.
+///
+///   Vb (rigid2d::Twist2D): calculated twist necessary for robot to reach current waypoint
+///   waypoints_ (vector<rigid2d::Vector2D>): intermediate storage of waypoints combined using waypoint_x and y
+///   waypoints (rigid2d::Waypoints): stores waypoints to visit and returns rigid2d::Twist2D required to do so
+///
+///   marker (visualization_msgs::Marker): marker displayed in RViz, which localizes waypoints on grid.
+///   started_cycle (bool):indicates whether new cycle has started.
 ///
 /// PUBLISHES:
+///   cmd_vel (geometry_msgs::Twist): publishes a twist with linear (x) and angular (z) velocities to command turtlebot3
+///   visualization_marker (visualization_msgs::Marker): publishes marker to RViz to localize watpoints on grid
 /// SUBSCRIBES:
+///   odom (nav_msgs::Odometry): feceives the position and orientation of the turtlebot3
 ///
 /// FUNCTIONS:
+///   odomCallback (void): callback for odom subscriber, which records the turtle's pose for use elsewhere. Also sets callback flag.
+///   startCallback (bool): start service callback, sets move boolean to true to allow publishing of cmd_vel
+///   stopCallback (bool): stop service callback, sets move boolean to false to prevent publishing of cmd_vel
+/// SERVICES:
+///   start: sets move boolean to true to allow publishing of cmd_vel
+///   stop: sets move boolean to false to prevent publishing of cmd_vel
 
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
@@ -25,15 +53,17 @@
 // #include "rigid2d/diff_drive.hpp"
 #include "rigid2d/waypoints.hpp"
 
-using namespace rigid2d;
-
 // GLOBAL VARS
-Pose2D pose;
+rigid2d::Pose2D pose;
 bool move = false;
 bool callback_flag = false;
 
 void odomCallback(const nav_msgs::Odometry &odom)
 { 
+  /// \brief odom subscriber callback. Records turtlebot3 pose (x, y, theta)
+  ///
+  /// \param odom (nav_msgs::Odometry)
+  /// \returns pose (rigid2d::Pose2D)
   pose.x = odom.pose.pose.position.x;
   pose.y = odom.pose.pose.position.y;
   auto roll = 0.0, pitch = 0.0, yaw = 0.0;
@@ -49,6 +79,9 @@ void odomCallback(const nav_msgs::Odometry &odom)
 
 bool startCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&)
 {
+  /// \brief start service callback, sets move boolean to true to allow
+  /// publishing of cmd_vel
+  /// \returns sets move (bool) to true
   move = true;
 
   ROS_INFO("START WAYPOINTS SERVICE CALLED");
@@ -58,6 +91,9 @@ bool startCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&)
 
 bool stopCallback(std_srvs::Empty::Request&, std_srvs::Empty::Response&)
 {
+  /// \brief stop service callback, sets move boolean to false to prevent
+  /// publishing of cmd_vel
+  /// \returns sets move (bool) to false
   move = false;
 
   ROS_INFO("STOP WAYPOINTS SERVICE CALLED");
@@ -93,7 +129,7 @@ int main(int argc, char** argv)
   v_x_max_ *= frac_vel;
 
   // Setup Waypoint instance using wpts_x and wpts_y
-  std::vector<Vector2D> waypoints_;
+  std::vector<rigid2d::Vector2D> waypoints_;
   // below could be more efficient but I coudlnt' get it to work
   // Iterating over two loops simultaneously using iterator
   // std::vector<float>::iterator iter_x = wpts_x.begin();
@@ -106,13 +142,13 @@ int main(int argc, char** argv)
   // }
   for (long unsigned int i = 0; i < wpts_x.size(); i++)
   {
-    Vector2D v(wpts_x.at(i), wpts_y.at(i));
+    rigid2d::Vector2D v(wpts_x.at(i), wpts_y.at(i));
     waypoints_.push_back(v);
   }
   // Now init Waypoint instance
-  Waypoints waypoints(waypoints_, P_h_, P_l_,\
+  rigid2d::Waypoints waypoints(waypoints_, P_h_, P_l_,\
                       w_z_max_, v_x_max_, threshold_);
-  Pose2D init_pose(waypoints_.at(0).x, waypoints_.at(0).y, 0);
+  rigid2d::Pose2D init_pose(waypoints_.at(0).x, waypoints_.at(0).y, 0);
   // Call SetPose service with init pose
   // Init Service Client
   // SetPose Client
@@ -216,7 +252,7 @@ int main(int argc, char** argv)
       if (callback_flag)
         {
         // Compute next required twist
-        Twist2D Vb = waypoints.nextWaypoint(pose);
+        rigid2d::Twist2D Vb = waypoints.nextWaypoint(pose);
 
         // Publish twist
         geometry_msgs::Twist tw;

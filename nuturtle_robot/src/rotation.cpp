@@ -1,12 +1,33 @@
 /// \file
-/// \brief
+/// \brief Provides a /start service which makes the turtlebot3 perform either 20 rotation (CW/CCW) or a 2-meter traversal (FWD/BWD)
 ///
 /// PARAMETERS:
+/// request (nuturtle_robot::Rotation::Request): service request for /start service, which contains four booleans: rot_trans, rot_direction, trans_direction
+/// start_called (bool): flag to indicate that service has been called, and rotation/translation sequence can commence.
+/// timer_count (int): keeps track of iterations required to perform one rotation or translation segment.
+/// cycle_trigger (bool): flag used to alternate between pause and actuation of turtlebot3
+/// rotation_count (int): records the number of rotations completed since the start of the service call
+/// translation_count (int): records the number of translation completed since the start of the service call
+/// pause_count (bool): keeps track of iterations required to pause for the correct amount of time based on loop rate
+/// full_rots (int): value greater than maximum number of rotations, used for loop logic
+/// full_trans (int): value greater than maximum number of translations, used for loop logic
+/// 
+/// rot (float): angular component of desired 2D twist
+/// trans (float): linear component of desired 2D twist
+/// frac_vel (float): fraction to be used of the turtlebot3's maximum linear and angular velocities
+/// max_lin_vel_ (float): turtlebot3's maximum linear velocity
+/// max_ang_vel_ (float): turtlebot3's maximum rotational velocity
+/// frequency (float): loop rate for this operation
 ///
 /// PUBLISHES:
-/// SUBSCRIBES:
+/// publishes Twist to cmd_vel
 ///
 /// FUNCTIONS:
+/// start_callback (bool): callback for start service, which calls the set_pose and fake/set_pose services, then sets the appripriate flags to begin movement
+/// timerCallback (void): deterministically publishes Twist message based on desired commands according to loop logic
+///
+///  SERVICES:
+///  start: calls set_pose service and intiates either 20 rotations, or a 2 meter traversal
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
@@ -44,6 +65,11 @@ float trans = 0;
 
 bool startCallback(nuturtle_robot::Rotation::Request& req, nuturtle_robot::Rotation::Response& res)
 {
+  /// \brief start service callback, calls set_pose service and intiates either 20 rotations, or a 2 meter traversal
+  /// \param rot_trans (bool): False - Rotation, True - Translation
+  /// \param rot_direction (bool): False - CW, True - CCW
+  /// \param trans_direction (bool): False - Forward, True - Backwards
+  /// \returns result (bool): True or False.
   request = req;
 
   start_called = true;
@@ -57,6 +83,10 @@ bool startCallback(nuturtle_robot::Rotation::Request& req, nuturtle_robot::Rotat
 
 void timerCallback(const ros::TimerEvent&, const ros::Publisher& vel_pub)
 {
+  /// \brief deterministic timer to publish Twist messages to cmd_vel
+  /// \param ros::TimerEvent: ensures loop is consistent (deterministic)
+  /// \param vel_pub (ros::Publisher): publisher object used to send messages to cmd_Vel
+  /// \returns publishes Twist to cmd_vel
 
   if (full_rots < 20 && full_trans < 10)
   {

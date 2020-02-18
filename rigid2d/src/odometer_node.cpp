@@ -26,6 +26,7 @@
 ///
 /// FUNCTIONS:
 ///   js_callback (void): callback for /joint_states subscriber, which records the ddrive robot's joint states
+///   set_poseCallback (bool): callback for set_pose service, which resets the robot's pose in the tf tree
 
 #include <ros/ros.h>
 #include<sensor_msgs/JointState.h>
@@ -57,7 +58,7 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
   /// \param js (sensor_msgs::JointState): the left and right wheel joint angles
   /// \returns pose (rigid2d::Pose2D): modeled diff drive robot pose based on read wheel encoder angles
   /** 
-  * This function runs every time we get a geometry_msgs::Twist message on the "/joint_states" topic.
+  * This function runs every time we get a sensor_msgs::JointState message on the "/joint_states" topic.
   * We generally use the const <message>ConstPtr &msg syntax to prevent our node from accidentally
   * changing the message, in the case that another node is also listening to it.
   */

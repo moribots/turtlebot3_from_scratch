@@ -12,15 +12,15 @@ namespace rigid2d
         if (rad >= 0)
             {
             // Positive Wrap
-            double q  = std::floor(rad / (2*PI));
-            rad = (rad) - q * 2*PI;
-            if (rad < 0) {rad += 2*PI;}
+            double q  = std::floor(rad / (2.0 * PI));
+            rad = (rad) - q * 2.0 * PI;
+            if (rad < 0) {rad += 2.0 * PI;}
             return rad;
             }
             // Negative Wrap
-            double q  = std::floor(rad / (2*PI));
-            rad = (rad) - q * 2*PI;
-            if (rad > 0) {rad -= 2*PI;}
+            double q  = std::floor(rad / (2.0 * PI));
+            rad = (rad) - q * 2.0 * PI;
+            if (rad > 0) {rad -= 2.0 * PI;}
             return rad;
     }
 

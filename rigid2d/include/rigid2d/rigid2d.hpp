@@ -57,11 +57,11 @@ namespace rigid2d
     /// \returns the wrapped angle in radians
     constexpr double normalize_angle(double rad)
     {
-        double lim  = std::floor((rad + PI) / (2 * PI));
-        rad = rad + PI - lim * 2 * PI;
+        double lim  = std::floor((rad + PI) / (2.0 * PI));
+        rad = rad + PI - lim * 2.0 * PI;
         if (rad < 0)
         {
-            rad += 2 * PI;
+            rad += 2.0 * PI;
         }
         rad -= PI;
         return rad;

@@ -1,14 +1,37 @@
 /// \file
-/// \brief
+/// \brief This node executes low-level control for the turtlebot, engaging its motors depending on desired twist, and reading its wheel encoder values.
 ///
 /// PARAMETERS:
+/// w_vel (rigid2d::WheelVelocities): used to store wheel commands, ranging from -265 to +265 as converted from actual  wheel velocities.
+/// w_vel_measured (rigid2d::WheelVelocities): measured wheel velocity, computed by feeding updated wheel encoder values to DiffDrive::updateOdomtry()
+/// w_ang (rigid2d::WheelVelocities): used to store wheel angles after they are converted from wheel encoder values, where 0-4096 maps to 0-2.0*PI
+/// driver (rigid2d::DiffDrive): diff_drive object used to perform operations to set turtlebot3 commands and interpret its data.
+/// frequency (double): the loop rate
+/// vel_flag (bool): flag to indicate that vel_callback has been triggered, and that a wheel command should be published.
+/// sensor_flag (bool): flag to indicate that sensor_callback has been triggered, and that wheel joint states should be published
+/// max_lin_vel_ (float): the turtlebot's maximum linear velocity in m/s
+/// max_ang_vel_ (float): the turtlebot's maximum angular velocity in rad/s
+/// motor_rot_max_ (float): the turtlebot wheels' maximum rotational speed in rad/s
+/// encoder_ticks_per_rev_ (float): used to map between wheel encoder ticks and actual wheel rotation. Cast as float to use in division
+///
+/// o_fid_ (std::string): odometer frame ID
+/// b_fid_ (std::string): body frame ID
+/// wl_fid_ (std::string): left wheel frame ID
+/// wr_fid_ (std::string): right wheel frame ID
+/// wbase_ (float): wheel base
+/// wrad_ (float): wheel radius
 ///
 /// PUBLISHES:
+/// joint_states (sensor_msgs::JointState): the turtlebot3's wheel positions and velocities
+/// wheel_cmd (nuturtlebot::WheelCommands): the turtlebot3's wheel commands; integers corresponding to wheel velocities from -max to max in rad/s
+///
 /// SUBSCRIBES:
-///   /cmd_vel (geometry_msgs::Twist): subscriber, which records the commanded twist
+/// cmd_vel (geometry_msgs::Twist): subscriber, which records the commanded twist
+/// sensor_data (nuturtlebot::SensorData): subscriber, which records wheel encoder values, among other turtlebot3 sensor data
 ///
 /// FUNCTIONS:
-///   vel_callback (void): callback for /cmd_vel subscriber, which records the commanded twist
+/// vel_callback (void): callback for cmd_vel subscriber, which records the commanded twist and sets a flag to publish wheel commands
+/// sensor_callback (void): callback for sensor_data subscriber, which records the turtlebot3's wheel positions and sets a flag to publish joint states
 
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
@@ -37,6 +60,15 @@ float encoder_ticks_per_rev_ = 0;
 
 void vel_callback(const geometry_msgs::Twist &tw)
 {
+   /// \brief cmd_vel subscriber callback. Records commanded twist
+  ///
+  /// \param tw (geometry_msgs::Twist): the commanded linear and angular velocity
+  /// \returns w_vel (rigid2d::WheelVelocities --> nuturtlebot:WheelCommands) to actuate turtlebot3
+  /** 
+  * This function runs every time we get a geometry_msgs::Twist message on the "cmd_vel" topic.
+  * We generally use the const <message>ConstPtr &msg syntax to prevent our node from accidentally
+  * changing the message, in the case that another node is also listening to it.
+  */
 
   // Cap Angular Twist
   float ang_vel = tw.angular.z;
@@ -90,12 +122,16 @@ void vel_callback(const geometry_msgs::Twist &tw)
 
 void sensor_callback(const nuturtlebot::SensorData &sns)
 {
+  /// \brief sensor_data subscriber callback. Records left and right wheel angles
+  ///
+  /// \param sns (nuturtlebot::SensorData ): the left and right wheel joint encoder values
+  /// w_ang and w_vel_measured (rigid2d::WheelVelocities): measured wheel angles and velocities respct.
   w_ang.ul = sns.left_encoder;
   w_ang.ur = sns.right_encoder;
 
   // Now convert encoder values (0-4096 to 0-2pi)
-  float m = (2 * rigid2d::PI) / (encoder_ticks_per_rev_);
-  float b = (2 * rigid2d::PI - encoder_ticks_per_rev_ * m);
+  float m = (2.0 * rigid2d::PI) / (encoder_ticks_per_rev_);
+  float b = (2.0 * rigid2d::PI - encoder_ticks_per_rev_ * m);
 
   w_ang.ul = w_ang.ul * m + b; 
   w_ang.ur = w_ang.ur * m + b;

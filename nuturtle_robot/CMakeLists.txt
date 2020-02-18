@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   std_srvs
   turtlesim
+  visualization_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -112,7 +113,7 @@ generate_messages(
 catkin_package(
  INCLUDE_DIRS include
 #  LIBRARIES rigid2d
- CATKIN_DEPENDS geometry_msgs message_runtime roscpp std_msgs std_srvs turtlesim 
+ CATKIN_DEPENDS geometry_msgs message_runtime roscpp std_msgs std_srvs turtlesim visualization_msgs
 #  DEPENDS system_lib
 )
 
