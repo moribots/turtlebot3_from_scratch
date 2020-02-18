@@ -159,20 +159,25 @@ int main(int argc, char** argv)
   set_pose.request.x = init_pose.x;
   set_pose.request.y = init_pose.y;
   set_pose.request.theta = init_pose.theta;
-  // reset pose to zero
-  set_pose_client.call(set_pose);
 
   // Init Publishers
   ros::Publisher vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
   ros::Publisher marker_pub = nh.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 
+  // Init Odom Subscriber
+  ros::Subscriber odom_sub = nh.subscribe("odom", 1, odomCallback);
+
+  // Init Start Waypoints Server
+  ros::ServiceServer start_server = nh_.advertiseService("start", startCallback);
+  // Init Stop Waypoint Server
+  ros::ServiceServer stop_server = nh_.advertiseService("stop", stopCallback);
+
   // Init Marker
   uint32_t shape = visualization_msgs::Marker::SPHERE;
   visualization_msgs::Marker marker;
-  marker.header.frame_id = "base_link";
+  marker.header.frame_id = "odom";
   marker.header.stamp = ros::Time::now();
   int marker_id_counter = 0;
-  marker.id = marker_id_counter; // overwrite next marker by setting id=0
   marker.type = shape;
   marker.action = visualization_msgs::Marker::ADD;
   // Set the pose of the marker.
@@ -195,13 +200,25 @@ int main(int argc, char** argv)
   marker.color.a = 1.0;
   marker.lifetime = ros::Duration(); // persistent
 
-  // Init Odom Subscriber
-  ros::Subscriber odom_sub = nh.subscribe("odom", 1, odomCallback);
+  std::vector<rigid2d::Vector2D>::iterator iter_wpt;
+  for (iter_wpt = waypoints_.begin(); iter_wpt !=waypoints_.end(); iter_wpt++)
+  {
+    marker.pose.position.x = iter_wpt->x;
+    marker.pose.position.y = iter_wpt->y;
 
-  // Init Start Waypoints Server
-  ros::ServiceServer start_server = nh_.advertiseService("start", startCallback);
-  // Init Stop Waypoint Server
-  ros::ServiceServer stop_server = nh_.advertiseService("stop", stopCallback);
+    std::cout << "SETTING MARKER \tX: " << iter_wpt->x << "\tY: " << iter_wpt->y << std::endl;
+
+    // Publish marker
+    marker.header.stamp = ros::Time::now();
+    marker.id = marker_id_counter; // overwrite next marker by setting same ID
+    marker_pub.publish(marker);
+    marker_id_counter++; // to avoid overwriting
+
+    ros::Duration(1).sleep(); // needs a break between marker pubs
+  }
+
+  // reset pose to zero
+  set_pose_client.call(set_pose);
 
   // Init Time
   ros::Time current_time;
@@ -242,11 +259,11 @@ int main(int argc, char** argv)
         started_cycle = true;
       }
 
-      // Publish marker
-      marker.header.stamp = ros::Time::now();
-      marker.id = marker_id_counter;
-      marker_pub.publish(marker);
-      marker_id_counter++; // to avoid overwriting
+      // // Publish marker
+      // marker.header.stamp = ros::Time::now();
+      // marker.id = marker_id_counter;
+      // marker_pub.publish(marker);
+      // marker_id_counter++; // to avoid overwriting
 
       // Publish twist only if received pose
       if (callback_flag)
