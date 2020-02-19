@@ -132,7 +132,6 @@ find_package(nuturtlebot REQUIRED)
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  include
   ${catkin_INCLUDE_DIRS}
   ${rigid2d_INCLUDE_DIRS}
   ${nuturtlebot_INCLUDE_DIRS}
