@@ -22,4 +22,8 @@ Below is a video of the turtlebot3 tracing the waypoints, along with its counter
 
 ![turtlebot3](nuturtle_robot/images/5_wpts_real.gif)
 
+![sim2](nuturtle_robot/images/5_wpts_sim_2.gif)
+
+Here is another video of the same trajectory, but with markers being layed out to outline the path. Note that the turtlebot believes it has completed the trajectory nearly perfectly (within the set threshold).
+
 ![sim](nuturtle_robot/images/5_wpts_sim.gif)

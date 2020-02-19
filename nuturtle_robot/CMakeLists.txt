@@ -14,10 +14,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   message_generation
+  message_runtime
+  nav_msgs
   roscpp
   rostest
+  sensor_msgs
   std_msgs
   std_srvs
+  tf2
+  tf2_ros
   turtlesim
   visualization_msgs
 )

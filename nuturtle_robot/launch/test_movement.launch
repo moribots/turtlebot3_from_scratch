@@ -23,7 +23,7 @@
 	</node>
 
 	<!-- Odometer Node -->
-	<node name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
+	<node machine="turtlebot" name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
 		<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
 		<param name="odom_frame_id" value="odom" />
 		<param name="body_frame_id" value="base_footprint" /> 
