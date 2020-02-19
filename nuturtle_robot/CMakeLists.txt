@@ -116,7 +116,7 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
- INCLUDE_DIRS include
+ INCLUDE_DIRS
 #  LIBRARIES rigid2d
  CATKIN_DEPENDS geometry_msgs message_runtime roscpp std_msgs std_srvs turtlesim visualization_msgs
 #  DEPENDS system_lib
@@ -132,6 +132,7 @@ find_package(nuturtlebot REQUIRED)
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
   ${rigid2d_INCLUDE_DIRS}
   ${nuturtlebot_INCLUDE_DIRS}
