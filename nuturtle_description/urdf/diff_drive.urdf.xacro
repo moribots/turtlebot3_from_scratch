@@ -47,9 +47,9 @@
               matname="black_mat"
               rgba="0 0 0 0.8"
               mass="0.1"
-              ixx="${0.5 * m_w * (r*r)}" ixy="0" ixz="0"
-              iyy="${m_w * ((3*r*r)+ (L*L)) / 12.0}" iyz="0"
-              izz="${m_w * ((3*r*r)+ (L*L)) / 12.0}"/>
+              ixx="${m_w * ((3*r*r)+ (h*h)) / 12.0}"
+              iyy="${m_w * ((3*r*r)+ (h*h)) / 12.0}" iyz="0"
+              izz="${0.5 * m_w * (r*r)}" ixy="0" ixz="0"/>
 
   <!-- Rear Left Wheel -->
   <xacro:r_cyl name="rl_wheel"
@@ -59,9 +59,9 @@
               matname="black_mat"
               rgba="0 0 0 0.8"
               mass="0.1"
-              ixx="${0.5 * m_w * (r*r)}" ixy="0" ixz="0"
-              iyy="${m_w * ((3*r*r)+ (L*L)) / 12.0}" iyz="0"
-              izz="${m_w * ((3*r*r)+ (L*L)) / 12.0}"/>
+              ixx="${m_w * ((3*r*r)+ (h*h)) / 12.0}"
+              iyy="${m_w * ((3*r*r)+ (h*h)) / 12.0}" iyz="0"
+              izz="${0.5 * m_w * (r*r)}" ixy="0" ixz="0"/>
 
   <!-- Top Caster Wheel -->
   <!-- <r_sph name="tc_wheel"

@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<robot name="diff_drive" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- Include URDF File -->
+<xacro:include filename="$(find nuturtle_description)/urdf/diff_drive.urdf.xacro" />
+
+<gazebo reference="base_link">
+    <material>Gazebo/Gray</material>
+</gazebo>
+
+<gazebo reference="rr_wheel">
+    <material>Gazebo/Orange</material>
+    <mu1>1</mu1> <!-- static -->
+    <mu2>1</mu2> <!-- dynamic -->
+    <dampingFactor>0.001</dampingFactor>
+    <kp>10000000.0</kp> <!-- rigidity (damping) -->
+    <kd>1.0</kd> <!-- rigidity (damping) -->
+    <minDepth>0.001</minDepth>
+    <fdir1>1 1 0</fdir1> <!-- friction direction -->
+</gazebo>
+
+<gazebo reference="rl_wheel">
+    <material>Gazebo/Orange</material>
+    <mu1>1</mu1> <!-- static -->
+    <mu2>1</mu2> <!-- dynamic -->
+    <dampingFactor>0.001</dampingFactor>
+    <kp>10000000.0</kp> <!-- rigidity (damping) -->
+    <kd>1.0</kd> <!-- rigidity (damping) -->
+    <minDepth>0.001</minDepth>
+    <fdir1>1 1 0</fdir1> <!-- friction direction -->
+</gazebo>
+
+<gazebo reference="ball_caster">
+    <material>Gazebo/Orange</material>
+    <mu1>0</mu1> <!-- static -->
+    <mu2>0</mu2> <!-- dynamic -->
+    <dampingFactor>0.001</dampingFactor>
+    <kp>10000000.0</kp> <!-- rigidity (damping) -->
+    <kd>1.0</kd> <!-- rigidity (damping) -->
+    <minDepth>0.001</minDepth>
+    <fdir1>1 1 0</fdir1> <!-- friction direction -->
+</gazebo>
+
+</robot>
