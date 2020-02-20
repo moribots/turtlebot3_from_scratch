@@ -9,10 +9,11 @@
 <xacro:property name="L" value="${params['chassis_length']}" />
 <xacro:property name="W" value="${params['wheel_base']}" />
 <xacro:property name="H" value="${params['chassis_thickness']}" />
+<xacro:property name="w_off" value="${params['wheel_axle_offset']}" />
 <!-- <xacro:property name="M" value="${params['M']}" /> -->
 <xacro:property name="r" value="${params['wheel_radius']}" />
 <xacro:property name="h" value="${params['wheel_width']}" />
-<xacro:property name="r_bc" value="${(r - H/2)/2}" />
+<xacro:property name="r_bc" value="${(r - w_off)/2}" />
 <!-- <xacro:property name="m" value="${params['m']}" /> -->
 
   <!-- Include Macros -->
@@ -72,12 +73,12 @@
   
   <!-- Joints -->
   <xacro:frame_joint name="basefootprint_base" type="fixed"
-                    origin_rpy="0 0 0" origin_xyz="0 0 ${r}"
+                    origin_rpy="0 0 0" origin_xyz="0 0 ${H/2 + r - w_off}"
                     parent="base_footprint" child="base_link"/>
   <!-- Joint 1: Base - RR Wheel -->      
   <xacro:wheel_joint name="right_wheel_axle" type="continuous"
                     axis_xyz="0 1 0"
-                    origin_rpy="0 0 0" origin_xyz="0 -${W/2} 0"
+                    origin_rpy="0 0 0" origin_xyz="0 -${W/2} -${H/2 - w_off}"
                     parent="base_link" child="rr_wheel"
                     effort="100"
                     velocity="100"
@@ -87,7 +88,7 @@
   <!-- Joint 2: Base - RL Wheel -->      
   <xacro:wheel_joint name="left_wheel_axle" type="continuous"
                     axis_xyz="0 1 0"
-                    origin_rpy="0 0 0" origin_xyz="0 ${W/2} 0"
+                    origin_rpy="0 0 0" origin_xyz="0 ${W/2} -${H/2 - w_off}"
                     parent="base_link" child="rl_wheel"
                     effort="100"
                     velocity="100"
