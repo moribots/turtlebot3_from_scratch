@@ -15,6 +15,8 @@
 <xacro:property name="h" value="${params['wheel_width']}" />
 <xacro:property name="r_bc" value="${(r - w_off)/2}" />
 <!-- <xacro:property name="m" value="${params['m']}" /> -->
+<xacro:property name="m_c" value="${params['chassis_mass']}" />
+<xacro:property name="m_w" value="${params['wheel_mass']}" />
 
   <!-- Include Macros -->
   <xacro:include filename="$(find nuturtle_description)/urdf/diff_drive_macro.xacro" />
@@ -29,18 +31,25 @@
   <link name="base_footprint"/>
   <!-- Base Link -->
   <xacro:r_box name="base_link"
-              origin_rpy="0 0 0" origin_xyz="${L/2 - r} 0 0"
+              origin_rpy="0 0 0" origin_xyz="-${L/2 - r} 0 0"
               size="${L} ${W - h} ${H}"
               matname="red_mat"
-              rgba="1 0 0 0.8"/>
-
+              rgba="1 0 0 0.8"
+              mass="${m_c}"
+              ixx="${m_c * ( (H*H) + ((W-h)*(W-h)) ) / 12.0}" ixy="0" ixz="0"
+              iyy="${m_c * ( (L*L) + ((W-h)*(W-h)) ) / 12.0}" iyz="0"
+              izz="${m_c * ((H*H) + (L*L)) / 12.0}"/>
   <!-- Rear Right Wheel -->
   <xacro:r_cyl name="rr_wheel"
               origin_rpy="${pi/2} 0 0" origin_xyz="0 0 0"
               length="${h}"
               radius="${r}"
               matname="black_mat"
-              rgba="0 0 0 0.8"/>
+              rgba="0 0 0 0.8"
+              mass="0.1"
+              ixx="${0.5 * m_w * (r*r)}" ixy="0" ixz="0"
+              iyy="${m_w * ((3*r*r)+ (L*L)) / 12.0}" iyz="0"
+              izz="${m_w * ((3*r*r)+ (L*L)) / 12.0}"/>
 
   <!-- Rear Left Wheel -->
   <xacro:r_cyl name="rl_wheel"
@@ -48,7 +57,11 @@
               length="${h}"
               radius="${r}"
               matname="black_mat"
-              rgba="0 0 0 0.8"/>
+              rgba="0 0 0 0.8"
+              mass="0.1"
+              ixx="${0.5 * m_w * (r*r)}" ixy="0" ixz="0"
+              iyy="${m_w * ((3*r*r)+ (L*L)) / 12.0}" iyz="0"
+              izz="${m_w * ((3*r*r)+ (L*L)) / 12.0}"/>
 
   <!-- Top Caster Wheel -->
   <!-- <r_sph name="tc_wheel"
@@ -70,6 +83,9 @@
               radius="${r_bc}"
               matname="green_mat"
               rgba="0 1 0 0.8"/>
+
+  <!-- Scanner -->
+  <link name="base_scan"/>
   
   <!-- Joints -->
   <xacro:frame_joint name="basefootprint_base" type="fixed"
@@ -108,11 +124,15 @@
   <!-- Joint 4: Base - BC Wheel -->      
   <xacro:wheel_joint name="base_bc" type="fixed"
                     axis_xyz="1 1 1"
-                    origin_rpy="0 0 0" origin_xyz="${L/2 + r - r_bc} 0 -${H/2 + r_bc}"
+                    origin_rpy="0 0 0" origin_xyz="-${L/2 + r - r_bc} 0 -${H/2 + r_bc}"
                     parent="base_link" child="ball_caster"
                     effort="0"
                     velocity="100"
                     damping="0"
                     friction="0"/>
+
+  <xacro:frame_joint name="base_scan" type="fixed"
+                    origin_rpy="0 0 0" origin_xyz="0 0 ${H/2}"
+                    parent="base_link" child="base_scan"/>
 
 </robot>

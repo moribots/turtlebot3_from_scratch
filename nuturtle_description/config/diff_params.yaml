@@ -16,6 +16,12 @@ chassis_thickness: 0.14 # 0.033
 # height of wheel axle from bottom of chassis
 wheel_axle_offset: 0.02
 
+# chassis mass
+chassis_mass: 0.8
+
+# wheel mass
+wheel_mass: 0.1
+
 # Number of encoder ticks per wheel revolution, 12 bit per 360deg so 4096 ticks  per rev
 encoder_ticks_per_rev: 4096
 
