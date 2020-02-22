@@ -36,3 +36,6 @@ motor_rot_max: 6.35492
 
 # Maximum motor power (command to send ints to ESC for output between +- 265)
 motor_pwr_max: 265
+
+# Maximum motor torque (stall) in Nm (9V: 1.0 | 11.1V: 1.4 | 12V: 1.5)
+motor_torque_max: 1.5

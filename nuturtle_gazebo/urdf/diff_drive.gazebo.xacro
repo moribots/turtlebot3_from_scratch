@@ -1,8 +1,46 @@
 <?xml version="1.0"?>
 <robot name="diff_drive" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+<!-- Include Diff Params YAML -->
+<xacro:property name="params" value="${load_yaml('$(find nuturtle_description)/config/diff_params.yaml')}" />
+
+<xacro:property name="encoder_ticks_per_rev" value="${params['encoder_ticks_per_rev']}" />
+
+<xacro:property name="motor_rot_max" value="${params['motor_rot_max']}" />
+
+<xacro:property name="motor_pwr_max" value="${params['motor_pwr_max']}" />
+
+<xacro:property name="motor_torque_max" value="${params['motor_torque_max']}" />
+
+<!-- Include Odometer YAML -->
+<xacro:property name="params" value="${load_yaml('$(find nuturtle_description)/config/diff_params.yaml')}" />
+
+<xacro:property name="left_wheel_joint" value="${params['left_wheel_joint']}" />
+
+<xacro:property name="right_wheel_joint" value="${params['right_wheel_joint']}" />
+
 <!-- Include URDF File -->
 <xacro:include filename="$(find nuturtle_description)/urdf/diff_drive.urdf.xacro" />
+
+
+
+<!-- Custom Gazebo Plugin to control Wheel Velocities -->
+<gazebo>
+    <plugin name="turtle_drive_plugin" filename="nuturtle_gazebo_plugin.so">
+        <left_wheel_joint>${left_wheel_joint}</left_wheel_joint> 
+        <right_wheel_joint>${right_wheel_joint}</right_wheel_joint>
+        <sensor_frequency>200</sensor_frequency>
+        <wheel_cmd_topic>nuturtlebot/WheelCommands</wheel_cmd_topic>
+        <sensor_data_topic>nuturtlebot/SensorData</sensor_data_topic>
+        <encoder_ticks_per_rev>${encoder_ticks_per_rev}</encoder_ticks_per_rev>
+        <motor_rot_max>${motor_rot_max}</motor_rot_max>
+        <motor_pwr_max>${motor_pwr_max}</motor_pwr_max>
+        <motor_torque_max>${motor_torque_max}</motor_torque_max>
+    </plugin>
+</gazebo>
+
+
+<!-- Links-->
 
 <gazebo reference="base_link">
     <material>Gazebo/Gray</material>
