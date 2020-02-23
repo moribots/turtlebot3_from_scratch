@@ -6,6 +6,13 @@ GZ_REGISTER_MODEL_PLUGIN(gazebo::TurtleDrivePlugin)
 /////////////////////////////////////////////////
 gazebo::TurtleDrivePlugin::TurtleDrivePlugin()
 {
+
+  // This is the Gazebo version of a nove (see gazebo_tools_test.cpp in plen_ros package)
+  this->node = gazebo::transport::NodePtr(new transport::Node());
+
+
+  this->nh = ros::NodeHandle();
+
   this->joints.resize(2);
 }
 
@@ -113,17 +120,18 @@ void gazebo::TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _
   this->connections.push_back(event::Events::ConnectWorldUpdateBegin(
           boost::bind(&gazebo::TurtleDrivePlugin::OnUpdate, this)));
 
-  // This is the Gazebo version of a nove (see gazebo_tools_test.cpp in plen_ros package)
-  this->node = gazebo::transport::NodePtr(new transport::Node());
   this->node->Init(this->model->GetWorld()->Name());
 
   // Subscribe to Wheel Cmd topic
-  this->WheelCmdSub = this->node->Subscribe<nuturtlebot::WheelCommands>(this->wheel_cmd_topic_,
-                                            &gazebo::TurtleDrivePlugin::wheel_cmdCallback, this);
+  // this->WheelCmdSub = this->node->Subscribe<nuturtlebot::WheelCommands>(this->wheel_cmd_topic_, 1,
+  //                                           &gazebo::TurtleDrivePlugin::wheel_cmdCallback, this);
 
-  // Sensor Data Publisher
-  this->SensorDataPub = this->node->Advertise<nuturtlebot::SensorData>(this->sensor_data_topic_);
-  this->SensorDataPub->WaitForConnection();
+  this->WheelCmdSub = this->nh.subscribe<nuturtlebot::WheelCommands>(this->wheel_cmd_topic_, 1,
+                                            &gazebo::TurtleDrivePlugin::wheel_cmdCallback, this);
+  // // Sensor Data Publisher
+  // this->SensorDataPub = this->node->Advertise<nuturtlebot::SensorData>(this->sensor_data_topic_, 1);
+  // this->SensorDataPub->WaitForConnection();
+  this->SensorDataPub = this->nh.advertise<nuturtlebot::SensorData>(this->sensor_data_topic_, 1);
 
   // Update Rate Parameters
   // Initialize update rate stuff
@@ -160,7 +168,7 @@ void gazebo::TurtleDrivePlugin::OnUpdate()
     nuturtlebot::SensorData sns;
     sns.left_encoder = this->joints[0]->Position() * m + b;
     sns.right_encoder = this->joints[1]->Position() * m + b;
-    this->SensorDataPub->Publish(sns);
+    this->SensorDataPub.publish(sns);
 
     // If new wheel command received, set axle velocities
     if (this->wheel_cmd_flag_)
