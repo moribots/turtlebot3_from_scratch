@@ -42,10 +42,10 @@ namespace gazebo
 
         ros::NodeHandle nh;
         transport::NodePtr node;
-        // ros::Subscriber WheelCmdSub;
-        // ros::Publisher SensorDataPub;
-        transport::SubscriberPtr WheelCmdSub;
-        transport::PublisherPtr SensorDataPub;
+        ros::Subscriber WheelCmdSub;
+        ros::Publisher SensorDataPub;
+        // transport::SubscriberPtr WheelCmdSub;
+        // transport::PublisherPtr SensorDataPub;
 
         int sensor_frequency_, encoder_ticks_per_rev_, motor_pwr_max_;
         std::string wheel_cmd_topic_, sensor_data_topic_;
