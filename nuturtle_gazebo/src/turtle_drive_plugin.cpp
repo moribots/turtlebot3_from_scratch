@@ -1,5 +1,3 @@
-#include "gazebo/physics/physics.hh"
-#include "gazebo/transport/transport.hh"
 #include "plugins/turtle_drive_plugin.hh"
 
 
@@ -29,7 +27,7 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 
   // Get Model object to manipulate model physics
   this->model = _model;
-  this->physics = this->model->GetWorld()->GetPhysicsEngine();
+  // this->physics = this->model->GetWorld()->GetPhysicsEngine();
 
   // Get Joints (left and right wheel axles)
   this->joints[0] = this->model->GetJoint(_sdf->Get<std::string>("left_wheel_joint"));
@@ -103,7 +101,7 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
       ROS_WARN("TurtleDrive Plugin missing <motor_pwr_max>, defaulting to \"%s\"",
           this->motor_pwr_max_.c_str());
     } else {
-      this->motor_pwr_max_ = _sdf->GetElement("motor_pwr_max")->Get<double>();
+      this->motor_pwr_max_ = _sdf->GetElement("motor_pwr_max")->Get<int>();
     }
 
   // Get Max Motor Torque (stall) in Nm
@@ -115,13 +113,10 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
       this->motor_torque_max_ = _sdf->GetElement("motor_torque_max")->Get<double>();
     }
 
-  // Now set up wheel joints using max velocity and torque attributes
+  // Now set up wheel joints using max torque attributes
   // Note this method only accepts doubles
   this->joints[0]->SetParam("fmax", 0, this->motor_torque_max_);
-  this->joints[0]->SetParam("vel", 0, this->motor_rot_max_);
-
   this->joints[1]->SetParam("fmax", 0, this->motor_torque_max_);
-  this->joints[1]->SetParam("vel", 0, this->motor_rot_max_);
 
   this->connections.push_back(event::Events::ConnectWorldUpdateBegin(
           boost::bind(&TurtleDrivePlugin::OnUpdate, this)));
@@ -134,21 +129,89 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   this->WheelCmdSub = this->node->Subscribe(this->wheel_cmd_topic_,
                                             &TurtleDrivePlugin::OnWheelCmdMsg, this);
 
+  // Sensor Data Publisher
+  this->SensorDataPub = this->node->Advertise<nuturtlebot::SensorData>(this->sensor_data_topic);
+
+  // Update Rate Parameters
+  // Initialize update rate stuff
+  if ( this->this->sensor_frequency_ > 0.0 )
+  {
+    this->update_period_ = 1.0 / this->sensor_frequency_;
+  }
+  else
+  {
+    this->update_period_ = 0.0;
+  }
+  this->last_update_time_ = this->model->GetWorld()->GetSimTime();
+
   ROS_INFO("TurtleDrive Plugin Loaded!")
 }
 
-/////////////////////////////////////////////////
-void TurtleDrivePlugin::Init()
-{
-}
-
-/////////////////////////////////////////////////
+// Gazebo Update
 void TurtleDrivePlugin::OnUpdate()
 {
+  // ONLY PERFORM UPDATE IF UPDATE PERIOD HAS PASSED
+  common::Time current_time = this->model->GetWorld()->GetSimTime();
+  double seconds_since_last_update = (current_time - this->last_update_time_ ).Double();
+
+  if (seconds_since_last_update >= this->update_period_ )
+  {
+    // Set Last Update Time
+    this->last_update_time_ = this->model->GetWorld()->GetSimTime();
+
+
+    // Get Wheel Joint Positions and Publish
+    // First, convert from 0-2pi to 0-encoder_ticks_per_rev
+    double m = (this->encoder_ticks_per_rev_) / (2.0  * rigid2d::PI);
+    double b = (this->encoder_ticks_per_rev_ - 2.0 * rigid2d::PI * m);
+    nuturtlebot::SensorData sns;
+    sns.left_encoder = this->joints[0]->Position() * m + b;
+    sns.right_encoder = this->joints[1]->Position() * m + b;
+    this->SensorDataPub->publish(sns);
+
+    // If new wheel command received, set axle velocities
+    if (this->wheel_cmd_flag)
+    {
+      this->joints[0]->SetParam("vel", 0, this->desired_left_velocity);
+      this->joints[0]->SetParam("fmax", 0, this->motor_torque_max_);
+      this->joints[1]->SetParam("vel", 0, this->desired_right_velocity);
+      this->joints[1]->SetParam("fmax", 0, this->motor_torque_max_);
+      // Reset Flag
+      this->wheel_cmd_flag= false;
+    }
+
+  }
   
 }
 
-/////////////////////////////////////////////////
-void TurtleDrivePlugin::OnWheelCmdMsg(ConstPosePtr &/*_msg*/)
+// Wheel Command Callback
+void TurtleDrivePlugin::OnWheelCmdMsg(const nuturtlebot::WheelCommands & wc)
 {
+  // Convert wheel commands (+- 256) to velocities
+  double m = (this->motor_rot_max_ * 2.0) / (this->motor_pwr_max_ * 2.0)
+  double b = (this->motor_rot_max_ - this->motor_pwr_max_ * m);
+
+  double this->desired_left_velocity =  left_velocity * m + b;
+  double this->desired_right_velocity = right_velocity * m + b;
+
+  // Now cap wheel velocities if excessive
+  // Cap High
+  if (this->desired_left_velocity > this->motor_rot_max_)
+  {
+    this->desired_left_velocity = this->motor_rot_max_;
+  } else if (this->desired_left_velocity < - this->motor_rot_max_)
+  {
+    this->desired_left_velocity = - this->motor_rot_max_;
+  }
+  // Cap Low
+  if (this->desired_right_velocity > this->motor_rot_max_)
+  {
+    this->desired_right_velocity = this->motor_rot_max_;
+  } else if (this->desired_right_velocity < - this->motor_rot_max_)
+  {
+    this->desired_right_velocity = - this->motor_rot_max_;
+  }
+
+  // Flag to indicate we can publish new wheel commands
+  this->wheel_cmd_flag = true;
 }
