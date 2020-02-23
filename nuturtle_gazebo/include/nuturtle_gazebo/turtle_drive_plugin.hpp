@@ -4,10 +4,15 @@
 #include <string>
 #include <vector>
 
+#include <gazebo/gazebo.hh>
+#include <gazebo/msgs/msgs.hh>
+#include <gazebo/gazebo_client.hh>
 #include "gazebo/common/Plugin.hh"
 #include "gazebo/physics/physics.hh"
 #include "gazebo/transport/transport.hh"
 #include "gazebo/util/system.hh"
+#include <ros/ros.h>
+#include <functional> 
 
 #include "nuturtlebot/WheelCommands.h"
 #include "nuturtlebot/SensorData.h"
@@ -18,28 +23,34 @@ namespace gazebo
   class GAZEBO_VISIBLE TurtleDrivePlugin : public ModelPlugin
   {
     /// \brief Constructor
-    public: TurtleDrivePlugin();
+    public: 
 
-    public: virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
+        TurtleDrivePlugin();
 
-    private: void OnUpdate();
+        void wheel_cmdCallback(const nuturtlebot::WheelCommands &wc);
 
-    private: void OnWheelCmdMsg(const nuturtlebot::WheelCommands & wc)
+        virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
 
-    private: std::vector<event::ConnectionPtr> connections;
+    private:
 
-    private: physics::ModelPtr model;
-    private: std::vector<physics::JointPtr> joints;
+        void OnUpdate();
 
-    private: transport::NodePtr node;
-    private: transport::SubscriberPtr WheelCmdSub;
-    private: transport::PublisherPtr SensorDataPub;
+        std::vector<event::ConnectionPtr> connections;
 
-    private: int sensor_frequency_, encoder_ticks_per_rev_, motor_pwr_max_;
-    private: std::string wheel_cmd_topic_, sensor_data_topic_;
-    private: double motor_rot_max_, motor_torque_max_, update_period_;
-    private: double desired_left_velocity, desired_right_velocity;
-    private: common::Time last_update_time_;
+        physics::ModelPtr model;
+        std::vector<physics::JointPtr> joints;
+
+        transport::NodePtr node;
+        transport::SubscriberPtr WheelCmdSub;
+        transport::PublisherPtr SensorDataPub;
+
+        int sensor_frequency_, encoder_ticks_per_rev_, motor_pwr_max_;
+        std::string wheel_cmd_topic_, sensor_data_topic_;
+        double motor_rot_max_, motor_torque_max_, update_period_;
+        double desired_left_velocity, desired_right_velocity;
+        common::Time last_update_time_;
+        bool wheel_cmd_flag_;
+
   };
 }
 

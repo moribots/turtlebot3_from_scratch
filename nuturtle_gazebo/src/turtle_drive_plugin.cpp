@@ -1,17 +1,16 @@
-#include "plugins/turtle_drive_plugin.hh"
+#include "nuturtle_gazebo/turtle_drive_plugin.hpp"
 
 
-using namespace gazebo;
-GZ_REGISTER_MODEL_PLUGIN(TurtleDrivePlugin)
+GZ_REGISTER_MODEL_PLUGIN(gazebo::TurtleDrivePlugin)
 
 /////////////////////////////////////////////////
-TurtleDrivePlugin::TurtleDrivePlugin()
+gazebo::TurtleDrivePlugin::TurtleDrivePlugin()
 {
   this->joints.resize(2);
 }
 
 // Load Plugin
-void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
+void gazebo::TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 {
   // see http://gazebosim.org/tutorials?tut=ros_plugins Accessed 02/09/2020
   // Make sure the ROS node for Gazebo has already been initialized                                                                                    
@@ -23,7 +22,7 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     return;
   }
 
-  ROS_INFO("Loading TurtleDrive Plugin...")
+  ROS_INFO("Loading TurtleDrive Plugin...");
 
   // Get Model object to manipulate model physics
   this->model = _model;
@@ -53,8 +52,7 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   // Get Sensor Frequency (Encoders)
   this->sensor_frequency_ = 200; // default at 200Hz
     if (!_sdf->HasElement("sensor_frequency")) {
-      ROS_WARN("TurtleDrive Plugin missing <sensor_frequency>, defaulting to \"%s\"",
-          this->sensor_frequency_.c_str());
+      ROS_WARN("TurtleDrive Plugin missing <sensor_frequency>, using default");
     } else {
       this->sensor_frequency_ = _sdf->GetElement("sensor_frequency")->Get<int>();
     }
@@ -62,8 +60,7 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   // Get Wheel Command Topic
   this->wheel_cmd_topic_ = "nuturtlebot/WheelCommands"; // default
     if (!_sdf->HasElement("wheel_cmd_topic")) {
-      ROS_WARN("TurtleDrive Plugin missing <wheel_cmd_topic>, defaulting to \"%s\"",
-          this->wheel_cmd_topic_.c_str());
+      ROS_WARN("TurtleDrive Plugin missing <wheel_cmd_topic>, using default");
     } else {
       this->wheel_cmd_topic_ = _sdf->GetElement("wheel_cmd_topic")->Get<std::string>();
     }
@@ -71,8 +68,7 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   // Get Sensor Data Topic
   this->sensor_data_topic_ = "nuturtlebot/SensorData"; // default
     if (!_sdf->HasElement("sensor_data_topic")) {
-      ROS_WARN("TurtleDrive Plugin missing <sensor_data_topic>, defaulting to \"%s\"",
-          this->sensor_data_topic_.c_str());
+      ROS_WARN("TurtleDrive Plugin missing <sensor_data_topic>, using default");
     } else {
       this->sensor_data_topic_ = _sdf->GetElement("sensor_data_topic")->Get<std::string>();
     }
@@ -80,8 +76,7 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   // Get Encoder Ticks Per Rev
   this->encoder_ticks_per_rev_ = 4096; // default at 4096
     if (!_sdf->HasElement("encoder_ticks_per_rev")) {
-      ROS_WARN("TurtleDrive Plugin missing <encoder_ticks_per_rev>, defaulting to \"%s\"",
-          this->encoder_ticks_per_rev_.c_str());
+      ROS_WARN("TurtleDrive Plugin missing <encoder_ticks_per_rev>, using default");
     } else {
       this->encoder_ticks_per_rev_ = _sdf->GetElement("encoder_ticks_per_rev")->Get<int>();
     }
@@ -89,8 +84,7 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   // Get Max Motor Velocity in rad/s
   this->motor_rot_max_ = 6.35492; // default at 6.35492
     if (!_sdf->HasElement("motor_rot_max")) {
-      ROS_WARN("TurtleDrive Plugin missing <motor_rot_max>, defaulting to \"%s\"",
-          this->motor_rot_max_.c_str());
+      ROS_WARN("TurtleDrive Plugin missing <motor_rot_max>, using default");
     } else {
       this->motor_rot_max_ = _sdf->GetElement("motor_rot_max")->Get<double>();
     }
@@ -98,8 +92,7 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   // Get Max Motor Power (command to send ints to ESC for output between +- 265)
   this->motor_pwr_max_ = 265; // default at 265
     if (!_sdf->HasElement("motor_pwr_max")) {
-      ROS_WARN("TurtleDrive Plugin missing <motor_pwr_max>, defaulting to \"%s\"",
-          this->motor_pwr_max_.c_str());
+      ROS_WARN("TurtleDrive Plugin missing <motor_pwr_max>, using default");
     } else {
       this->motor_pwr_max_ = _sdf->GetElement("motor_pwr_max")->Get<int>();
     }
@@ -107,8 +100,7 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   // Get Max Motor Torque (stall) in Nm
   this->motor_torque_max_ = 1.5; // default at 1.5
     if (!_sdf->HasElement("motor_torque_max")) {
-      ROS_WARN("TurtleDrive Plugin missing <motor_torque_max>, defaulting to \"%s\"",
-          this->motor_torque_max_.c_str());
+      ROS_WARN("TurtleDrive Plugin missing <motor_torque_max>, using default");
     } else {
       this->motor_torque_max_ = _sdf->GetElement("motor_torque_max")->Get<double>();
     }
@@ -119,22 +111,23 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   this->joints[1]->SetParam("fmax", 0, this->motor_torque_max_);
 
   this->connections.push_back(event::Events::ConnectWorldUpdateBegin(
-          boost::bind(&TurtleDrivePlugin::OnUpdate, this)));
+          boost::bind(&gazebo::TurtleDrivePlugin::OnUpdate, this)));
 
   // This is the Gazebo version of a nove (see gazebo_tools_test.cpp in plen_ros package)
-  this->node = transport::NodePtr(new transport::Node());
-  this->node->Init(this->model->GetWorld()->GetName());
+  this->node = gazebo::transport::NodePtr(new transport::Node());
+  this->node->Init(this->model->GetWorld()->Name());
 
   // Subscribe to Wheel Cmd topic
-  this->WheelCmdSub = this->node->Subscribe(this->wheel_cmd_topic_,
-                                            &TurtleDrivePlugin::OnWheelCmdMsg, this);
+  this->WheelCmdSub = this->node->Subscribe<nuturtlebot::WheelCommands>(this->wheel_cmd_topic_,
+                                            &gazebo::TurtleDrivePlugin::wheel_cmdCallback, this);
 
   // Sensor Data Publisher
-  this->SensorDataPub = this->node->Advertise<nuturtlebot::SensorData>(this->sensor_data_topic);
+  this->SensorDataPub = this->node->Advertise<nuturtlebot::SensorData>(this->sensor_data_topic_);
+  this->SensorDataPub->WaitForConnection();
 
   // Update Rate Parameters
   // Initialize update rate stuff
-  if ( this->this->sensor_frequency_ > 0.0 )
+  if ( this->sensor_frequency_ > 0.0 )
   {
     this->update_period_ = 1.0 / this->sensor_frequency_;
   }
@@ -142,22 +135,22 @@ void TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   {
     this->update_period_ = 0.0;
   }
-  this->last_update_time_ = this->model->GetWorld()->GetSimTime();
+  this->last_update_time_ = this->model->GetWorld()->SimTime();
 
-  ROS_INFO("TurtleDrive Plugin Loaded!")
+  ROS_INFO("TurtleDrive Plugin Loaded!");
 }
 
 // Gazebo Update
-void TurtleDrivePlugin::OnUpdate()
+void gazebo::TurtleDrivePlugin::OnUpdate()
 {
   // ONLY PERFORM UPDATE IF UPDATE PERIOD HAS PASSED
-  common::Time current_time = this->model->GetWorld()->GetSimTime();
+  gazebo::common::Time current_time = this->model->GetWorld()->SimTime();
   double seconds_since_last_update = (current_time - this->last_update_time_ ).Double();
 
-  if (seconds_since_last_update >= this->update_period_ )
+  if (seconds_since_last_update >= this->update_period_)
   {
     // Set Last Update Time
-    this->last_update_time_ = this->model->GetWorld()->GetSimTime();
+    this->last_update_time_ = this->model->GetWorld()->SimTime();
 
 
     // Get Wheel Joint Positions and Publish
@@ -167,17 +160,17 @@ void TurtleDrivePlugin::OnUpdate()
     nuturtlebot::SensorData sns;
     sns.left_encoder = this->joints[0]->Position() * m + b;
     sns.right_encoder = this->joints[1]->Position() * m + b;
-    this->SensorDataPub->publish(sns);
+    this->SensorDataPub->Publish(sns);
 
     // If new wheel command received, set axle velocities
-    if (this->wheel_cmd_flag)
+    if (this->wheel_cmd_flag_)
     {
       this->joints[0]->SetParam("vel", 0, this->desired_left_velocity);
       this->joints[0]->SetParam("fmax", 0, this->motor_torque_max_);
       this->joints[1]->SetParam("vel", 0, this->desired_right_velocity);
       this->joints[1]->SetParam("fmax", 0, this->motor_torque_max_);
       // Reset Flag
-      this->wheel_cmd_flag= false;
+      this->wheel_cmd_flag_ = false;
     }
 
   }
@@ -185,14 +178,14 @@ void TurtleDrivePlugin::OnUpdate()
 }
 
 // Wheel Command Callback
-void TurtleDrivePlugin::OnWheelCmdMsg(const nuturtlebot::WheelCommands & wc)
+void gazebo::TurtleDrivePlugin::wheel_cmdCallback(const nuturtlebot::WheelCommands & wc)
 {
   // Convert wheel commands (+- 256) to velocities
-  double m = (this->motor_rot_max_ * 2.0) / (this->motor_pwr_max_ * 2.0)
+  double m = (this->motor_rot_max_ * 2.0) / (this->motor_pwr_max_ * 2.0);
   double b = (this->motor_rot_max_ - this->motor_pwr_max_ * m);
 
-  double this->desired_left_velocity =  left_velocity * m + b;
-  double this->desired_right_velocity = right_velocity * m + b;
+  this->desired_left_velocity =  wc.left_velocity * m + b;
+  this->desired_right_velocity = wc.right_velocity * m + b;
 
   // Now cap wheel velocities if excessive
   // Cap High
@@ -213,5 +206,5 @@ void TurtleDrivePlugin::OnWheelCmdMsg(const nuturtlebot::WheelCommands & wc)
   }
 
   // Flag to indicate we can publish new wheel commands
-  this->wheel_cmd_flag = true;
+  this->wheel_cmd_flag_ = true;
 }
