@@ -17,10 +17,10 @@ chassis_thickness: 0.14 # 0.033
 wheel_axle_offset: 0.02
 
 # chassis mass
-chassis_mass: 0.8
+chassis_mass: 1.0
 
 # wheel mass
-wheel_mass: 0.1
+wheel_mass: 0.03
 
 # Number of encoder ticks per wheel revolution, 12 bit per 360deg so 4096 ticks  per rev
 encoder_ticks_per_rev: 4096
@@ -38,4 +38,4 @@ motor_rot_max: 6.35492
 motor_pwr_max: 265
 
 # Maximum motor torque (stall) in Nm (9V: 1.0 | 11.1V: 1.4 | 12V: 1.5)
-motor_torque_max: 1.5
+motor_torque_max: 1.0

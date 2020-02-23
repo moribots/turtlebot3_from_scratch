@@ -2,22 +2,22 @@
 <robot name="diff_drive" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
 <!-- Include Diff Params YAML -->
-<xacro:property name="params" value="${load_yaml('$(find nuturtle_description)/config/diff_params.yaml')}" />
+<xacro:property name="diff_params" value="${load_yaml('$(find nuturtle_description)/config/diff_params.yaml')}" />
 
-<xacro:property name="encoder_ticks_per_rev" value="${params['encoder_ticks_per_rev']}" />
+<xacro:property name="encoder_ticks_per_rev" value="${diff_params['encoder_ticks_per_rev']}" />
 
-<xacro:property name="motor_rot_max" value="${params['motor_rot_max']}" />
+<xacro:property name="motor_rot_max" value="${diff_params['motor_rot_max']}" />
 
-<xacro:property name="motor_pwr_max" value="${params['motor_pwr_max']}" />
+<xacro:property name="motor_pwr_max" value="${diff_params['motor_pwr_max']}" />
 
-<xacro:property name="motor_torque_max" value="${params['motor_torque_max']}" />
+<xacro:property name="motor_torque_max" value="${diff_params['motor_torque_max']}" />
 
 <!-- Include Odometer YAML -->
-<xacro:property name="params" value="${load_yaml('$(find nuturtle_description)/config/diff_params.yaml')}" />
+<xacro:property name="odom_params" value="${load_yaml('$(find rigid2d)/config/odometer.yaml')}" />
 
-<xacro:property name="left_wheel_joint" value="${params['left_wheel_joint']}" />
+<xacro:property name="left_wheel_joint" value="${odom_params['left_wheel_joint']}" />
 
-<xacro:property name="right_wheel_joint" value="${params['right_wheel_joint']}" />
+<xacro:property name="right_wheel_joint" value="${odom_params['right_wheel_joint']}" />
 
 <!-- Include URDF File -->
 <xacro:include filename="$(find nuturtle_description)/urdf/diff_drive.urdf.xacro" />
@@ -26,7 +26,7 @@
 
 <!-- Custom Gazebo Plugin to control Wheel Velocities -->
 <gazebo>
-    <plugin name="turtle_drive_plugin" filename="nuturtle_gazebo_plugin.so">
+    <plugin name="turtle_drive_plugin" filename="libnuturtle_gazebo_plugin.so">
         <left_wheel_joint>${left_wheel_joint}</left_wheel_joint> 
         <right_wheel_joint>${right_wheel_joint}</right_wheel_joint>
         <sensor_frequency>200</sensor_frequency>
@@ -48,24 +48,24 @@
 
 <gazebo reference="rr_wheel">
     <material>Gazebo/Orange</material>
-    <mu1>1</mu1> <!-- static -->
-    <mu2>1</mu2> <!-- dynamic -->
+    <mu1>1000.0</mu1> <!-- static -->
+    <mu2>1000.0</mu2> <!-- dynamic -->
     <dampingFactor>0.001</dampingFactor>
     <kp>10000000.0</kp> <!-- rigidity (damping) -->
     <kd>1.0</kd> <!-- rigidity (damping) -->
-    <minDepth>0.001</minDepth>
-    <fdir1>1 1 0</fdir1> <!-- friction direction -->
+    <!-- <minDepth>0.001</minDepth> -->
+    <!-- <fdir1>1 1 0</fdir1> --> <!-- friction direction -->
 </gazebo>
 
 <gazebo reference="rl_wheel">
     <material>Gazebo/Orange</material>
-    <mu1>1</mu1> <!-- static -->
-    <mu2>1</mu2> <!-- dynamic -->
+    <mu1>1000.0</mu1> <!-- static -->
+    <mu2>1000.0</mu2> <!-- dynamic -->
     <dampingFactor>0.001</dampingFactor>
     <kp>10000000.0</kp> <!-- rigidity (damping) -->
     <kd>1.0</kd> <!-- rigidity (damping) -->
-    <minDepth>0.001</minDepth>
-    <fdir1>1 1 0</fdir1> <!-- friction direction -->
+    <!-- <minDepth>0.001</minDepth> -->
+    <!-- <fdir1>1 1 0</fdir1> --> <!-- friction direction -->
 </gazebo>
 
 <gazebo reference="ball_caster">
@@ -75,8 +75,8 @@
     <dampingFactor>0.001</dampingFactor>
     <kp>10000000.0</kp> <!-- rigidity (damping) -->
     <kd>1.0</kd> <!-- rigidity (damping) -->
-    <minDepth>0.001</minDepth>
-    <fdir1>1 1 0</fdir1> <!-- friction direction -->
+    <!-- <minDepth>0.001</minDepth> -->
+    <!-- <fdir1>1 1 0</fdir1> --> <!-- friction direction -->
 </gazebo>
 
 </robot>

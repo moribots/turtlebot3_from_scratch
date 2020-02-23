@@ -40,7 +40,8 @@ namespace gazebo
         physics::ModelPtr model;
         std::vector<physics::JointPtr> joints;
 
-        ros::NodeHandle nh;
+        // ros::NodeHandle nh;
+        std::unique_ptr<ros::NodeHandle> nh;
         transport::NodePtr node;
         ros::Subscriber WheelCmdSub;
         ros::Publisher SensorDataPub;

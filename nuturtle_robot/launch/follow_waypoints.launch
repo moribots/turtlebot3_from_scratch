@@ -36,9 +36,18 @@
 
 	<group if="$(eval arg('robot') == -1)">
 		<!-- Fake Encoders Node - USE FOR TESTING WHEN TURTLEBOT UNAVAILABLE -->
-		<node name="fake_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node" output="screen">
+		<!-- <node name="fake_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node" output="screen">
 			<rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
 			<remap from="turtle1/cmd_vel" to="cmd_vel" />
+		</node> -->
+
+		<!-- Turtle Interface -->
+		<node pkg="nuturtle_robot" type="turtle_interface" name="turtle_interface" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<param name="right_wheel_joint" value="right_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+			<remap from="wheel_cmd" to="/gazebo_client/nuturtlebot/WheelCommands"/>
+			<remap from="sensor_data" to="/gazebo_client/nuturtlebot/SensorData"/>
 		</node>
 
 		<!-- Real Waypoint add machine tag to run on turtlebot, or remove to see log msgs -->

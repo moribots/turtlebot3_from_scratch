@@ -11,9 +11,14 @@ gazebo::TurtleDrivePlugin::TurtleDrivePlugin()
   this->node = gazebo::transport::NodePtr(new transport::Node());
 
 
-  this->nh = ros::NodeHandle();
+  // this->nh = ros::NodeHandle();
+  this->nh.reset(new ros::NodeHandle("gazebo_client"));
 
   this->joints.resize(2);
+
+  this->desired_right_velocity = 0.0;
+  this->desired_left_velocity = 0.0;
+  this->wheel_cmd_flag_ = false;
 }
 
 // Load Plugin
@@ -114,7 +119,9 @@ void gazebo::TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _
 
   // Now set up wheel joints using max torque attributes
   // Note this method only accepts doubles
+  this->joints[0]->SetParam("vel", 0, 0.0);
   this->joints[0]->SetParam("fmax", 0, this->motor_torque_max_);
+  this->joints[1]->SetParam("vel", 0, 0.0);
   this->joints[1]->SetParam("fmax", 0, this->motor_torque_max_);
 
   this->connections.push_back(event::Events::ConnectWorldUpdateBegin(
@@ -126,12 +133,12 @@ void gazebo::TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _
   // this->WheelCmdSub = this->node->Subscribe<nuturtlebot::WheelCommands>(this->wheel_cmd_topic_, 1,
   //                                           &gazebo::TurtleDrivePlugin::wheel_cmdCallback, this);
 
-  this->WheelCmdSub = this->nh.subscribe<nuturtlebot::WheelCommands>(this->wheel_cmd_topic_, 1,
+  this->WheelCmdSub = this->nh->subscribe(this->wheel_cmd_topic_, 1,
                                             &gazebo::TurtleDrivePlugin::wheel_cmdCallback, this);
   // // Sensor Data Publisher
   // this->SensorDataPub = this->node->Advertise<nuturtlebot::SensorData>(this->sensor_data_topic_, 1);
   // this->SensorDataPub->WaitForConnection();
-  this->SensorDataPub = this->nh.advertise<nuturtlebot::SensorData>(this->sensor_data_topic_, 1);
+  this->SensorDataPub = this->nh->advertise<nuturtlebot::SensorData>(this->sensor_data_topic_, 1);
 
   // Update Rate Parameters
   // Initialize update rate stuff

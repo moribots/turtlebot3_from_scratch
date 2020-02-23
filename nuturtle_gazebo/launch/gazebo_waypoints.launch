@@ -1,0 +1,10 @@
+<launch>
+
+	<include file="$(find nuturtle_robot)/launch/follow_waypoints.launch">
+			<arg name="robot" value="-1"/>
+	</include>
+
+	<include file="$(find nuturtle_gazebo)/launch/diff_drive_gazebo.launch">
+	</include>
+
+</launch>
