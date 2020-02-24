@@ -132,7 +132,7 @@
                     friction="0"/>
 
   <xacro:frame_joint name="base_scan" type="fixed"
-                    origin_rpy="0 0 0" origin_xyz="0 0 ${H/2}"
-                    parent="base_link" child="base_scan"/>
+                    origin_rpy="0 0 0" origin_xyz="0 0 ${H/2 + r_bc}"
+                    parent="base_link" child="base_scan"/> <!-- Add small offset to laser scanner -->
 
 </robot>

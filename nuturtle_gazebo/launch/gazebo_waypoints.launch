@@ -3,8 +3,10 @@
 	<include file="$(find nuturtle_robot)/launch/follow_waypoints.launch">
 			<arg name="robot" value="-1"/>
 	</include>
-
+	<!-- TRY: $(find nuturtlebot)/worlds/block.world -->
+	<!-- TRY: $(find gazebo_ros)/launch/empty_world.launch -->
+	<arg name="world" default="$(find gazebo_ros)/launch/empty_world.launch"/>
 	<include file="$(find nuturtle_gazebo)/launch/diff_drive_gazebo.launch">
+		<arg name="world" value="$(arg world)"/>
 	</include>
-
 </launch>
