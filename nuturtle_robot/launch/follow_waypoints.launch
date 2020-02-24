@@ -46,8 +46,8 @@
 			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
 			<param name="right_wheel_joint" value="right_wheel_axle" />
 			<param name="left_wheel_joint" value="left_wheel_axle" />
-			<remap from="wheel_cmd" to="/gazebo_client/nuturtlebot/WheelCommands"/>
-			<remap from="sensor_data" to="/gazebo_client/nuturtlebot/SensorData"/>
+			<remap from="wheel_cmd" to="/nuturtlebot/WheelCommands"/>
+			<remap from="sensor_data" to="/nuturtlebot/SensorData"/>
 		</node>
 
 		<!-- Real Waypoint add machine tag to run on turtlebot, or remove to see log msgs -->

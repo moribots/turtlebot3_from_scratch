@@ -7,7 +7,7 @@
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
 
-  <arg name="world" default="$(find nuturtlebot)/worlds/block.world"/>
+  <arg name="world" default="$(find gazebo_ros)/launch/empty_world.launch"/>
 
   <!-- We reuse the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

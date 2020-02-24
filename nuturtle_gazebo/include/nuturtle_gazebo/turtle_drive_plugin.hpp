@@ -20,7 +20,7 @@
 
 namespace gazebo
 {
-  class GAZEBO_VISIBLE TurtleDrivePlugin : public ModelPlugin
+  class TurtleDrivePlugin : public ModelPlugin
   {
     /// \brief Constructor
     public: 
@@ -40,8 +40,8 @@ namespace gazebo
         physics::ModelPtr model;
         std::vector<physics::JointPtr> joints;
 
-        // ros::NodeHandle nh;
-        std::unique_ptr<ros::NodeHandle> nh;
+        ros::NodeHandle nh;
+        // std::unique_ptr<ros::NodeHandle> nh;
         transport::NodePtr node;
         ros::Subscriber WheelCmdSub;
         ros::Publisher SensorDataPub;
