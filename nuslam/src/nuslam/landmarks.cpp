@@ -67,7 +67,7 @@ namespace nuslam
 		threshold = threshold_;
 	}
 
-	Landmark::Landmark(const double & radius_, const Point & coords_, const std::vector<Points> points_, const double & threshold_)
+	Landmark::Landmark(const double & radius_, const Point & coords_, const std::vector<Point> points_, const double & threshold_)
 	{
 		radius = radius_;
 		coords = coords_;
@@ -79,15 +79,15 @@ namespace nuslam
 	{
 		bool added = false;
 
-		if (point.empty())
+		if (points.empty())
 		{
 			points.push_back(point_);
 			added = true;
 		} else {
 
-			double abs_x = pow(point.pose.x - points.end()->pose.x, 2);
-			double abs_y = pow(point.pose.y - points.end()->pose.y, 2);
-			double abs_dist = sqrt(abs_x + abs_ys);
+			double abs_x = pow(point_.pose.x - points.end()->pose.x, 2);
+			double abs_y = pow(point_.pose.y - points.end()->pose.y, 2);
+			double abs_dist = sqrt(abs_x + abs_y);
 
 			if (abs_dist <= threshold)
 			{
@@ -101,12 +101,12 @@ namespace nuslam
 
 	}
 
-	std::std::vector<Point> Landmark::return_points()
+	std::vector<Point> Landmark::return_points()
 	{
 		return points;
 	}
 
-	Point Landmark::return_coods()
+	Point Landmark::return_coords()
 	{
 		return coords;
 	}
@@ -121,16 +121,16 @@ namespace nuslam
 	{
 		double range = sqrt(pow(pose.x, 2) + pow(pose.y, 2));
 		double bear = atan2(pose.y, pose.x);
-		rb = RangeBear(range, bear);
+		RangeBear rb(range, bear);
 		return rb;
 	}
 
 	Vector2D polarToCartesian(const RangeBear & range_bear)
 	{
-		double x = range_bear.range * cos(range_bear.bear);
-		double y = range_bear.range * sin(range_bear.bear);
+		double x = range_bear.range * cos(range_bear.bearing);
+		double y = range_bear.range * sin(range_bear.bearing);
 
-		pose = Vector2D(x, y);
+		Vector2D pose(x, y);
 
 		return pose;
 

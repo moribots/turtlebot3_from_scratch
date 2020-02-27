@@ -3,6 +3,7 @@
 /// \file
 /// \brief Library Landmarks landmark detection and classification.
 #include "rigid2d/rigid2d.hpp"
+#include <vector>
 
 namespace nuslam
 {
@@ -55,7 +56,7 @@ namespace nuslam
         /// \brief construct Landmark object with inputs
         /// \param
         /// \param
-        Landmark(const double & radius_, const Point & coords_, const std::vector<Points> points_, const double & threshold_);
+        Landmark(const double & radius_, const Point & coords_, const std::vector<Point> points_, const double & threshold_);
 
 
         /// \brief check if a Point belongs to this Landmark, and add it to points if so
@@ -85,7 +86,7 @@ namespace nuslam
 
     private:
         // Landmark radius
-        double radius
+        double radius;
         // Cartesian and Polar coordinates of Landmark
         Point coords;
         // Points which make up Landmark
