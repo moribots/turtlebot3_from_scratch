@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0)
 project(nuslam)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -14,10 +14,22 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(catkin REQUIRED COMPONENTS
   message_generation
   message_runtime
+  rigid2d
   roscpp
+  rostest
   sensor_msgs
   std_msgs
+  visualization_msgs
 )
+
+find_package(rigid2d REQUIRED COMPONENTS)
+
+# # Check if rigid2d found
+# if(${rigid2d_FOUND})
+#   message("FOUND rigid2d in \n ${rigid2d_INCLUDE_DIRS}")
+# endif()
+
+find_package(Eigen3 REQUIRED COMPONENTS)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -110,13 +122,12 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
- INCLUDE_DIRS
- LIBRARIES ${PROJECT_NAME}
- CATKIN_DEPENDS message_generation message_runtime sensor_msgs std_msgs
+ INCLUDE_DIRS include
+ LIBRARIES ${PROJECT_NAME} rigid2d
+ CATKIN_DEPENDS message_generation message_runtime rigid2d roscpp sensor_msgs std_msgs visualization_msgs
 #  DEPENDS system_lib
 )
 
-find_package(rigid2d REQUIRED)
 
 ###########
 ## Build ##
@@ -128,6 +139,7 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${rigid2d_INCLUDE_DIRS}
+  ${Eigen3_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -138,7 +150,7 @@ add_library(${PROJECT_NAME}
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
@@ -156,13 +168,14 @@ set_target_properties(landmarks_node PROPERTIES OUTPUT_NAME landmarks_node PREFI
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(landmarks_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(landmarks_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${rigid2d_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
 landmarks_node # this is my node that will use below libraries
 ${rigid2d_LIBRARIES}
-# ${PROJECT_NAME} # this a library that my node will use
+${Eigen3_LIBRARIES}
+${PROJECT_NAME} # this a library that my node will use
 ${catkin_LIBRARIES} # this a library that my node will use
 )
 #############
@@ -181,9 +194,9 @@ ${catkin_LIBRARIES} # this a library that my node will use
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-# install(TARGETS ${PROJECT_NAME}_node
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS landmarks_node
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html

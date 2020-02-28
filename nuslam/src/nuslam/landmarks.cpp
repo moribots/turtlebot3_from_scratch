@@ -53,7 +53,7 @@ namespace nuslam
 		std::vector<Point> p;
 		points = p;
 
-		threshold = 0.1;
+		threshold = 0.5;
 	}
 
 	Landmark::Landmark(const double & threshold_)

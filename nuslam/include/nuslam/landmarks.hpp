@@ -2,7 +2,7 @@
 #define LANDMARKS_INCLUDE_GUARD_HPP
 /// \file
 /// \brief Library Landmarks landmark detection and classification.
-#include "rigid2d/rigid2d.hpp"
+#include <rigid2d/rigid2d.hpp>
 #include <vector>
 
 namespace nuslam
