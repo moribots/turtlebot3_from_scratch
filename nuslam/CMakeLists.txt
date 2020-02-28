@@ -12,6 +12,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  message_generation
+  message_runtime
   roscpp
   sensor_msgs
   std_msgs
@@ -110,7 +112,7 @@ generate_messages(
 catkin_package(
  INCLUDE_DIRS
  LIBRARIES ${PROJECT_NAME}
- CATKIN_DEPENDS sensor_msgs std_msgs
+ CATKIN_DEPENDS message_generation message_runtime sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
 

@@ -14,7 +14,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 ## is used, also find other catkin packages
 
 # find the ros packages you need
-find_package(catkin REQUIRED COMPONENTS roscpp gazebo_ros)
+find_package(catkin REQUIRED COMPONENTS gazebo_ros roscpp)
 find_package(gazebo REQUIRED)
 find_package(rigid2d REQUIRED)
 find_package(nuturtlebot REQUIRED)
