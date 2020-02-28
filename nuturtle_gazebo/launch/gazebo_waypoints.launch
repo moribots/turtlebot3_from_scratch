@@ -5,7 +5,7 @@
 	</include>
 	<!-- TRY: $(find nuturtlebot)/worlds/block.world -->
 	<!-- TRY: $(find gazebo_ros)/launch/empty_world.launch -->
-	<arg name="world" default="$(find gazebo_ros)/launch/empty_world.launch"/>
+	<arg name="world" default="$(find nuturtlebot)/worlds/block.world"/>
 	<include file="$(find nuturtle_gazebo)/launch/diff_drive_gazebo.launch">
 		<arg name="world" value="$(arg world)"/>
 	</include>

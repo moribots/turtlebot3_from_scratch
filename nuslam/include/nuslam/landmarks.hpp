@@ -84,13 +84,14 @@ namespace nuslam
 
         // TODO: Detect Circle from cluster and set x,y,radius,range,bearing of Landmark
 
+        // Points which make up Landmark
+        std::vector<Point> points;
+
     private:
         // Landmark radius
         double radius;
         // Cartesian and Polar coordinates of Landmark
         Point coords;
-        // Points which make up Landmark
-        std::vector<Point> points;
         // Threshold for evaluating Points
         double threshold;
     };

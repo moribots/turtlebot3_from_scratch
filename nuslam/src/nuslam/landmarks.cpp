@@ -85,8 +85,8 @@ namespace nuslam
 			added = true;
 		} else {
 
-			double abs_x = pow(point_.pose.x - points.end()->pose.x, 2);
-			double abs_y = pow(point_.pose.y - points.end()->pose.y, 2);
+			double abs_x = pow(point_.pose.x - points.back().pose.x, 2);
+			double abs_y = pow(point_.pose.y - points.back().pose.y, 2);
 			double abs_dist = sqrt(abs_x + abs_y);
 
 			if (abs_dist <= threshold)
@@ -120,7 +120,7 @@ namespace nuslam
 	RangeBear cartesianToPolar(const Vector2D & pose)
 	{
 		double range = sqrt(pow(pose.x, 2) + pow(pose.y, 2));
-		double bear = atan2(pose.y, pose.x);
+		double bear = rigid2d::normalize_angle(atan2(pose.y, pose.x));
 		RangeBear rb(range, bear);
 		return rb;
 	}
