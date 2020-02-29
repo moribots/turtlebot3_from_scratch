@@ -29,7 +29,7 @@ find_package(rigid2d REQUIRED COMPONENTS)
 #   message("FOUND rigid2d in \n ${rigid2d_INCLUDE_DIRS}")
 # endif()
 
-find_package(Eigen3 REQUIRED COMPONENTS)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -174,7 +174,7 @@ add_dependencies(landmarks_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${rigid2d_EX
 target_link_libraries(
 landmarks_node # this is my node that will use below libraries
 ${rigid2d_LIBRARIES}
-${Eigen3_LIBRARIES}
+Eigen3::Eigen
 ${PROJECT_NAME} # this a library that my node will use
 ${catkin_LIBRARIES} # this a library that my node will use
 )

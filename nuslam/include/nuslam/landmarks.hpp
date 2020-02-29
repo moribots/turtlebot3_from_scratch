@@ -82,7 +82,15 @@ namespace nuslam
         double return_radius();
 
 
-        // TODO: Detect Circle from cluster and set x,y,radius,range,bearing of Landmark
+        /// \brief Fit Circle from cluster and set x,y,radius,range,bearing of Landmark
+        /// \param
+        /// \returns
+        double fit_circle();
+
+        /// \brief Detect Circle from cluster and set x,y,radius,range,bearing of Landmark
+        /// \param
+        /// \returns
+        void detect_circle();
 
         // Points which make up Landmark
         std::vector<Point> points;
