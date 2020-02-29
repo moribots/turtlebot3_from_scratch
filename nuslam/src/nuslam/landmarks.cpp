@@ -191,17 +191,23 @@ namespace nuslam
 		// Using jacobiSvd (accurate, fast for small matrices)
 		// ThinV returns a diagonal vector suitable for constructing
 		// a square sigma matrix
-		Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullV);
+		Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullU | Eigen::DecompositionOptions::ComputeFullV);
 
 		// If the smallest singular value is <10^-12 then A is the 4th column of V
 		// Note that singular value vector is returned in decreasing order
 		// Initialize A Vector of doubles
 		Eigen::MatrixXd A = Eigen::MatrixXd::Zero(4, 1);
-		if (Z_svd.singularValues()(3) < pow(10.0, -12))
+		ROS_INFO("COMPARING Z_svd");
+		ROS_INFO("-------------------------------------");
+		// std::cout << "V DIAG: \n" << Z_svd.singularValues() << std::endl;
+		std::cout << "n SIZE: " << n << std::endl; 
+		if (Z_svd.singularValues()(3) < 1e-12)
 		{
+			ROS_INFO("LESS THRESH");
 			// Step 10: A is the 4th column of the V matrix
 			A = Z_svd.matrixV().col(3);
 		} else {
+			ROS_INFO("GTR THRESH");
 			// std::cout << "V DIAG: \n" << Z_svd.singularValues() << std::endl;
 			// Step 11:
 			// Construct sigma matrix (diagonal with singular values)
@@ -250,10 +256,10 @@ namespace nuslam
 		}
 
 		// Step 12: eqn of circle is (x - a)^2 + (y - b)^2 = R^2
-		// std::cout << "A MATRIX" << A << std::endl;
-		auto a = -A(1) / (2 * A(0));
-		auto b = -A(2) / (2 * A(0));
-		auto R = sqrt((pow(A(1), 2) + pow(A(2), 2) - (4 * A(0) * A(3))) / (4 * pow(A(3), 2)));
+		auto a = -A(1) / (2.0 * A(0));
+		auto b = -A(2) / (2.0 * A(0));
+		auto R = sqrt((pow(A(1), 2) + pow(A(2), 2) - (4.0 * A(0) * A(3))) / (4.0 * pow(A(3), 2)));
+		// std::cout << "A MATRIX: \n" << A << std::endl;
 
 		// Step 13: We shifted our coordinate system, so actual centroid is at
 		// a + mean_x, b + mean_y
