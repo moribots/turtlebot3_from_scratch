@@ -4,6 +4,12 @@
 /// \brief Library Landmarks landmark detection and classification.
 #include <rigid2d/rigid2d.hpp>
 #include <vector>
+#include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/SVD>
+#include <eigen3/Eigen/Eigenvalues>
+#include <numeric>
+#include <functional>
+#include <ros/ros.h>
 
 namespace nuslam
 {

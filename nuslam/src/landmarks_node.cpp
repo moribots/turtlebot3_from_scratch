@@ -122,6 +122,11 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
   }
 
   // Finally, we perform circle detection for each cluster
+  for (auto iter = landmarks.begin(); iter != landmarks.end(); iter++)
+  {
+    iter->fit_circle();
+    // ROS_INFO("FITTING CIRCLE");
+  }
 
   // Now, return landmarks radii x, and y positions each in a separate vector
   std::vector<double> radii;
