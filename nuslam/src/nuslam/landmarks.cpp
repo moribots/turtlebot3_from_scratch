@@ -118,6 +118,7 @@ namespace nuslam
 
 	double Landmark::fit_circle()
 	{
+		auto n = std::size(points);
 		// Step 1: Compute x,y coordinates of the centroid of n data points
 		// (xc1, yc1), ...(xcn, yxcn) --> (mean of x,y coords of points)
 		// TODO: FIGURE OUT HOW TO ACCESS Point::pose::x,y
@@ -132,10 +133,10 @@ namespace nuslam
 		// Syntax below to compute mean
 		float mean_x  = std::accumulate(poses.begin(), poses.end(), 0.0, \
                             std::bind(std::plus<double>(), std::placeholders::_1,
-                            std::bind(&rigid2d::Vector2D::x, std::placeholders::_2))) / static_cast<double>(poses.size());
+                            std::bind(&rigid2d::Vector2D::x, std::placeholders::_2))) / static_cast<double>(n);
 		float mean_y  = std::accumulate(poses.begin(), poses.end(), 0.0, \
                             std::bind(std::plus<double>(), std::placeholders::_1,
-                            std::bind(&rigid2d::Vector2D::y, std::placeholders::_2))) / static_cast<double>(poses.size());
+                            std::bind(&rigid2d::Vector2D::y, std::placeholders::_2))) / static_cast<double>(n);
 
 	    // Step 2: Shift the coordinates so the centroid is at the origin
 	    std::vector<double> z;
@@ -149,13 +150,12 @@ namespace nuslam
 		}
 
 		// Step 4: Compute mean of z
-	    double mean_z = std::accumulate(std::begin(z), std::end(z), 0.0) / std::size(z);
+	    double mean_z = std::accumulate(std::begin(z), std::end(z), 0.0) / static_cast<double>(n);
 
 	    // Step 5: form data matrix from n data points
 	    // Create Matrix typedef
 	    // Dynamic says we don't know matrix size for rows, but columns = 4
 	    typedef Eigen::Matrix<double, Eigen::Dynamic, 4> ClusterMat;
-	    auto n = std::size(z);
 	    // reserving storage
 	    ClusterMat Z = ClusterMat::Zero(n, 4);
 	    // or use r as counter in the loop
@@ -167,7 +167,6 @@ namespace nuslam
 		    Z.row(r) << z.at(r), p.pose.x, p.pose.y, 1; // fill matrix one row per iteration, then increment row
 		    r++;
 		}
-
 		// std::cout << "Z: \n" << Z << std::endl;
 
 		// Step 6: Data Matrix M = (1/n) Z.T Z
@@ -187,27 +186,33 @@ namespace nuslam
 		H_inv.row(2) << 0, 0, 1, 0;
 		H_inv.row(3) << 0.5, 0, 0, - 2.0 * mean_z;
 
-		// TODO Step 9: Singular Value Decomposition of Z
-		// Using jacobiSvd (accurate, fast for small matrices)
+		// Step 9: Singular Value Decomposition of Z
 		// ThinV returns a diagonal vector suitable for constructing
 		// a square sigma matrix
-		Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullU | Eigen::DecompositionOptions::ComputeFullV);
 
+		// Using BDCSVD faster for large matrices
+		Eigen::BDCSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullU | Eigen::DecompositionOptions::ComputeFullV);
+
+		if (n < 10)
+		{
+			// Using jacobiSvd (accurate, fast for small matrices)
+			Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullU | Eigen::DecompositionOptions::ComputeFullV);
+		}
 		// If the smallest singular value is <10^-12 then A is the 4th column of V
 		// Note that singular value vector is returned in decreasing order
 		// Initialize A Vector of doubles
 		Eigen::MatrixXd A = Eigen::MatrixXd::Zero(4, 1);
-		ROS_INFO("COMPARING Z_svd");
-		ROS_INFO("-------------------------------------");
+		// ROS_INFO("COMPARING Z_svd");
+		// ROS_INFO("-------------------------------------");
 		// std::cout << "V DIAG: \n" << Z_svd.singularValues() << std::endl;
-		std::cout << "n SIZE: " << n << std::endl; 
+		// std::cout << "n SIZE: " << n << std::endl; 
 		if (Z_svd.singularValues()(3) < 1e-12)
 		{
-			ROS_INFO("LESS THRESH");
+			// ROS_INFO("LESS THRESH");
 			// Step 10: A is the 4th column of the V matrix
 			A = Z_svd.matrixV().col(3);
 		} else {
-			ROS_INFO("GTR THRESH");
+			// ROS_INFO("GTR THRESH");
 			// std::cout << "V DIAG: \n" << Z_svd.singularValues() << std::endl;
 			// Step 11:
 			// Construct sigma matrix (diagonal with singular values)
@@ -251,7 +256,7 @@ namespace nuslam
 			// The eigenvector corresponding to the minimum positive eigenvalue
 			auto A_eigvect = es.eigenvectors().col(min_pos_counter);
 
-			// Solve for A = A_star * Y_inv
+			// Solve for A = Y_inv * A_star
 			A = Y.inverse() * A_eigvect;
 		}
 

@@ -109,7 +109,7 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
   for (auto iter = landmarks.begin(); iter != landmarks.end();)
   {
     // Check if cluster contains less than 3 points
-    if (iter->points.size() < 3)
+    if (iter->points.size() <= 3)
     {
       // Erase this element from the vector
       // This will  erase the current element from the
@@ -143,7 +143,7 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
     c++;
   }
 
-  ROS_INFO("FOUND %d CLUSTERS", c);
+  // ROS_INFO("FOUND %d CLUSTERS", c);
 
   // Now, publish
   map.radii = radii;
