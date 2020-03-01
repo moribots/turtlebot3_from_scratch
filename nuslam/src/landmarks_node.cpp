@@ -60,9 +60,6 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
     if (lsr.ranges.at(i) >= lsr.range_min && lsr.ranges.at(i) <= lsr.range_max)
     {
 
-      // Bias angle by minimum scan angle
-      bearing += lsr.angle_increment;
-
       // Wrap Angle
       if (bearing > lsr.angle_max && lsr.angle_max >= 0)
       {
@@ -71,6 +68,8 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
       {
         bearing = lsr.angle_min;
       }
+
+      // bearing = rigid2d::normalize_angle(bearing);
 
       // Store point's range and bearing
       nuslam::RangeBear rb(lsr.ranges.at(i), bearing);
@@ -92,6 +91,9 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
         success = cluster.evaluate_point(point);
 
       }
+
+      // Bias angle by minimum scan angle
+      bearing += lsr.angle_increment;
 
     }
   }
@@ -176,7 +178,7 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
     c++;
   }
 
-  // ROS_INFO("FOUND %d CLUSTERS", c);
+  ROS_INFO("FOUND %d CLUSTERS", c);
 
   // Now, publish
   map.radii = radii;
@@ -193,6 +195,7 @@ int main(int argc, char** argv)
   ROS_INFO("STARTING NODE: landmarks");
 
   double frequency = 60.0;
+  std::string frame_id_ = "base_scan";
 
   ros::init(argc, argv, "landmarks"); // register the node on ROS
   ros::NodeHandle nh; // get a handle to ROS
@@ -200,10 +203,13 @@ int main(int argc, char** argv)
   // Parameters
   nh_.getParam("threshold", threshold_);
   nh_.getParam("frequency", frequency);
+  nh_.getParam("landmark_frame_id", frame_id_);
+
+  // Publish TurtleMap data wrt this frame
+  map.header.frame_id = frame_id_;
 
   // Init Publishers
   ros::Publisher landmark_pub = nh_.advertise<nuslam::TurtleMap>("landmarks", 1);
-  ros::Publisher marker_pub = nh.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 
   // Init LaserScan Subscriber
   ros::Subscriber lsr_sub = nh.subscribe("/scan", 1, scan_callback);
@@ -217,6 +223,7 @@ int main(int argc, char** argv)
 
     if (callback_flag)
     {
+      map.header.stamp = ros::Time::now();
       landmark_pub.publish(map);
       callback_flag = false;
     }

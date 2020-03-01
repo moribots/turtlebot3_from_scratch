@@ -85,9 +85,13 @@ namespace nuslam
 			added = true;
 		} else {
 
-			double abs_x = pow(point_.pose.x - points.back().pose.x, 2);
-			double abs_y = pow(point_.pose.y - points.back().pose.y, 2);
-			double abs_dist = sqrt(abs_x + abs_y);
+			// double abs_x = pow(point_.pose.x - points.back().pose.x, 2);
+			// double abs_y = pow(point_.pose.y - points.back().pose.y, 2);
+			// double abs_dist = sqrt(abs_x + abs_y);
+
+			// We know points are at angle incrememnts, so we only need to
+			// compare range
+			double abs_dist = fabs(point_.range_bear.range - points.back().range_bear.range);
 
 			if (abs_dist <= threshold)
 			{
@@ -155,6 +159,7 @@ namespace nuslam
 
 		// Step 4: Compute mean of z
 	    double mean_z = std::accumulate(z.begin(), z.end(), 0.0) / static_cast<double>(n);
+	    // std::cout << "z mean: \n" << mean_z << std::endl;
 
 	    // Step 5: form data matrix from n data points
 	    // Create Matrix typedef
@@ -200,11 +205,11 @@ namespace nuslam
 		// Using jacobiSvd (accurate, fast for small matrices)
 		// Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullV);
 
-		// if (n < 10)
-		// {
-		// 	// Using jacobiSvd (accurate, fast for small matrices)
-		// 	Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullV);
-		// }
+		if (n < 10)
+		{
+			// Using jacobiSvd (accurate, fast for small matrices)
+			Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullV);
+		}
 		// If the smallest singular value is <10^-12 then A is the 4th column of V
 		// Note that singular value vector is returned in decreasing order
 		// Initialize A Vector of doubles
@@ -262,9 +267,11 @@ namespace nuslam
 			
 			// The eigenvector corresponding to the minimum positive eigenvalue
 			Eigen::MatrixXd A_eigvect = es.eigenvectors().col(min_pos_counter);
+			// std::cout << "A_eigvect: \n" << A_eigvect << std::endl;
 
 			// Solve for A = Y_inv * A_star
 			A = Y.completeOrthogonalDecomposition().solve(A_eigvect);
+			// std::cout << "A: \n" << A << std::endl;
 		}
 
 		// Step 12: eqn of circle is (x - a)^2 + (y - b)^2 = R^2
@@ -272,6 +279,10 @@ namespace nuslam
 		auto b = -A(2) / (2.0 * A(0));
 		auto R = sqrt((pow(A(1), 2) + pow(A(2), 2) - (4.0 * A(0) * A(3))) / (4.0 * pow(A(0), 2)));
 		// std::cout << "A MATRIX: \n" << A << std::endl;
+
+		// std::cout << "a: \n" << a << std::endl;
+		// std::cout << "b: \n" << b << std::endl;
+		// std::cout << "r: \n" << R << std::endl;
 
 		// Step 13: We shifted our coordinate system, so actual centroid is at
 		// a + mean_x, b + mean_y
@@ -295,7 +306,7 @@ namespace nuslam
 
 	bool Landmark::classify_circle()
 	{
-		bool is_circle = true;
+		bool is_circle = false;
 		// Store endpoints of cluster arc
 		Vector2D p_first = points.at(0).pose;
 		Vector2D p_last = points.back().pose;
@@ -311,30 +322,46 @@ namespace nuslam
 			// P_FIRST <--> P_LAST
 			double p_first_last = sqrt(pow(p_first.x - p_last.x, 2) + pow(p_first.y - p_last.y, 2));
 
+			// std::cout << "P FIRST LAST: " << p_first_last << std::endl;
+
 			// P_FIRST <--> P_X
 			double p_first_x = sqrt(pow(p_first.x - iter->pose.x, 2) + pow(p_first.y - iter->pose.y, 2));
+
+			// std::cout << "P FIRST X: " << p_first_x << std::endl;
 
 			// P_X <--> P_LAST
 			double p_x_last = sqrt(pow(iter->pose.x - p_last.x, 2) + pow(iter->pose.y - p_last.y, 2));
 
+			// std::cout << "P X LAST: " << p_x_last << std::endl;
+
 			// Next, find angle and append to vector
-			double angle = acos((pow(p_first_last, 2) - pow(p_first_x, 2) - pow(p_x_last, 2)) / - (p_first_x * p_x_last));
+			double angle = acos((pow(p_first_last, 2) - pow(p_first_x, 2) - pow(p_x_last, 2)) / (- 2.0 * p_first_x * p_x_last));
+			// std::cout << "ANGLE: " << angle << std::endl;
 			angles.push_back(angle);
 
 		}
 
 		// Step 2: compute the mean and standard deviation of all the angles
 		double mean_angle = std::accumulate(angles.begin(), angles.end(), 0.0) / static_cast<double>(angles.size());
-		double samples = 0.0;
-		std::for_each (angles.begin(), angles.end(), [&](const double d)
+		double total = 0.0;
+		// for (auto iter = angles.begin(); iter != angles.end(); iter++)
+		// {
+		// 	total += pow(*iter - mean_angle, 2);
+		// }
+		std::for_each (angles.begin(), angles.end(), [&](const double ang)
 		{
-		    samples += pow(d - mean_angle, 2);
+		    total += pow(ang - mean_angle, 2);
 		});
 
-		double std_dev = sqrt(samples / static_cast<double>(angles.size() - 1.0));
+		double std_dev = sqrt(total / static_cast<double>(angles.size()));
 
-		// Step 3: If std_dev is below 0.15, and the mean_angle is between 90 and 135, we have a circle
-		if (std_dev < 0.15 && mean_angle >= 90.0 && mean_angle <= 135.0)
+		// Step 3: If std_dev is below 0.15 radians, and the mean_angle is between 90 and 135 degrees, we have a circle
+		// Convert Mean Angle to Radians
+		mean_angle *= 180.0 / rigid2d::PI;
+
+		// std::cout << "STD DEV: " << std_dev << "\t MEAN: " << mean_angle << std::endl;
+
+		if (std_dev < 0.3 && mean_angle >= 60.0 && mean_angle <= 175.0)
 		{
 			is_circle = true;
 		}

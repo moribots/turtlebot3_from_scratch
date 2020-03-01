@@ -3,7 +3,8 @@
        and can be modified in diff_params.yaml -->
 
   <!-- load the urdf into the parameter server from the xacro file-->
-  <param name="robot_description" command="xacro '$(find nuturtle_description)/urdf/diff_drive.urdf.xacro'" />
+  <param name="robot_description" command="xacro '$(find nuturtle_gazebo)/urdf/diff_drive.gazebo.xacro'" />
+
 
   <!-- The robot_state_publisher reads the urdf from /robot_description parameter
        and listens to joint information on the /joint_states topic -->

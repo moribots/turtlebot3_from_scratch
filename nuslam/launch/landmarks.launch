@@ -1,0 +1,96 @@
+<launch>
+
+	<!-- TRY: $(find nuturtlebot)/worlds/block.world -->
+	<!-- TRY: $(find gazebo_ros)/launch/empty_world.launch -->
+	<arg name="world" default="$(find nuturtlebot)/worlds/block.world"/>
+	<include file="$(find nuturtle_gazebo)/launch/diff_drive_gazebo.launch">
+		<arg name="world" value="$(arg world)"/>
+	</include>
+
+
+	<arg name="robot" default="-1" doc="Whether launchfile is run on turtlebot(1-5) directly (0), in simulation (-1) or on remote PC (X: 1-5)"/>
+
+	<group if="$(eval arg('robot') != -1)">
+		<!-- RUN ON TURTLEBOT -->
+
+		<!-- Basic Remote Launch -->
+		<include file="$(find nuturtle_robot)/launch/basic_remote.launch">
+			<arg name="robot" value="$(arg robot)"/>
+		</include>
+
+		<!-- Turtle Interface - USE WHEN TURTLEBOT AVAILABLE -->
+		<node machine="turtlebot" pkg="nuturtle_robot" type="turtle_interface" name="turtle_interface" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<param name="right_wheel_joint" value="right_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+		</node>
+
+		<!-- Odometer Node -->
+		<node machine="turtlebot" name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<param name="odom_frame_id" value="odom" />
+			<param name="body_frame_id" value="base_footprint" /> 
+			<param name="right_wheel_joint" value="left_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+		</node>
+
+		<!-- Landmarks Node -->
+		<node machine="turtlebot" name="landmarks_node" pkg="nuslam" type="landmarks_node" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<param name="threshold" value="0.05" />
+			<param name="landmark_frame_id" value="base_scan" /> 
+			<param name="frequency" value="60.0" />
+		</node>
+
+	</group>
+
+	<group if="$(eval arg('robot') == -1)">
+		<!-- Fake Encoders Node - USE FOR TESTING WHEN TURTLEBOT UNAVAILABLE -->
+		<!-- <node name="fake_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node" output="screen">
+			<rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
+			<remap from="turtle1/cmd_vel" to="cmd_vel" />
+		</node> -->
+
+		<!-- Turtle Interface -->
+		<node pkg="nuturtle_robot" type="turtle_interface" name="turtle_interface" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<param name="right_wheel_joint" value="right_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+			<remap from="wheel_cmd" to="/nuturtlebot/WheelCommands"/>
+			<remap from="sensor_data" to="/nuturtlebot/SensorData"/>
+		</node>
+
+		<!-- Odometer Node -->
+		<node name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<param name="odom_frame_id" value="odom" />
+			<param name="body_frame_id" value="base_footprint" /> 
+			<param name="right_wheel_joint" value="left_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+		</node>
+
+		<!-- Landmarks Node -->
+		<node name="landmarks_node" pkg="nuslam" type="landmarks_node" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<param name="threshold" value="0.05" />
+			<param name="landmark_frame_id" value="base_scan" /> 
+			<param name="frequency" value="60.0" />
+		</node>
+
+		<!-- Draw Map Node -->
+		<node name="draw_map" pkg="nuslam" type="draw_map" output="screen">
+			<param name="frequency" value="60.0" />
+		</node>
+
+	</group>
+
+	<!-- Load Diff Params Yaml -->
+	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml" />
+
+	<!-- Include diff drive viewer without joint state publisher -->
+	<include file="$(find nuturtle_description)/launch/view_diff_drive.launch">
+	<arg name="js_pub" value="False" />
+	<arg name="robot" value="$(arg robot)"/>
+	</include> 
+
+</launch>

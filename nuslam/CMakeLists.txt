@@ -157,6 +157,7 @@ add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/nuslam_node.cpp)
 add_executable(landmarks_node src/landmarks_node.cpp)
+add_executable(draw_map src/draw_map.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -164,15 +165,25 @@ add_executable(landmarks_node src/landmarks_node.cpp)
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 set_target_properties(landmarks_node PROPERTIES OUTPUT_NAME landmarks_node PREFIX "")
+set_target_properties(draw_map PROPERTIES OUTPUT_NAME draw_map PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(landmarks_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${Eigen3_EXPORTED_TARGETS} ${rigid2d_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(draw_map ${${PROJECT_NAME}_EXPORTED_TARGETS} ${Eigen3_EXPORTED_TARGETS} ${rigid2d_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
 landmarks_node # this is my node that will use below libraries
+${rigid2d_LIBRARIES}
+Eigen3::Eigen
+${PROJECT_NAME} # this a library that my node will use
+${catkin_LIBRARIES} # this a library that my node will use
+)
+
+target_link_libraries(
+draw_map # this is my node that will use below libraries
 ${rigid2d_LIBRARIES}
 Eigen3::Eigen
 ${PROJECT_NAME} # this a library that my node will use
@@ -195,6 +206,10 @@ ${catkin_LIBRARIES} # this a library that my node will use
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
 install(TARGETS landmarks_node
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(TARGETS draw_map
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

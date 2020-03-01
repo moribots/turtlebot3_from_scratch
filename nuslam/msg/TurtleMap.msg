@@ -4,3 +4,5 @@ float64[] radii
 float64[] x_pts
 # Vector of y-coordinates of detected landmarks
 float64[] y_pts
+# Header for msg
+Header header
