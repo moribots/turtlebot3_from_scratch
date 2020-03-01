@@ -50,6 +50,9 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
   // Flag to indicate success of cluster expansion
   bool success = false;
 
+  // Bearing
+  double bearing = lsr.angle_min;
+
   // Loop across ranges[]
   for (long unsigned int i = 0; i < lsr.ranges.size(); i++)
   {
@@ -57,8 +60,17 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
     if (lsr.ranges.at(i) >= lsr.range_min && lsr.ranges.at(i) <= lsr.range_max)
     {
 
-      // Wrap calculated bearing between -pi and pi
-      double bearing = rigid2d::normalize_angle(i * lsr.angle_increment);
+      // Bias angle by minimum scan angle
+      bearing += lsr.angle_increment;
+
+      // Wrap Angle
+      if (bearing > lsr.angle_max && lsr.angle_max >= 0)
+      {
+        bearing = lsr.angle_min;
+      } else if ((bearing < lsr.angle_max && lsr.angle_max < 0))
+      {
+        bearing = lsr.angle_min;
+      }
 
       // Store point's range and bearing
       nuslam::RangeBear rb(lsr.ranges.at(i), bearing);

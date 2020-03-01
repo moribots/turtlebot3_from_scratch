@@ -130,6 +130,7 @@ namespace nuslam
 		    points.begin(), points.end(), std::back_inserter(poses),
 		    [](const Point& p) { return p.pose; }
 		);
+
 		// Syntax below to compute mean
 		float mean_x  = std::accumulate(poses.begin(), poses.end(), 0.0, \
                             std::bind(std::plus<double>(), std::placeholders::_1,
@@ -137,20 +138,23 @@ namespace nuslam
 		float mean_y  = std::accumulate(poses.begin(), poses.end(), 0.0, \
                             std::bind(std::plus<double>(), std::placeholders::_1,
                             std::bind(&rigid2d::Vector2D::y, std::placeholders::_2))) / static_cast<double>(n);
+		// std::cout << "X MEAN: " << mean_x << std::endl;
 
 	    // Step 2: Shift the coordinates so the centroid is at the origin
 	    std::vector<double> z;
+	    z.reserve(points.size());
 	    for (auto iter = points.begin(); iter != points.end(); iter++)
 		{
 			iter->pose.x -= mean_x;
 			iter->pose.y -= mean_y;
 
 			// Step 3: compute zi = xi^2 + yi^2
-			z.push_back((pow(iter->pose.x, 2) + pow(iter->pose.y, 2)));
+			double zi = pow(iter->pose.x, 2) + pow(iter->pose.y, 2);
+			z.push_back(zi);
 		}
 
 		// Step 4: Compute mean of z
-	    double mean_z = std::accumulate(std::begin(z), std::end(z), 0.0) / static_cast<double>(n);
+	    double mean_z = std::accumulate(z.begin(), z.end(), 0.0) / static_cast<double>(n);
 
 	    // Step 5: form data matrix from n data points
 	    // Create Matrix typedef
@@ -164,7 +168,7 @@ namespace nuslam
 	    // p is automatically of type of whatever's inside the vector points
 		for (auto & p : points)
 		{
-		    Z.row(r) << z.at(r), p.pose.x, p.pose.y, 1; // fill matrix one row per iteration, then increment row
+		    Z.row(r) << z.at(r), p.pose.x, p.pose.y, 1.0; // fill matrix one row per iteration, then increment row
 		    r++;
 		}
 		// std::cout << "Z: \n" << Z << std::endl;
@@ -174,16 +178,16 @@ namespace nuslam
 
 		// Step 7: Constraint Matrix H for 'Hyperaccurate algebraic fit'
 		ClusterMat H = ClusterMat::Zero(4, 4);
-		H.row(0) << 8.0 * mean_z, 0, 0, 2;
-		H.row(1) << 0, 1, 0, 0;
-		H.row(2) << 0, 0, 1, 0;
-		H.row(3) << 2, 0, 0, 0;
+		H.row(0) << 8.0 * mean_z, 0.0, 0.0, 2.0;
+		H.row(1) << 0.0, 1.0, 0.0, 0.0;
+		H.row(2) << 0.0, 0.0, 1.0, 0.0;
+		H.row(3) << 2.0, 0.0, 0.0, 0.0;
 
 		// Step 8: H Inv
 		ClusterMat H_inv = ClusterMat::Zero(4, 4);
-		H_inv.row(0) << 0, 0, 0, 0.5;
-		H_inv.row(1) << 0, 1, 0, 0;
-		H_inv.row(2) << 0, 0, 1, 0;
+		H_inv.row(0) << 0.0, 0.0, 0.0, 0.5;
+		H_inv.row(1) << 0.0, 1.0, 0.0, 0.0;
+		H_inv.row(2) << 0.0, 0.0, 1.0, 0.0;
 		H_inv.row(3) << 0.5, 0, 0, - 2.0 * mean_z;
 
 		// Step 9: Singular Value Decomposition of Z
@@ -193,11 +197,14 @@ namespace nuslam
 		// Using BDCSVD faster for large matrices
 		Eigen::BDCSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullV);
 
-		if (n < 10)
-		{
-			// Using jacobiSvd (accurate, fast for small matrices)
-			Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullV);
-		}
+		// Using jacobiSvd (accurate, fast for small matrices)
+		// Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullV);
+
+		// if (n < 10)
+		// {
+		// 	// Using jacobiSvd (accurate, fast for small matrices)
+		// 	Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullV);
+		// }
 		// If the smallest singular value is <10^-12 then A is the 4th column of V
 		// Note that singular value vector is returned in decreasing order
 		// Initialize A Vector of doubles
@@ -216,17 +223,17 @@ namespace nuslam
 			// std::cout << "V DIAG: \n" << Z_svd.singularValues() << std::endl;
 			// Step 11:
 			// Construct sigma matrix (diagonal with singular values)
-			auto S = Z_svd.singularValues().asDiagonal();
+			Eigen::MatrixXd S = Z_svd.singularValues().asDiagonal();
 			// std::cout << "S: \n" << S << std::endl;
 
 			// Y Matrix = V * Sigma * V^T
 			// std::cout << "V SIZE: " << Z_svd.matrixV().size() << std::endl;
 			// std::cout << "SIGMA SIZE: " << S.size() << std::endl;
-			auto Y = Z_svd.matrixV() * S * Z_svd.matrixV().transpose();
+			Eigen::MatrixXd Y = Z_svd.matrixV() * S * Z_svd.matrixV().transpose();
 			// std::cout << "Y: \n" << Y << std::endl;
 
 			// Q Matrix = Y * H_inv * Y
-			auto Q = Y * H_inv * Y;
+			Eigen::MatrixXd Q = Y * H_inv * Y;
 			// std::cout << "Q: \n" << Q << std::endl;
 
 			// Find Eigenvalues and Eigenvectors of Q via constructor
@@ -254,23 +261,23 @@ namespace nuslam
 			}
 			
 			// The eigenvector corresponding to the minimum positive eigenvalue
-			auto A_eigvect = es.eigenvectors().col(min_pos_counter);
+			Eigen::MatrixXd A_eigvect = es.eigenvectors().col(min_pos_counter);
 
 			// Solve for A = Y_inv * A_star
-			A = Y.inverse() * A_eigvect;
+			A = Y.completeOrthogonalDecomposition().solve(A_eigvect);
 		}
 
 		// Step 12: eqn of circle is (x - a)^2 + (y - b)^2 = R^2
 		auto a = -A(1) / (2.0 * A(0));
 		auto b = -A(2) / (2.0 * A(0));
-		auto R = sqrt((pow(A(1), 2) + pow(A(2), 2) - (4.0 * A(0) * A(3))) / (4.0 * pow(A(3), 2)));
+		auto R = sqrt((pow(A(1), 2) + pow(A(2), 2) - (4.0 * A(0) * A(3))) / (4.0 * pow(A(0), 2)));
 		// std::cout << "A MATRIX: \n" << A << std::endl;
 
 		// Step 13: We shifted our coordinate system, so actual centroid is at
 		// a + mean_x, b + mean_y
 		// Store Cluster Parameters (coords(x,y) and radius)
 		coords.pose.x = a + mean_x;
-		coords.pose.y = a + mean_y;
+		coords.pose.y = b + mean_y;
 		radius = R;
 
 		// Step 14: Calculate Root-Mean-Squared-Error of the fit
@@ -346,10 +353,10 @@ namespace nuslam
 
 	Vector2D polarToCartesian(const RangeBear & range_bear)
 	{
-		double x = range_bear.range * cos(rigid2d::normalize_angle(range_bear.bearing));
-		double y = range_bear.range * sin(rigid2d::normalize_angle(range_bear.bearing));
+		Vector2D pose;
 
-		Vector2D pose(x, y);
+		pose.x = range_bear.range * cos(range_bear.bearing);
+		pose.y = range_bear.range * sin(range_bear.bearing);
 
 		return pose;
 
