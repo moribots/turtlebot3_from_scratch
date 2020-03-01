@@ -53,7 +53,7 @@ namespace nuslam
 		std::vector<Point> p;
 		points = p;
 
-		threshold = 0.5;
+		threshold = 0.05; // 5 cm
 	}
 
 	Landmark::Landmark(const double & threshold_)
@@ -191,12 +191,12 @@ namespace nuslam
 		// a square sigma matrix
 
 		// Using BDCSVD faster for large matrices
-		Eigen::BDCSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullU | Eigen::DecompositionOptions::ComputeFullV);
+		Eigen::BDCSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullV);
 
 		if (n < 10)
 		{
 			// Using jacobiSvd (accurate, fast for small matrices)
-			Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullU | Eigen::DecompositionOptions::ComputeFullV);
+			Eigen::JacobiSVD<ClusterMat> Z_svd(Z,  Eigen::DecompositionOptions::ComputeFullV);
 		}
 		// If the smallest singular value is <10^-12 then A is the 4th column of V
 		// Note that singular value vector is returned in decreasing order
@@ -243,7 +243,7 @@ namespace nuslam
 			{
 				if (min_pos_counter > 3)
 				{
-					ROS_ERROR_STREAM("NO MINIMUM EIGENVALUE FOUND GREATER THAN ZERO.");
+					std::cout << "NO MINIMUM EIGENVALUE FOUND GREATER THAN ZERO." << std::endl;
 
 				} else if (es.eigenvalues()(min_pos_counter) > 0)
 				{
@@ -286,9 +286,53 @@ namespace nuslam
 	}
 
 
-	void Landmark::detect_circle()
+	bool Landmark::classify_circle()
 	{
+		bool is_circle = true;
+		// Store endpoints of cluster arc
+		Vector2D p_first = points.at(0).pose;
+		Vector2D p_last = points.back().pose;
 
+		std::vector<double> angles;
+
+		// Step 1: Store the angle ^P_FIRST|P_X|P_LAST in a vector of angles
+		// Below syntax to iterate from 1th element to penultimate element
+		for (auto iter = std::next(points.begin()); iter != std::prev(points.end()); iter++)
+		{
+			// Using Law of Cosines to find angle
+			// First, find the three lengths:
+			// P_FIRST <--> P_LAST
+			double p_first_last = sqrt(pow(p_first.x - p_last.x, 2) + pow(p_first.y - p_last.y, 2));
+
+			// P_FIRST <--> P_X
+			double p_first_x = sqrt(pow(p_first.x - iter->pose.x, 2) + pow(p_first.y - iter->pose.y, 2));
+
+			// P_X <--> P_LAST
+			double p_x_last = sqrt(pow(iter->pose.x - p_last.x, 2) + pow(iter->pose.y - p_last.y, 2));
+
+			// Next, find angle and append to vector
+			double angle = acos((pow(p_first_last, 2) - pow(p_first_x, 2) - pow(p_x_last, 2)) / - (p_first_x * p_x_last));
+			angles.push_back(angle);
+
+		}
+
+		// Step 2: compute the mean and standard deviation of all the angles
+		double mean_angle = std::accumulate(angles.begin(), angles.end(), 0.0) / static_cast<double>(angles.size());
+		double samples = 0.0;
+		std::for_each (angles.begin(), angles.end(), [&](const double d)
+		{
+		    samples += pow(d - mean_angle, 2);
+		});
+
+		double std_dev = sqrt(samples / static_cast<double>(angles.size() - 1.0));
+
+		// Step 3: If std_dev is below 0.15, and the mean_angle is between 90 and 135, we have a circle
+		if (std_dev < 0.15 && mean_angle >= 90.0 && mean_angle <= 135.0)
+		{
+			is_circle = true;
+		}
+
+		return is_circle;
 	}
 
 	// Helper Functions
@@ -302,8 +346,8 @@ namespace nuslam
 
 	Vector2D polarToCartesian(const RangeBear & range_bear)
 	{
-		double x = range_bear.range * cos(range_bear.bearing);
-		double y = range_bear.range * sin(range_bear.bearing);
+		double x = range_bear.range * cos(rigid2d::normalize_angle(range_bear.bearing));
+		double y = range_bear.range * sin(rigid2d::normalize_angle(range_bear.bearing));
 
 		Vector2D pose(x, y);
 

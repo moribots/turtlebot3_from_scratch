@@ -25,7 +25,7 @@
 
 
 // Global Vars
-double threshold_ = 0.5;
+double threshold_ = 0.05;
 bool callback_flag = false;
 nuslam::TurtleMap map;
 
@@ -116,6 +116,27 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
       // vector and have the next loop's iter point at what would have
       // been the next element
       iter = landmarks.erase(iter);
+    } else {
+       iter++;
+    }
+  }
+
+  // Next, we classify the cluster into CIRCLE or NOT_CIRCLE and discard
+  // the clusters which do not meet the classificiation.
+  // NOTE: DO THIS BEFORE CIRCLE FIT SINCE WE DISCARD WALLS ANYWAY AND THEY
+  // SLOW THINGS DOWN
+  for (auto iter = landmarks.begin(); iter != landmarks.end();)
+  {
+    bool is_circle = iter->classify_circle();
+
+    if (!is_circle)
+      // If the cluster is not a circle
+    {
+        // Erase this element from the vector
+        // This will  erase the current element from the
+        // vector and have the next loop's iter point at what would have
+        // been the next element
+        iter = landmarks.erase(iter);
     } else {
        iter++;
     }

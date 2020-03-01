@@ -232,3 +232,8 @@ install(DIRECTORY include/${PROJECT_NAME}/
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+if (CATKIN_ENABLE_TESTING)
+    catkin_add_gtest(${PROJECT_NAME}_test tests/${PROJECT_NAME}_test.cpp)
+    target_link_libraries(${PROJECT_NAME}_test Eigen3::Eigen ${rigid2d_LIBRARIES} ${catkin_LIBRARIES} gtest_main ${PROJECT_NAME})
+endif()

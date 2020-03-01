@@ -93,10 +93,11 @@ namespace nuslam
         /// \returns
         double fit_circle();
 
-        /// \brief Detect Circle from cluster and set x,y,radius,range,bearing of Landmark
+        /// \brief Classify Circle from cluster and set x,y,radius,range,bearing of Landmark
+        /// based on Inscribed Angle Theorem for the Arc of a Circle
         /// \param
-        /// \returns
-        void detect_circle();
+        /// \returns a boolean to indicate whether the cluster is a circle
+        bool classify_circle();
 
         // Points which make up Landmark
         std::vector<Point> points;
