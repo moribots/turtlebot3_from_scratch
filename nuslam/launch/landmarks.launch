@@ -72,7 +72,7 @@
 		<!-- Landmarks Node -->
 		<node name="landmarks_node" pkg="nuslam" type="landmarks_node" output="screen">
 			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
-			<param name="threshold" value="0.05" />
+			<param name="threshold" value="0.1" />
 			<param name="landmark_frame_id" value="base_scan" /> 
 			<param name="frequency" value="60.0" />
 		</node>

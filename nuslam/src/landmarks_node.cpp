@@ -12,6 +12,8 @@
 #include <std_srvs/Empty.h>
 #include <visualization_msgs/Marker.h>
 #include <sensor_msgs/LaserScan.h>
+#include <sensor_msgs/PointCloud.h>
+#include <geometry_msgs/Point32.h>
 
 #include <math.h>
 #include <string>
@@ -25,9 +27,11 @@
 
 
 // Global Vars
-double threshold_ = 0.05;
+double threshold_ = 0.1;
 bool callback_flag = false;
 nuslam::TurtleMap map;
+// Create Point Cloud
+sensor_msgs::PointCloud pc;
 
 
 void scan_callback(const sensor_msgs::LaserScan &lsr)
@@ -41,6 +45,8 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
   // First, clear the vector of landmarks upon receiving a scan
   // landmarks.clear();
 
+  // Clear Point Cloud
+  pc.points.clear();
   // Useful LaserScan info: range_min/max, angle_min/max, time/angle_increment, scan_time, ranges[]
 
   // Create New Cluster (points which potentially form a landmark)
@@ -131,6 +137,15 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
       // been the next element
       iter = landmarks.erase(iter);
     } else {
+       // Populate Point Cloud
+       for (auto pt_iter = iter->points.begin(); pt_iter < iter->points.end(); pt_iter++)
+       {
+        geometry_msgs::Point32 p32;
+        p32.z = 0.05;
+        p32.x = pt_iter->pose.x;
+        p32.y = pt_iter->pose.y;
+        pc.points.push_back(p32);
+       }
        iter++;
     }
   }
@@ -139,11 +154,35 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
   // the clusters which do not meet the classificiation.
   // NOTE: DO THIS BEFORE CIRCLE FIT SINCE WE DISCARD WALLS ANYWAY AND THEY
   // SLOW THINGS DOWN
+  // for (auto iter = landmarks.begin(); iter != landmarks.end();)
+  // {
+  //   bool is_circle = iter->classify_circle();
+
+  //   if (!is_circle)
+  //     // If the cluster is not a circle
+  //   {
+  //       // Erase this element from the vector
+  //       // This will  erase the current element from the
+  //       // vector and have the next loop's iter point at what would have
+  //       // been the next element
+  //       iter = landmarks.erase(iter);
+  //   } else {
+  //      iter++;
+  //   }
+  // }
+
+  // Finally, we perform circle detection for each cluster
+  for (auto iter = landmarks.begin(); iter != landmarks.end(); iter++)
+  {
+    iter->fit_circle();
+    // ROS_INFO("FITTING CIRCLE");
+  }
+
+  // Now filter by radius
   for (auto iter = landmarks.begin(); iter != landmarks.end();)
   {
-    bool is_circle = iter->classify_circle();
 
-    if (!is_circle)
+    if (iter->return_radius() > 0.2)
       // If the cluster is not a circle
     {
         // Erase this element from the vector
@@ -156,13 +195,6 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
     }
   }
 
-  // Finally, we perform circle detection for each cluster
-  for (auto iter = landmarks.begin(); iter != landmarks.end(); iter++)
-  {
-    iter->fit_circle();
-    // ROS_INFO("FITTING CIRCLE");
-  }
-
   // Now, return landmarks radii x, and y positions each in a separate vector
   std::vector<double> radii;
   std::vector<double> x_pts;
@@ -173,6 +205,7 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
   for (auto iter = landmarks.begin(); iter != landmarks.end(); iter++)
   {
     radii.push_back(iter->return_radius());
+    // std::cout << "RADIUS: " << iter->return_radius() << std::endl;
     x_pts.push_back(iter->return_coords().pose.x);
     y_pts.push_back(iter->return_coords().pose.y);
     c++;
@@ -211,6 +244,8 @@ int main(int argc, char** argv)
   // Init Publishers
   ros::Publisher landmark_pub = nh_.advertise<nuslam::TurtleMap>("landmarks", 1);
 
+  ros::Publisher pointcloud_pub = nh_.advertise<sensor_msgs::PointCloud>("pointcloud", 1);
+
   // Init LaserScan Subscriber
   ros::Subscriber lsr_sub = nh.subscribe("/scan", 1, scan_callback);
 
@@ -225,6 +260,9 @@ int main(int argc, char** argv)
     {
       map.header.stamp = ros::Time::now();
       landmark_pub.publish(map);
+      pc.header.stamp = ros::Time::now();
+      pc.header.frame_id = frame_id_;
+      pointcloud_pub.publish(pc);
       callback_flag = false;
     }
 

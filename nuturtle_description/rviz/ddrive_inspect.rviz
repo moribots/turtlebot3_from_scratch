@@ -11,6 +11,7 @@ Panels:
         - /TF1/Tree1
         - /Marker1
         - /LaserScan1
+        - /PointCloud1
       Splitter Ratio: 0.5
     Tree Height: 713
   - Class: rviz/Selection
@@ -156,7 +157,7 @@ Visualization Manager:
       Axis: Z
       Channel Name: intensity
       Class: rviz/LaserScan
-      Color: 239; 41; 41
+      Color: 160; 32; 240
       Color Transformer: FlatColor
       Decay Time: 0
       Enabled: true
@@ -173,6 +174,36 @@ Visualization Manager:
       Size (m): 0.009999999776482582
       Style: Flat Squares
       Topic: /scan
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud
+      Color: 160; 32; 240
+      Color Transformer: FlatColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: PointCloud
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic: /landmarks_node/pointcloud
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
@@ -205,16 +236,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.845457077026367
+      Distance: 4.027518272399902
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.6398043632507324
-        Y: 0.07893726974725723
-        Z: 0.11288200318813324
+        X: 0.12475606054067612
+        Y: -0.07242397218942642
+        Z: 0.07369768619537354
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
