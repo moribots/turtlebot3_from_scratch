@@ -31,6 +31,8 @@ nuslam::TurtleMap global_map;
 void mapCallback(const nuslam::TurtleMap &map)
 {
   global_map = map;
+
+  // std::cout << "NUM OF CLUSTERS: " << global_map.radii.size() << std::endl;
   
   callback_flag = true;
 }
@@ -80,6 +82,7 @@ int main(int argc, char** argv)
       marker.header.stamp = ros::Time::now();
 
       // Populate Marker information for each landmark
+      // std::cout << "------------------------------------------" << std::endl;
       for (long unsigned int i = 0; i < global_map.radii.size(); i++)
       {
         marker.id = i;
@@ -96,7 +99,7 @@ int main(int argc, char** argv)
         marker.scale.x = global_map.radii.at(i);
         marker.scale.y = global_map.radii.at(i);
         marker.scale.z = 1.0;
-        marker.lifetime = ros::Duration();
+        marker.lifetime = ros::Duration(0.5);
         // std::cout << "POS: (" << global_map.x_pts.at(i) << ", " << global_map.y_pts.at(i) << ")" << std::endl;
         marker_pub.publish(marker);
 

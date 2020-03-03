@@ -183,7 +183,7 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
   for (auto iter = landmarks.begin(); iter < landmarks.end();)
   {
 
-    if (iter->return_radius() > 0.2)
+    if (iter->return_radius() > 0.1)
       // If the cluster is not a circle
     {
         // Erase this element from the vector

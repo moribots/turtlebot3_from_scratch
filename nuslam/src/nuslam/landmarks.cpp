@@ -361,7 +361,7 @@ namespace nuslam
 
 		// std::cout << "STD DEV: " << std_dev << "\t MEAN: " << mean_angle << std::endl;
 
-		if (std_dev < 0.3 && mean_angle >= 60.0 && mean_angle <= 175.0)
+		if (std_dev < 0.5 && mean_angle >= 10.0 && mean_angle <= 170.0)
 		{
 			is_circle = true;
 		}
