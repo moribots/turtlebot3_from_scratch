@@ -26,34 +26,11 @@
 
 // GLOBAL VARS
 bool callback_flag = false;
-visualization_msgs::Marker marker;
+nuslam::TurtleMap global_map;
 
 void mapCallback(const nuslam::TurtleMap &map)
 {
-  // Sync headers
-  marker.header.frame_id = map.header.frame_id;
-  marker.header.stamp = ros::Time::now();
-
-  // Populate Marker information for each landmark
-  for (long unsigned int i = 0; i < map.radii.size(); i++)
-  {
-    marker.id = i;
-    // Set the pose of the marker.
-    // This is a 6DOF pose wrt frame/time specified in the header
-    marker.pose.position.x = map.x_pts.at(i);
-    marker.pose.position.y = map.y_pts.at(i);
-    marker.pose.position.z = 0.0; // height
-    marker.pose.orientation.x = 0.0;
-    marker.pose.orientation.y = 0.0;
-    marker.pose.orientation.z = 0.0;
-    marker.pose.orientation.w = 1.0;
-    // Set the scale of the marker -- 1x1x1 here means 1m on a side
-    marker.scale.x = map.radii.at(i);
-    marker.scale.y = map.radii.at(i);
-    marker.scale.z = 1.0;
-    marker.lifetime = ros::Duration(); // persistent
-
-  }
+  global_map = map;
   
   callback_flag = true;
 }
@@ -63,7 +40,7 @@ int main(int argc, char** argv)
 {
   ROS_INFO("STARTING NODE: draw_map");
   // Vars
-  float frequency;
+  double frequency = 60.0;
 
   ros::init(argc, argv, "draw_map_node"); // register the node on ROS
   ros::NodeHandle nh; // get a handle to ROS
@@ -75,6 +52,7 @@ int main(int argc, char** argv)
   ros::Publisher marker_pub = nh.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 
   // Init Marker
+  visualization_msgs::Marker marker;
   uint32_t shape = visualization_msgs::Marker::CYLINDER;
   marker.type = shape;
   marker.action = visualization_msgs::Marker::ADD;
@@ -97,7 +75,32 @@ int main(int argc, char** argv)
 
     if (callback_flag)
     {
-      marker_pub.publish(marker);
+      // Sync headers
+      marker.header.frame_id = global_map.header.frame_id;
+      marker.header.stamp = ros::Time::now();
+
+      // Populate Marker information for each landmark
+      for (long unsigned int i = 0; i < global_map.radii.size(); i++)
+      {
+        marker.id = i;
+        // Set the pose of the marker.
+        // This is a 6DOF pose wrt frame/time specified in the header
+        marker.pose.position.x = global_map.x_pts.at(i);
+        marker.pose.position.y = global_map.y_pts.at(i);
+        marker.pose.position.z = 0.0; // height
+        marker.pose.orientation.x = 0.0;
+        marker.pose.orientation.y = 0.0;
+        marker.pose.orientation.z = 0.0;
+        marker.pose.orientation.w = 1.0;
+        // Set the scale of the marker -- 1x1x1 here means 1m on a side
+        marker.scale.x = global_map.radii.at(i);
+        marker.scale.y = global_map.radii.at(i);
+        marker.scale.z = 1.0;
+        marker.lifetime = ros::Duration();
+        // std::cout << "POS: (" << global_map.x_pts.at(i) << ", " << global_map.y_pts.at(i) << ")" << std::endl;
+        marker_pub.publish(marker);
+
+      }
       callback_flag = false;
     }
 

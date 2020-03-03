@@ -27,7 +27,7 @@
 
 
 // Global Vars
-double threshold_ = 0.1;
+double threshold_ = 0.15;
 bool callback_flag = false;
 nuslam::TurtleMap map;
 // Create Point Cloud
@@ -172,14 +172,15 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
   // }
 
   // Finally, we perform circle detection for each cluster
-  for (auto iter = landmarks.begin(); iter != landmarks.end(); iter++)
+  for (auto iter = landmarks.begin(); iter < landmarks.end(); iter++)
   {
     iter->fit_circle();
     // ROS_INFO("FITTING CIRCLE");
+    // std::cout << "RADIUS: " << iter->return_radius() << std::endl;
   }
 
   // Now filter by radius
-  for (auto iter = landmarks.begin(); iter != landmarks.end();)
+  for (auto iter = landmarks.begin(); iter < landmarks.end();)
   {
 
     if (iter->return_radius() > 0.2)
@@ -208,14 +209,18 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
     // std::cout << "RADIUS: " << iter->return_radius() << std::endl;
     x_pts.push_back(iter->return_coords().pose.x);
     y_pts.push_back(iter->return_coords().pose.y);
+    // std::cout << "POS: (" << iter->return_coords().pose.x << ", " << iter->return_coords().pose.y << ")" << std::endl;
     c++;
   }
 
-  ROS_INFO("FOUND %d CLUSTERS", c);
+  // ROS_INFO("FOUND %d CLUSTERS", c);
 
   // Now, publish
+  map.radii.clear();
   map.radii = radii;
+  map.x_pts.clear();
   map.x_pts = x_pts;
+  map.y_pts.clear();
   map.y_pts = y_pts;
 
   callback_flag = true;
