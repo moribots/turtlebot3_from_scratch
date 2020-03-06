@@ -80,6 +80,13 @@
 		<!-- Draw Map Node -->
 		<node name="draw_map" pkg="nuslam" type="draw_map" output="screen">
 			<param name="frequency" value="60.0" />
+			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
+		</node>
+
+		<!-- Analysis (Fake Landmarks) Node -->
+		<node name="analysis" pkg="nuslam" type="analysis" output="screen">
+			<param name="landmark_frame_id" value="base_scan" /> 
+			<param name="frequency" value="60.0" />
 		</node>
 
 	</group>

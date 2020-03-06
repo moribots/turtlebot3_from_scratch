@@ -14,6 +14,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(catkin REQUIRED COMPONENTS
   message_generation
   message_runtime
+  gazebo_msgs
+  geometry_msgs
   rigid2d
   roscpp
   rostest
@@ -124,7 +126,7 @@ generate_messages(
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES ${PROJECT_NAME} rigid2d
- CATKIN_DEPENDS message_generation message_runtime rigid2d roscpp sensor_msgs std_msgs visualization_msgs
+ CATKIN_DEPENDS message_generation message_runtime gazebo_msgs geometry_msgs rigid2d roscpp sensor_msgs std_msgs visualization_msgs
 #  DEPENDS system_lib
 )
 
@@ -158,6 +160,7 @@ add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 # add_executable(${PROJECT_NAME}_node src/nuslam_node.cpp)
 add_executable(landmarks_node src/landmarks_node.cpp)
 add_executable(draw_map src/draw_map.cpp)
+add_executable(analysis src/analysis.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -166,12 +169,14 @@ add_executable(draw_map src/draw_map.cpp)
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 set_target_properties(landmarks_node PROPERTIES OUTPUT_NAME landmarks_node PREFIX "")
 set_target_properties(draw_map PROPERTIES OUTPUT_NAME draw_map PREFIX "")
+set_target_properties(analysis PROPERTIES OUTPUT_NAME analysis PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(landmarks_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${Eigen3_EXPORTED_TARGETS} ${rigid2d_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(draw_map ${${PROJECT_NAME}_EXPORTED_TARGETS} ${Eigen3_EXPORTED_TARGETS} ${rigid2d_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(analysis ${${PROJECT_NAME}_EXPORTED_TARGETS} ${Eigen3_EXPORTED_TARGETS} ${rigid2d_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
@@ -184,6 +189,14 @@ ${catkin_LIBRARIES} # this a library that my node will use
 
 target_link_libraries(
 draw_map # this is my node that will use below libraries
+${rigid2d_LIBRARIES}
+Eigen3::Eigen
+${PROJECT_NAME} # this a library that my node will use
+${catkin_LIBRARIES} # this a library that my node will use
+)
+
+target_link_libraries(
+analysis # this is my node that will use below libraries
 ${rigid2d_LIBRARIES}
 Eigen3::Eigen
 ${PROJECT_NAME} # this a library that my node will use

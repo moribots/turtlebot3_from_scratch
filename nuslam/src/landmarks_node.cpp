@@ -215,7 +215,7 @@ void scan_callback(const sensor_msgs::LaserScan &lsr)
 
   // ROS_INFO("FOUND %d CLUSTERS", c);
 
-  // Now, publish
+  // Now, populate
   map.radii.clear();
   map.radii = radii;
   map.x_pts.clear();
