@@ -147,6 +147,7 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   src/${PROJECT_NAME}/landmarks.cpp
+  src/${PROJECT_NAME}/ekf.cpp
 )
 
 ## Add cmake target dependencies of the library
