@@ -11,6 +11,7 @@
 #include <functional>
 #include <ros/ros.h>
 #include <limits>  // set variable to max (inf)
+#include<random>  // to seed common random num gen
 
 namespace nuslam
 {
@@ -61,6 +62,23 @@ namespace nuslam
     // Struct to store Process Noise for ERK
     struct ProcessNoise
     {
+        // Store Covariance Matrix
+        CovarianceMatrix cov_mtx;
+
+        // Contains noise for x,y,theta
+        Pose2D xyt_noise;
+
+        // Process Noise of robot
+        Eigen::MatrixXd q;
+
+        // Process Noise Matrix
+        Eigen::MatrixXd Q;
+
+        /// \brief constructor for process noise matrix with xyt_noise set to zero
+        ProcessNoise();
+
+        /// \brief constructor for process noise matrix with xyt_noise set to user input
+        ProcessNoise(const Pose2D & xyt_noise_var, const CovarianceMatrix & cov_mtx);
     };
 
     // Struct to store Measurement Noise for ERK
@@ -95,7 +113,21 @@ namespace nuslam
         void update();
 
     private:
+        Pose2D estimate;
+        std::vector<Vector2D> landmarks;
+
     };
+
+    /// \brief create random number generator with common seed
+    std::mt19937 & get_random();
+
+    /// \brief sample normal distribution
+    double sampleNormalDistribution();
+
+    /// \brief returns noise for each dimension (x,y,theta) extracted from
+    /// 3D normal distribution using Cholesky Decomposition
+    // This is used to sample noise for the state update function
+    std::vector<double> get_3d_noise(const Pose2D & xyt_noise_mean, const ProcessNoise & proc_noise);
 }
 
 #endif
