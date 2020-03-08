@@ -23,7 +23,7 @@ namespace nuslam
         cov_mtx = robot_cov_mtx;
 	}
 
-	CovarianceMatrix::CovarianceMatrix(const std::vector<Vector2D> & map_state_)
+	CovarianceMatrix::CovarianceMatrix(const std::vector<Point> & map_state_)
 	{
         std::vector<double> robot_state_cov{0.0, 0.0, 0.0}; // init to 0,0,0
         // 3*3
@@ -57,7 +57,7 @@ namespace nuslam
         cov_mtx = mtx;
 	}
 
-	CovarianceMatrix::CovarianceMatrix(const std::vector<Vector2D> & map_state_, \
+	CovarianceMatrix::CovarianceMatrix(const std::vector<Point> & map_state_, \
                          			   const std::vector<double> & robot_state_cov_,\
 			                           const std::vector<double> & map_state_cov_)
 	{
@@ -179,7 +179,7 @@ namespace nuslam
         return mt;
     }
 
-    double sampleNormalDistribution(double var=1.0)
+    double sampleNormalDistribution(double var)
     {
 		std::normal_distribution<> d(0, var);
 		return d(get_random());
@@ -224,7 +224,7 @@ namespace nuslam
     	cov_mtx = CovarianceMatrix();
     }
 
-    EKF::EKF(const Pose2D & robot_state_, const std::vector<Vector2D> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_)
+    EKF::EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_)
     {
     	robot_state = robot_state_;
     	map_state = map_state_;
@@ -281,7 +281,7 @@ namespace nuslam
     	robot_state = belief;
     }
 
-    EKF::update(const std::vector<Point> & map_state_)
+    void EKF::msr_update(const std::vector<Point> & map_state_)
     {
     	map_state = map_state_;
 
@@ -324,20 +324,20 @@ namespace nuslam
 	    	Eigen::MatrixXd H = h * Fxj;
 
 	    	// Compute the Kalman gain from the linearized measurement model
-			Eigen::MatrixXd K = cov_mtx.cov_mtx * H.transpose() * (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R).inverse // NOTE: FIND MORE EFFICIENT INV
+			Eigen::MatrixXd K = cov_mtx.cov_mtx * H.transpose() * (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R).inverse(); // NOTE: FIND MORE EFFICIENT INV
 
 	    	// Compute the posterior state update
 	    	// First, get theoretical expected measurement based on belief in [r,b] format
-	    	Eigen::VectorXd z_hat(2);
 	    	// Pose difference between robot and landmark
-	    	Pose2D cartesian_measurement = Pose2D(iter->pose.x - robot_state.x, iter->pose.y - robot_state.y)
+	    	Vector2D cartesian_measurement = Vector2D(iter->pose.x - robot_state.x, iter->pose.y - robot_state.y);
 	    	RangeBear polar_measurement = cartesianToPolar(cartesian_measurement);
 	    	// Subtract robot heading from bearing
 	    	polar_measurement.bearing -= robot_state.theta;
-    		z_hat << iter->polar_measurement.range, polar_measurement.bearing;
+	    	Eigen::VectorXd z_hat(2);
+    		z_hat << polar_measurement.range, polar_measurement.bearing;
 
     		Eigen::VectorXd z_diff(2);
-    		z_diff << z.range - z_hat.range, z.bearing - z_hat.bearing;
+    		z_diff << z(0) - z_hat(0), z(1) - z_hat(1);
 
     		// (2n+3)*2
     		Eigen::VectorXd K_update = K * z_diff;
@@ -347,7 +347,7 @@ namespace nuslam
     		robot_state.theta += K_update(2);
 
 	    	// Compute the posterior covariance
-	    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + 2 * cov_mtx.map_state_cov.size()) - K * H) * cov_mtx.cov_mtx;
+	    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * cov_mtx.cov_mtx;
     	}
     }
 }

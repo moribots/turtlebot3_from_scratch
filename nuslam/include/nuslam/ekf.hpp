@@ -21,9 +21,6 @@ namespace nuslam
     // used for model update
     using rigid2d::Pose2D;
 
-    // used for map update
-    using rigid2d::Point;
-
     // Struct to store Covariance Matrix for EKF
     struct CovarianceMatrix
     {
@@ -120,7 +117,7 @@ namespace nuslam
         /// then, update the EKF parameters for the next ieration. Also initializes new landmarks
         /// \param
         /// \returns
-        void update(const std::vector<Point> & map_state_);
+        void msr_update(const std::vector<Point> & map_state_);
 
     private:
         Pose2D robot_state;
