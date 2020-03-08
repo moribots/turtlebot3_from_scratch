@@ -79,16 +79,10 @@ namespace nuslam
     };
 
     // Struct to store Measurement Noise for ERK
-    struct Measurement
+    struct MeasurementNoise
     {
-        // Store Covariance Matrix
-        CovarianceMatrix cov_mtx;
-
-        // Contains noise for x,y,theta
-        Pose2D xyt_noise;
-
-        // Process Noise of robot
-        Eigen::MatrixXd r;
+        // Contains noise for range, bearing
+        RangeBear rb_noise_var;
 
         // Process Noise Matrix
         Eigen::MatrixXd R;
@@ -97,12 +91,7 @@ namespace nuslam
         MeasurementNoise();
 
         /// \brief constructor for Measurement noise matrix with xyt_noise set to user input
-        MeasurementNoise(const Pose2D & xyt_noise_var, const CovarianceMatrix & cov_mtx);
-    };
-
-    // Struct to store Measurement Noise for ERK
-    struct MeasurementNoise
-    {
+        MeasurementNoise(const RangeBear & rb_noise_var_);
     };
 
     /// \brief handles model propagation for EKF SLAM
@@ -119,7 +108,7 @@ namespace nuslam
         /// Start with guess of robot state (0,0,0) with zero covariance for robot state, indicating
         /// full confidence in initial state, and infinite covariance for ladmarks state, indicating we
         /// know nothing about them.
-        EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var);
+        EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_);
 
         /// \brief forward-propagate the nonlinear motion model to get an estimate (prediction, and, using
         /// Taylor-Series expantion, get a linearized state transition model, which is used to propagate uncertainty.
@@ -146,7 +135,7 @@ namespace nuslam
     std::mt19937 & get_random();
 
     /// \brief sample normal distribution
-    double sampleNormalDistribution();
+    double sampleNormalDistribution(double var=1.0);
 
     /// \brief returns noise for each dimension (x,y,theta) extracted from
     /// 3D normal distribution using Cholesky Decomposition

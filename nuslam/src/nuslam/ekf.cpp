@@ -144,6 +144,29 @@ namespace nuslam
 
 	}
 
+	// Measurement Noise
+	MeasurementNoise::MeasurementNoise()
+	{
+		rb_noise_var = RangeBear();
+
+		Eigen::VectorXd rb_vct(2);
+
+		rb_vct << sampleNormalDistribution(rb_noise_var.range), sampleNormalDistribution(rb_noise_var.bearing);
+
+		Eigen::MatrixXd R = rb_vct.asDiagonal();
+	}
+
+	MeasurementNoise::MeasurementNoise(const RangeBear & rb_noise_var_)
+	{
+		rb_noise_var = rb_noise_var_;
+
+		Eigen::VectorXd rb_vct(2);
+
+		rb_vct << sampleNormalDistribution(rb_noise_var.range), sampleNormalDistribution(rb_noise_var.bearing);
+
+		Eigen::MatrixXd R = rb_vct.asDiagonal();
+	}
+
 
 	// Random Sampling Functions
 	std::mt19937 & get_random()
@@ -156,9 +179,9 @@ namespace nuslam
         return mt;
     }
 
-    double sampleNormalDistribution()
+    double sampleNormalDistribution(double var=1.0)
     {
-		std::normal_distribution<> d(0, 1);
+		std::normal_distribution<> d(0, var);
 		return d(get_random());
     }
 
@@ -197,15 +220,17 @@ namespace nuslam
     {
     	robot_state = Pose2D();
     	proc_noise = ProcessNoise();
+    	msr_noise = MeasurementNoise();
     	cov_mtx = CovarianceMatrix();
     }
 
-    EKF::EKF(const Pose2D & robot_state_, const std::vector<Vector2D> & map_state_, const Pose2D & xyt_noise_var)
+    EKF::EKF(const Pose2D & robot_state_, const std::vector<Vector2D> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_)
     {
     	robot_state = robot_state_;
     	map_state = map_state_;
     	cov_mtx = CovarianceMatrix(map_state_);
     	proc_noise = ProcessNoise(xyt_noise_var, cov_mtx);
+    	msr_noise = MeasurementNoise(rb_noise_var_);
     }
 
     void EKF::predict(const Twist2D & twist, const Pose2D & xyt_noise_mean)
@@ -271,6 +296,9 @@ namespace nuslam
 
     		//  Compute the theoretical measurement, given the current state estimate
 	    	// Note, the nuslam::Point struct contains cartesian and polar measurements, so we just use iter
+	    	// Add Noise
+    		Eigen::VectorXd z(2);
+    		z << iter->range_bear.range + msr_noise.R(0, 0), iter->range_bear.bearing + msr_noise.R(1, 1);
 
 	    	// http://andrewjkramer.net/intro-to-the-ekf-step-3/
 	    	// Note first 3x3 is IX matrix and there is a 2x2 ID matrix on the bottom two rows starting at column 2j + 3 with j from 0 to n
@@ -289,19 +317,37 @@ namespace nuslam
 	    	double x_diff = robot_state.x - iter->pose.x;
 	    	double y_diff = robot_state.y - iter->pose.y;
 	    	double squared_diff = pow(x_diff, 2) + pow(y_diff, 2);
-	    	Eigen::MatrixXd h(3, 6);
-	    	h << (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), 0.0, (x_diff / sqrt(squared_diff)), (y_diff / sqrt(squared_diff)), 0.0,
-	    		 (y_diff / sqrt(squared_diff)), (-x_diff / sqrt(squared_diff)), -1.0, (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff)), 0.0,
-	    		 0.0, 0.0, 0.0, 0.0, 0.0, 1.0;
+	    	Eigen::MatrixXd h(2, 5);
+	    	h << (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), 0.0, (x_diff / sqrt(squared_diff)), (y_diff / sqrt(squared_diff)),
+	    		 (y_diff / sqrt(squared_diff)), (-x_diff / sqrt(squared_diff)), -1.0, (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff));
+	    	// 2*(2n+3)
 	    	Eigen::MatrixXd H = h * Fxj;
 
 	    	// Compute the Kalman gain from the linearized measurement model
 			Eigen::MatrixXd K = cov_mtx.cov_mtx * H.transpose() * (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R).inverse // NOTE: FIND MORE EFFICIENT INV
 
 	    	// Compute the posterior state update
-	    	// First, get theoretical expected measurement based on updated position
+	    	// First, get theoretical expected measurement based on belief in [r,b] format
+	    	Eigen::VectorXd z_hat(2);
+	    	// Pose difference between robot and landmark
+	    	Pose2D cartesian_measurement = Pose2D(iter->pose.x - robot_state.x, iter->pose.y - robot_state.y)
+	    	RangeBear polar_measurement = cartesianToPolar(cartesian_measurement);
+	    	// Subtract robot heading from bearing
+	    	polar_measurement.bearing -= robot_state.theta;
+    		z_hat << iter->polar_measurement.range, polar_measurement.bearing;
+
+    		Eigen::VectorXd z_diff(2);
+    		z_diff << z.range - z_hat.range, z.bearing - z_hat.bearing;
+
+    		// (2n+3)*2
+    		Eigen::VectorXd K_update = K * z_diff;
+
+    		robot_state.x += K_update(0);
+    		robot_state.y += K_update(1);
+    		robot_state.theta += K_update(2);
 
 	    	// Compute the posterior covariance
+	    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + 2 * cov_mtx.map_state_cov.size()) - K * H) * cov_mtx.cov_mtx;
     	}
     }
 }
