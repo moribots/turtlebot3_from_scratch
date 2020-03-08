@@ -251,10 +251,57 @@ namespace nuslam
     	}
 
     	cov_mtx.cov_mtx = G * cov_mtx.cov_mtx * G.transpose() + proc_noise.Q;
+
+    	// store belief as new robot state for update operation
+    	robot_state = belief;
     }
 
-    // EKF::update()
-    // {
+    EKF::update(const std::vector<Point> & map_state_)
+    {
+    	map_state = map_state_;
 
-    // }
+    	for (auto iter = map_state.begin(); iter != map_state.end(); iter++)
+    	{
+    		// First, if a landmark has pose x,y = inf, set the covarince at the corresponding index to inf to indicate zero confidence in measurement
+    		if (rigid2d::almost_equal(iter->pose.x, std::numeric_limits<double>::infinity()) or rigid2d::almost_equal(iter->pose.y, std::numeric_limits<double>::infinity()))
+    		{
+    			auto index = std::distance(map_state.begin(), iter);
+    			cov_mtx.cov_mtx(index, index) = std::numeric_limits<double>::infinity();
+    		}
+
+    		//  Compute the theoretical measurement, given the current state estimate
+	    	// Note, the nuslam::Point struct contains cartesian and polar measurements, so we just use iter
+
+	    	// http://andrewjkramer.net/intro-to-the-ekf-step-3/
+	    	// Note first 3x3 is IX matrix and there is a 2x2 ID matrix on the bottom two rows starting at column 2j + 3 with j from 0 to n
+	    	// j is the current examined landmark
+	    	Eigen::MatrixXd Fxj = Eigen::MatrixXd::Zero(5, 3 + (2 * map_state.size()));
+	    	auto j = std::distance(map_state.begin(), iter);
+	    	// top left 3x3
+	    	Fxj(0, 0) = 1;
+	    	Fxj(1, 1) = 1;
+	    	Fxj(2, 2) = 1;
+	    	// bottom 2 rows 2x2
+	    	Fxj(3, 2 * j + 3) = 1;
+	    	Fxj(4, 2 * j + 4) = 1;
+
+	    	// Compute the measurement Jacobian
+	    	double x_diff = robot_state.x - iter->pose.x;
+	    	double y_diff = robot_state.y - iter->pose.y;
+	    	double squared_diff = pow(x_diff, 2) + pow(y_diff, 2);
+	    	Eigen::MatrixXd h(3, 6);
+	    	h << (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), 0.0, (x_diff / sqrt(squared_diff)), (y_diff / sqrt(squared_diff)), 0.0,
+	    		 (y_diff / sqrt(squared_diff)), (-x_diff / sqrt(squared_diff)), -1.0, (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff)), 0.0,
+	    		 0.0, 0.0, 0.0, 0.0, 0.0, 1.0;
+	    	Eigen::MatrixXd H = h * Fxj;
+
+	    	// Compute the Kalman gain from the linearized measurement model
+			Eigen::MatrixXd K = cov_mtx.cov_mtx * H.transpose() * (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R).inverse // NOTE: FIND MORE EFFICIENT INV
+
+	    	// Compute the posterior state update
+	    	// First, get theoretical expected measurement based on updated position
+
+	    	// Compute the posterior covariance
+    	}
+    }
 }

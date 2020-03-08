@@ -22,7 +22,7 @@ namespace nuslam
     using rigid2d::Pose2D;
 
     // used for map update
-    using rigid2d::Vector2D;
+    using rigid2d::Point;
 
     // Struct to store Covariance Matrix for EKF
     struct CovarianceMatrix
@@ -31,7 +31,7 @@ namespace nuslam
         std::vector<double> robot_state_cov;
 
         // holds Landmarks x,y
-        std::vector<Vector2D> map_state;
+        std::vector<Point> map_state;
 
         // Populates bottom right of covariance matrix for landmarks
         std::vector<double> map_state_cov;
@@ -45,12 +45,12 @@ namespace nuslam
 
         /// \brief constructor for covariance matrix with robot_state_cov init to zero
         /// and map_state_cov init to infinity
-        CovarianceMatrix(const std::vector<Vector2D> & map_state_);
+        CovarianceMatrix(const std::vector<Point> & map_state_);
 
 
         /// \brief constructor for covariance matrix with robot_state_cov
         /// and map_state_cov init to user-specified input
-        CovarianceMatrix(const std::vector<Vector2D> & map_state_, \
+        CovarianceMatrix(const std::vector<Point> & map_state_, \
                          const std::vector<double> & robot_state_cov_,\
                          const std::vector<double> & map_state_cov_);
 
@@ -79,6 +79,28 @@ namespace nuslam
     };
 
     // Struct to store Measurement Noise for ERK
+    struct Measurement
+    {
+        // Store Covariance Matrix
+        CovarianceMatrix cov_mtx;
+
+        // Contains noise for x,y,theta
+        Pose2D xyt_noise;
+
+        // Process Noise of robot
+        Eigen::MatrixXd r;
+
+        // Process Noise Matrix
+        Eigen::MatrixXd R;
+
+        /// \brief constructor for Measurement noise matrix with xyt_noise set to zero
+        MeasurementNoise();
+
+        /// \brief constructor for Measurement noise matrix with xyt_noise set to user input
+        MeasurementNoise(const Pose2D & xyt_noise_var, const CovarianceMatrix & cov_mtx);
+    };
+
+    // Struct to store Measurement Noise for ERK
     struct MeasurementNoise
     {
     };
@@ -97,7 +119,7 @@ namespace nuslam
         /// Start with guess of robot state (0,0,0) with zero covariance for robot state, indicating
         /// full confidence in initial state, and infinite covariance for ladmarks state, indicating we
         /// know nothing about them.
-        EKF(const Pose2D & robot_state_, const std::vector<Vector2D> & map_state_, const Pose2D & xyt_noise_var);
+        EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var);
 
         /// \brief forward-propagate the nonlinear motion model to get an estimate (prediction, and, using
         /// Taylor-Series expantion, get a linearized state transition model, which is used to propagate uncertainty.
@@ -109,12 +131,13 @@ namespace nuslam
         /// then, update the EKF parameters for the next ieration. Also initializes new landmarks
         /// \param
         /// \returns
-        void update();
+        void update(const std::vector<Point> & map_state_);
 
     private:
         Pose2D robot_state;
-        std::vector<Vector2D> map_state;
+        std::vector<Point> map_state;
         ProcessNoise proc_noise;
+        MeasurementNoise msr_noise;
         CovarianceMatrix cov_mtx;
 
     };
