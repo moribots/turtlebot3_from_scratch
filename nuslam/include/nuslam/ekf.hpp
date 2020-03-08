@@ -27,9 +27,6 @@ namespace nuslam
     // Struct to store Covariance Matrix for EKF
     struct CovarianceMatrix
     {
-        // Holds Robot x,y,theta
-        Pose2D robot_state;
-
         // Populates top left of covariance matrix for robot
         std::vector<double> robot_state_cov;
 
@@ -48,12 +45,12 @@ namespace nuslam
 
         /// \brief constructor for covariance matrix with robot_state_cov init to zero
         /// and map_state_cov init to infinity
-        CovarianceMatrix(const Pose2D & robot_state_, const std::vector<Vector2D> & map_state_);
+        CovarianceMatrix(const std::vector<Vector2D> & map_state_);
 
 
         /// \brief constructor for covariance matrix with robot_state_cov
         /// and map_state_cov init to user-specified input
-        CovarianceMatrix(const Pose2D & robot_state_, const std::vector<Vector2D> & map_state_, \
+        CovarianceMatrix(const std::vector<Vector2D> & map_state_, \
                          const std::vector<double> & robot_state_cov_,\
                          const std::vector<double> & map_state_cov_);
 
@@ -90,21 +87,23 @@ namespace nuslam
     class EKF
     {
     public:
-        /// \brief the default constructor creates a EKF with 0 radius and 0,0 pose and default threshold
-        EKF();
-
-        /// \brief start with guess of robot state (0,0,0) with zero covariance for robot state, indicating
+        /// \brief the default constructor creates a EKF with zero-initialized pose and no landmarks
+        /// Start with guess of robot state (0,0,0) with zero covariance for robot state, indicating
         /// full confidence in initial state, and infinite covariance for ladmarks state, indicating we
         /// know nothing about them.
-        /// \param
-        /// \returns
-        void initialize();
+        EKF();
+
+        /// \brief the default constructor creates a EKF with user-defined number of landmarks
+        /// Start with guess of robot state (0,0,0) with zero covariance for robot state, indicating
+        /// full confidence in initial state, and infinite covariance for ladmarks state, indicating we
+        /// know nothing about them.
+        EKF(const Pose2D & robot_state_, const std::vector<Vector2D> & map_state_, const Pose2D & xyt_noise_var);
 
         /// \brief forward-propagate the nonlinear motion model to get an estimate (prediction, and, using
         /// Taylor-Series expantion, get a linearized state transition model, which is used to propagate uncertainty.
         /// \param
         /// \returns
-        void predict();
+        void predict(const Twist2D & twist, const Pose2D & xyt_noise_mean);
 
         /// \brief incorporate sequential landmark measurements to perform a correction of our predicted estimate, 
         /// then, update the EKF parameters for the next ieration. Also initializes new landmarks
@@ -113,8 +112,10 @@ namespace nuslam
         void update();
 
     private:
-        Pose2D estimate;
-        std::vector<Vector2D> landmarks;
+        Pose2D robot_state;
+        std::vector<Vector2D> map_state;
+        ProcessNoise proc_noise;
+        CovarianceMatrix cov_mtx;
 
     };
 

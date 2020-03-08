@@ -14,7 +14,6 @@ namespace nuslam
 	// CovarianceMatrix
 	CovarianceMatrix::CovarianceMatrix()
 	{
-        robot_state = Pose2D();  // init to 0,0,0
         std::vector<double> robot_state_cov{0.0, 0.0, 0.0}; // init to 0,0,0
         // 3*3
         // construct EigenVector from Vector
@@ -24,9 +23,8 @@ namespace nuslam
         cov_mtx = robot_cov_mtx;
 	}
 
-	CovarianceMatrix::CovarianceMatrix(const Pose2D & robot_state_, const std::vector<Vector2D> & map_state_)
+	CovarianceMatrix::CovarianceMatrix(const std::vector<Vector2D> & map_state_)
 	{
-		robot_state = robot_state_;  // init to 0,0,0
         std::vector<double> robot_state_cov{0.0, 0.0, 0.0}; // init to 0,0,0
         // 3*3
         // construct EigenVector from Vector
@@ -59,11 +57,10 @@ namespace nuslam
         cov_mtx = mtx;
 	}
 
-	CovarianceMatrix::CovarianceMatrix(const Pose2D & robot_state_, const std::vector<Vector2D> & map_state_, \
+	CovarianceMatrix::CovarianceMatrix(const std::vector<Vector2D> & map_state_, \
                          			   const std::vector<double> & robot_state_cov_,\
 			                           const std::vector<double> & map_state_cov_)
 	{
-		robot_state = robot_state_;  // init to 0,0,0
         robot_state_cov = robot_state_cov_;
         // construct EigenVector from Vector
         Eigen::VectorXd robot_state_cov_vct = Eigen::VectorXd::Map(robot_state_cov.data(), robot_state_cov.size());
@@ -194,4 +191,70 @@ namespace nuslam
 
 		return noise_vect;
     }
+
+    //EKF
+    EKF::EKF()
+    {
+    	robot_state = Pose2D();
+    	proc_noise = ProcessNoise();
+    	cov_mtx = CovarianceMatrix();
+    }
+
+    EKF::EKF(const Pose2D & robot_state_, const std::vector<Vector2D> & map_state_, const Pose2D & xyt_noise_var)
+    {
+    	robot_state = robot_state_;
+    	map_state = map_state_;
+    	cov_mtx = CovarianceMatrix(map_state_);
+    	proc_noise = ProcessNoise(xyt_noise_var, cov_mtx);
+    }
+
+    void EKF::predict(const Twist2D & twist, const Pose2D & xyt_noise_mean)
+    {
+    	// First, update the estimate using the forward model
+    	std::vector<double> noise_vect = get_3d_noise(xyt_noise_mean, proc_noise);
+
+    	Pose2D belief;
+
+    	if (rigid2d::almost_equal(twist.w_z, 0.0))
+    	// If dtheta = 0
+    	{
+    		belief = Pose2D(robot_state.x + (twist.v_x * cos(robot_state.theta)) + noise_vect.at(0),\
+						    robot_state.y + (twist.v_x * sin(robot_state.theta)) + noise_vect.at(1),\
+    						robot_state.theta + noise_vect.at(2));
+    	} else {
+		// If dtheta != 0
+    		belief = Pose2D(robot_state.x + ((-twist.v_x / twist.w_z) * sin(robot_state.theta) + (twist.v_x / twist.w_z) * sin(robot_state.theta + twist.w_z)) + noise_vect.at(0),\
+						    robot_state.y + ((twist.v_x / twist.w_z) * cos(robot_state.theta) + (-twist.v_x / twist.w_z) * cos(robot_state.theta + twist.w_z)) + noise_vect.at(1),\
+    						robot_state.theta + twist.w_z + noise_vect.at(2));
+
+    	}
+
+    	// Next, we propagate the uncertainty using the linearized state transition model
+    	Eigen::MatrixXd G;
+    	if (rigid2d::almost_equal(twist.w_z, 0.0))
+    	// If dtheta = 0
+    	{
+    		Eigen::MatrixXd g = Eigen::MatrixXd::Zero(3 + (2 * map_state.size()), 3 + (2 * map_state.size()));
+    		// Now replace non-zero entries
+    		g(1, 0) = -twist.v_x * sin(robot_state.theta);
+    		g(2, 0) = twist.v_x * cos(robot_state.theta);
+
+    		G = Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) + g;
+    	} else {
+		// If dtheta != 0
+    		Eigen::MatrixXd g = Eigen::MatrixXd::Zero(3 + (2 * map_state.size()), 3 + (2 * map_state.size()));
+    		// Now replace non-zero entries
+    		g(1, 0) = (-twist.v_x / twist.w_z) * cos(robot_state.theta) + (twist.v_x / twist.w_z) * cos(robot_state.theta + twist.w_z);
+    		g(2, 0) = (-twist.v_x / twist.w_z) * sin(robot_state.theta) + (twist.v_x / twist.w_z) * sin(robot_state.theta + twist.w_z);
+
+    		G = Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) + g;
+    	}
+
+    	cov_mtx.cov_mtx = G * cov_mtx.cov_mtx * G.transpose() + proc_noise.Q;
+    }
+
+    // EKF::update()
+    // {
+
+    // }
 }
