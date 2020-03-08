@@ -324,6 +324,7 @@ namespace nuslam
 	    	Eigen::MatrixXd H = h * Fxj;
 
 	    	// Compute the Kalman gain from the linearized measurement model
+	    	// (2n+3)*2
 			Eigen::MatrixXd K = cov_mtx.cov_mtx * H.transpose() * (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R).inverse(); // NOTE: FIND MORE EFFICIENT INV
 
 	    	// Compute the posterior state update
@@ -339,12 +340,16 @@ namespace nuslam
     		Eigen::VectorXd z_diff(2);
     		z_diff << z(0) - z_hat(0), z(1) - z_hat(1);
 
-    		// (2n+3)*2
+    		// (2n+3)*1
     		Eigen::VectorXd K_update = K * z_diff;
 
     		robot_state.x += K_update(0);
     		robot_state.y += K_update(1);
     		robot_state.theta += K_update(2);
+
+    		// Also update map estimate based on K
+    		iter->pose.x += K_update(3 + j);
+    		iter->pose.y += K_update(4 + j);
 
 	    	// Compute the posterior covariance
 	    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * cov_mtx.cov_mtx;
