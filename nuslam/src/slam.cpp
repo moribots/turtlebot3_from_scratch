@@ -38,6 +38,10 @@
 
 #include<string>
 
+#include "nuslam/landmarks.hpp"
+#include "nuslam/ekf.hpp"
+#include "nuslam/TurtleMap.h"
+
 #include "rigid2d/rigid2d.hpp"
 #include "rigid2d/diff_drive.hpp"
 

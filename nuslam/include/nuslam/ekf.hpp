@@ -105,7 +105,7 @@ namespace nuslam
         /// Start with guess of robot state (0,0,0) with zero covariance for robot state, indicating
         /// full confidence in initial state, and infinite covariance for ladmarks state, indicating we
         /// know nothing about them.
-        EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_);
+        EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_, const double & max_range_);
 
         /// \brief forward-propagate the nonlinear motion model to get an estimate (prediction, and, using
         /// Taylor-Series expantion, get a linearized state transition model, which is used to propagate uncertainty.
@@ -117,9 +117,10 @@ namespace nuslam
         /// then, update the EKF parameters for the next ieration. Also initializes new landmarks
         /// \param
         /// \returns
-        void msr_update(const std::vector<Point> & map_state_);
+        void msr_update(std::vector<Point> & measurements_);
 
     private:
+        double max_range;
         Pose2D robot_state;
         std::vector<Point> map_state;
         ProcessNoise proc_noise;

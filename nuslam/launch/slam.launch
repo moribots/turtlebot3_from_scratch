@@ -10,6 +10,8 @@
 
 	<arg name="robot" default="-1" doc="Whether launchfile is run on turtlebot(1-5) directly (0), in simulation (-1) or on remote PC (X: 1-5)"/>
 
+	<arg name="debug" default="False" doc="Launches SLAM nodes with (True) or without (False) known data association via analysis node"/>
+
 	<group if="$(eval arg('robot') != -1)">
 		<!-- RUN ON TURTLEBOT -->
 
@@ -42,14 +44,12 @@
 			<param name="frequency" value="60.0" />
 		</node>
 
+		<!-- include turtlebot3 teleop -->
+		<include file="$(find turtlebot3_teleop)/launch/turtlebot3_teleop_key.launch"/>
+
 	</group>
 
 	<group if="$(eval arg('robot') == -1)">
-		<!-- Fake Encoders Node - USE FOR TESTING WHEN TURTLEBOT UNAVAILABLE -->
-		<!-- <node name="fake_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node" output="screen">
-			<rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
-			<remap from="turtle1/cmd_vel" to="cmd_vel" />
-		</node> -->
 
 		<!-- Turtle Interface -->
 		<node pkg="nuturtle_robot" type="turtle_interface" name="turtle_interface" output="screen">
@@ -69,6 +69,7 @@
 			<param name="left_wheel_joint" value="left_wheel_axle" />
 		</node>
 
+		<group if="$(eval arg('debug') == False)">
 		<!-- Landmarks Node -->
 		<node name="landmarks_node" pkg="nuslam" type="landmarks_node" output="screen">
 			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
@@ -76,11 +77,25 @@
 			<param name="landmark_frame_id" value="base_scan" /> 
 			<param name="frequency" value="60.0" />
 		</node>
+		</group>
 
 		<!-- Draw Map Node -->
 		<node name="draw_map" pkg="nuslam" type="draw_map" output="screen">
 			<param name="frequency" value="60.0" />
+			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
 		</node>
+
+		<group if="$(eval arg('debug') == True)">
+		<!-- Analysis (Fake Landmarks) Node -->
+		<node name="analysis" pkg="nuslam" type="analysis" output="screen">
+			<param name="landmark_frame_id" value="base_scan" /> 
+			<param name="frequency" value="60.0" />
+		</node>
+		</group>
+
+		<!-- include turtlebot3 teleop -->
+		<!-- NOTE: do "export export TURTLEBOT3_MODEL=burger" in terminal
+		<include file="$(find turtlebot3_teleop)/launch/turtlebot3_teleop_key.launch"/>
 
 	</group>
 

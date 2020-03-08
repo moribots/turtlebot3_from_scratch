@@ -218,14 +218,16 @@ namespace nuslam
     //EKF
     EKF::EKF()
     {
+    	max_range = 3.5;
     	robot_state = Pose2D();
     	proc_noise = ProcessNoise();
     	msr_noise = MeasurementNoise();
     	cov_mtx = CovarianceMatrix();
     }
 
-    EKF::EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_)
+    EKF::EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_, const double & max_range_)
     {
+    	max_range = max_range_;
     	robot_state = robot_state_;
     	map_state = map_state_;
     	cov_mtx = CovarianceMatrix(map_state_);
@@ -281,16 +283,19 @@ namespace nuslam
     	robot_state = belief;
     }
 
-    void EKF::msr_update(const std::vector<Point> & map_state_)
+    void EKF::msr_update(std::vector<Point> & measurements_)
     {
-    	map_state = map_state_;
-
-    	for (auto iter = map_state.begin(); iter != map_state.end(); iter++)
+    	for (auto iter = measurements_.begin(); iter != measurements_.end(); iter++)
     	{
-    		// First, if a landmark has pose x,y = inf, set the covarince at the corresponding index to inf to indicate zero confidence in measurement
-    		if (rigid2d::almost_equal(iter->pose.x, std::numeric_limits<double>::infinity()) or rigid2d::almost_equal(iter->pose.y, std::numeric_limits<double>::infinity()))
+    		// First, convert landmark cartesian position from robot-relative to world relative
+    		iter->pose.x = robot_state.x + iter->range_bear.range * cos(robot_state.theta + iter->range_bear.bearing);
+    		iter->pose.x = robot_state.y + iter->range_bear.range * sin(robot_state.theta + iter->range_bear.bearing);
+
+
+    		// If a landmark has range > tolerance, set the covarince at the corresponding index to inf to indicate zero confidence in measurement
+    		if (iter->range_bear.range > max_range)
     		{
-    			auto index = std::distance(map_state.begin(), iter);
+    			auto index = std::distance(measurements_.begin(), iter);
     			cov_mtx.cov_mtx(index, index) = std::numeric_limits<double>::infinity();
     		}
 
@@ -304,7 +309,7 @@ namespace nuslam
 	    	// Note first 3x3 is IX matrix and there is a 2x2 ID matrix on the bottom two rows starting at column 2j + 3 with j from 0 to n
 	    	// j is the current examined landmark
 	    	Eigen::MatrixXd Fxj = Eigen::MatrixXd::Zero(5, 3 + (2 * map_state.size()));
-	    	auto j = std::distance(map_state.begin(), iter);
+	    	auto j = std::distance(measurements_.begin(), iter);
 	    	// top left 3x3
 	    	Fxj(0, 0) = 1;
 	    	Fxj(1, 1) = 1;
@@ -348,8 +353,9 @@ namespace nuslam
     		robot_state.theta += K_update(2);
 
     		// Also update map estimate based on K
-    		iter->pose.x += K_update(3 + j);
-    		iter->pose.y += K_update(4 + j);
+    		// Map data starts at index 3
+    		map_state.at(j).pose.x += K_update(2 * j + 3);
+    		map_state.at(j).pose.y += K_update(2 * j + 4);
 
 	    	// Compute the posterior covariance
 	    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * cov_mtx.cov_mtx;
