@@ -1,5 +1,5 @@
 /// \file
-/// \brief Main: Publishes Odometry messages for diff drive robot based on wheel joint states
+/// \brief Main: Publishes Odometry messages for diff drive robot with Extended Kalman Filter SLAM
 ///
 /// PARAMETERS:
 ///   o_fid_ (string): parent frame ID for the published tf transform

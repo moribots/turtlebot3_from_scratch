@@ -22,6 +22,8 @@ find_package(catkin REQUIRED COMPONENTS
   rostest
   sensor_msgs
   std_msgs
+  tf2
+  tf2_ros
   visualization_msgs
 )
 

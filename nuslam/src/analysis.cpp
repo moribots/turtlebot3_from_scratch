@@ -21,6 +21,10 @@
 
 #include <functional>  // To use std::bind
 #include <algorithm>  // to use std::find_if
+#include "nuslam/landmarks.hpp"
+
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Matrix3x3.h>
 
 
 // Global Vars
@@ -51,12 +55,24 @@ void gazebo_callback(const gazebo_msgs::ModelStates &model)
       auto index = std::distance(model.name.begin(), it);
       double x_pos = model.pose.at(index).position.x - dd_pose.position.x;
       double y_pos = model.pose.at(index).position.y - dd_pose.position.y;
+      rigid2d::Vector2D lnd_pose = rigid2d::Vector2D(x_pos, y_pos);
+      nuslam::Point lnd_pt = nuslam::Point(lnd_pose);
+      // Adjust r,b for rotation
+      auto roll = 0.0, pitch = 0.0, yaw = 0.0;
+      tf2::Quaternion quat(dd_pose.orientation.x,\
+                           dd_pose.orientation.y,\
+                           dd_pose.orientation.z,\
+                           dd_pose.orientation.w);
+      tf2::Matrix3x3 mat(quat);
+      mat.getRPY(roll, pitch, yaw);
+      lnd_pt.range_bear.bearing -= yaw;
+      nuslam::Point adjusted_landmark = nuslam::Point(lnd_pt.range_bear);
       double radius = 0.1;
 
       // Populate Vectors
       radii.push_back(radius);
-      x_pts.push_back(x_pos);
-      y_pts.push_back(y_pos);
+      x_pts.push_back(adjusted_landmark.pose.x);
+      y_pts.push_back(adjusted_landmark.pose.y);
 
       it++;
   }

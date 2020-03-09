@@ -86,7 +86,7 @@
 		<group if="$(eval arg('debug') == True)">
 		<!-- Analysis (Fake Landmarks) Node -->
 		<node name="analysis" pkg="nuslam" type="analysis" output="screen">
-			<param name="landmark_frame_id" value="odom" /> 
+			<param name="landmark_frame_id" value="base_scan" /> 
 			<param name="frequency" value="60.0" />
 		</node>
 		<!-- Draw Map Node -->
