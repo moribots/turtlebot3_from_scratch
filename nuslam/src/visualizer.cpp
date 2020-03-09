@@ -19,6 +19,7 @@
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Path.h>
+#include <nav_msgs/Odometry.h>
 
 #include <functional>  // To use std::bind
 #include <algorithm>  // to use std::find_if
@@ -26,8 +27,11 @@
 
 // Global Vars
 bool gazebo_callback_flag = false;
+bool odom_callback_flag = false;
 std::string robot_name = "diff_drive";
-std::vector<geometry_msgs::PoseStamped> poses;
+std::vector<geometry_msgs::PoseStamped> gazebo_poses;
+std::vector<geometry_msgs::PoseStamped> odom_poses;
+std::vector<geometry_msgs::PoseStamped> slam_poses;
 std::string frame_id_ = "odom";
 
 
@@ -45,9 +49,24 @@ void gazebo_callback(const gazebo_msgs::ModelStates &model)
   ps.pose = dd_pose;
 
   // Append to poses vector to publish Path msg
-  poses.push_back(ps);
+  gazebo_poses.push_back(ps);
 
   gazebo_callback_flag = true;
+}
+
+void odom_callback(const nav_msgs::Odometry &odom)
+{
+
+  geometry_msgs::PoseStamped ps;
+
+  ps.header.frame_id = frame_id_;
+  ps.header.stamp = ros::Time::now();
+  ps.pose = odom.pose.pose;
+
+  // Append to poses vector to publish Path msg
+  odom_poses.push_back(ps);
+
+  odom_callback_flag = true;
 }
 
 
@@ -72,9 +91,13 @@ int main(int argc, char** argv)
 
   // Init Publishers
   ros::Publisher gzb_path_pub = nh_.advertise<nav_msgs::Path>("gazebo_path", 1);
+  ros::Publisher odom_path_pub = nh_.advertise<nav_msgs::Path>("odom_path", 1);
 
-  // Init ModelState Subscriber - only calls back if gazebo launched
+  // Init ModelState Subscriber - only calls back if gazebo launched - used to publish ground truth path
   ros::Subscriber gzb_sub = nh.subscribe("/gazebo/model_states", 1, gazebo_callback);
+
+  // Init odom subscriber to publish path according to odometry
+  ros::Subscriber odom_sub = nh.subscribe("odom", 1, odom_callback);
 
   ros::Rate rate(frequency);
 
@@ -87,10 +110,21 @@ int main(int argc, char** argv)
     {
       path.header.stamp = ros::Time::now();
       // Populate using growing vector of poses
-      path.poses = poses;
+      path.poses = gazebo_poses;
       gzb_path_pub.publish(path);
       gazebo_callback_flag = false;
     }
+
+    if (odom_callback_flag)
+    {
+      path.header.stamp = ros::Time::now();
+      // Populate using growing vector of poses
+      path.poses = odom_poses;
+      odom_path_pub.publish(path);
+      odom_callback_flag = false;
+    }
+
+
 
     rate.sleep();
   }
