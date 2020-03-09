@@ -263,16 +263,18 @@ namespace nuslam
     	{
     		Eigen::MatrixXd g = Eigen::MatrixXd::Zero(3 + (2 * map_state.size()), 3 + (2 * map_state.size()));
     		// Now replace non-zero entries
-    		g(1, 0) = -twist.v_x * sin(robot_state.theta);
-    		g(2, 0) = twist.v_x * cos(robot_state.theta);
+    		// using x,y,theta
+    		g(0, 0) = -twist.v_x * sin(robot_state.theta);
+    		g(1, 0) = twist.v_x * cos(robot_state.theta);
 
     		G = Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) + g;
     	} else {
 		// If dtheta != 0
     		Eigen::MatrixXd g = Eigen::MatrixXd::Zero(3 + (2 * map_state.size()), 3 + (2 * map_state.size()));
     		// Now replace non-zero entries
-    		g(1, 0) = (-twist.v_x / twist.w_z) * cos(robot_state.theta) + (twist.v_x / twist.w_z) * cos(robot_state.theta + twist.w_z);
-    		g(2, 0) = (-twist.v_x / twist.w_z) * sin(robot_state.theta) + (twist.v_x / twist.w_z) * sin(robot_state.theta + twist.w_z);
+    		// using x,y,theta
+    		g(0, 0) = (-twist.v_x / twist.w_z) * cos(robot_state.theta) + (twist.v_x / twist.w_z) * cos(robot_state.theta + twist.w_z);
+    		g(1, 0) = (-twist.v_x / twist.w_z) * sin(robot_state.theta) + (twist.v_x / twist.w_z) * sin(robot_state.theta + twist.w_z);
 
     		G = Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) + g;
     	}
@@ -287,20 +289,26 @@ namespace nuslam
     {
     	for (auto iter = measurements_.begin(); iter != measurements_.end(); iter++)
     	{
-    		// First, convert landmark cartesian position from robot-relative to world relative
+    		// Current Landmark Index
+    		auto j = std::distance(measurements_.begin(), iter);
+    		// convert landmark cartesian position from robot-relative to world relative
     		iter->pose.x = robot_state.x + iter->range_bear.range * cos(robot_state.theta + iter->range_bear.bearing);
-    		iter->pose.x = robot_state.y + iter->range_bear.range * sin(robot_state.theta + iter->range_bear.bearing);
+    		iter->pose.y = robot_state.y + iter->range_bear.range * sin(robot_state.theta + iter->range_bear.bearing);
 
-
-    		// If a landmark has range > tolerance, set the covarince at the corresponding index to inf to indicate zero confidence in measurement
-    		if (iter->range_bear.range > max_range)
+    		// If a landmark has range > tolerance, skip
+    		if (!(iter->range_bear.range > max_range))
+    		// skip landmark if outside of range
     		{
-    			auto index = std::distance(measurements_.begin(), iter);
-    			cov_mtx.cov_mtx(index, index) = std::numeric_limits<double>::infinity();
-    			cov_mtx.cov_mtx(index + 1, index + 1) = std::numeric_limits<double>::infinity();
+
+    		// If a landmark has not been initialized internally, initialize its position
+    		if (!map_state.at(j).init)
+    		{
+    		map_state.at(j).pose.x = iter->pose.x;
+    		map_state.at(j).pose.y = iter->pose.y;
+    		map_state.at(j).init = true;
     		}
 
-    		//  Compute the theoretical measurement, given the current state estimate
+    		//  Add noise to actual range, bearing measurement
 	    	// Note, the nuslam::Point struct contains cartesian and polar measurements, so we just use iter
 	    	// Add Noise
     		Eigen::VectorXd z(2);
@@ -310,7 +318,6 @@ namespace nuslam
 	    	// Note first 3x3 is IX matrix and there is a 2x2 ID matrix on the bottom two rows starting at column 2j + 3 with j from 0 to n
 	    	// j is the current examined landmark
 	    	Eigen::MatrixXd Fxj = Eigen::MatrixXd::Zero(5, 3 + (2 * map_state.size()));
-	    	auto j = std::distance(measurements_.begin(), iter);
 	    	// top left 3x3
 	    	Fxj(0, 0) = 1;
 	    	Fxj(1, 1) = 1;
@@ -360,6 +367,7 @@ namespace nuslam
 
 	    	// Compute the posterior covariance
 	    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * cov_mtx.cov_mtx;
+    		}
     	}
     }
 }

@@ -33,6 +33,7 @@ namespace nuslam
     {
         RangeBear range_bear;
         Vector2D pose;
+        bool init;
 
         // \brief constructor for Point with no inputs, initializes all to zero
         Point();

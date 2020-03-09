@@ -53,7 +53,10 @@ rigid2d::WheelVelocities w_vel;
 rigid2d::Pose2D reset_pose;
 rigid2d::DiffDrive driver;
 bool callback_flag = true;
+bool landmark_callback_flag = true;
 bool service_flag = false;
+// EKF objcet
+nuslam::EKF ekf;
 
 void js_callback(const sensor_msgs::JointState::ConstPtr &js)
 {
@@ -73,9 +76,26 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
   // wr_enc = rigid2d::normalize_encoders(js->position.at(1));
 	w_vel = driver.updateOdometry(wl_enc, wr_enc);
 	// ROS_INFO("wheel vel")
+  // Get Twist for EKF
 	Vb = driver.wheelsToTwist(w_vel);
   // Print Wheel Angles
 	// std::cout << driver;
+
+  // Perform prediction step of EKF here using twist
+
+
+
+  // Use reset function to set driver pose after EKF without affecting wheel angles
+
+  callback_flag = true;
+}
+
+void landmark_callback(const nuslam::TurtleMap &map)
+{
+  // Perform measurement update step of EKF here
+
+  // Use reset function to set driver pose after EKF without affecting wheel angles
+
   callback_flag = true;
 }
 
@@ -107,6 +127,8 @@ int main(int argc, char** argv)
   // Vars
   std::string o_fid_, b_fid_;
   float wbase_, wrad_, frequency;
+  double max_range_ = 3.5;
+  double x_noise, y_noise, theta_noise, range_noise, bearing_noise = 1e-10;
 
   ros::init(argc, argv, "odometer_node"); // register the node on ROS
   ros::NodeHandle nh_("~"); // PRIVATE handle to ROS
@@ -117,7 +139,16 @@ int main(int argc, char** argv)
   // Init Global Parameters
   nh.getParam("/wheel_base", wbase_);
   nh.getParam("/wheel_radius", wrad_);
-  frequency = 60;
+  // Filter for max detection radius
+  nh.getParam("max_range", max_range_);
+  // Get Noise Params
+  nh.getParam("x_noise", x_noise);
+  nh.getParam("y_noise", y_noise);
+  nh.getParam("theta_noise", theta_noise);
+  nh.getParam("range_noise", range_noise);
+  nh.getParam("bearing_noise", bearing_noise);
+  // Freq
+  frequency = 60.0;
   // Set Driver Wheel Base and Radius
   driver.set_static(wbase_, wrad_);
 
@@ -125,10 +156,17 @@ int main(int argc, char** argv)
   ros::ServiceServer set_pose_server = nh.advertiseService("set_pose", set_poseCallback);
   // Init Subscriber
   ros::Subscriber js_sub = nh.subscribe("joint_states", 1, js_callback);
+  ros::Subscriber lnd_sub = nh.subscribe("landmarks", 1, landmark_callback);
   // Init Publisher
   ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 1);
   // Init Transform Broadcaster
   tf2_ros::TransformBroadcaster odom_broadcaster;
+
+  // Initialize EKF class with robot state, vector of 12 landmarks at 0,0,0, and noise
+  std::vector<nuslam::Point> map_state_(12, nuslam::Point());
+  nuslam::Pose2D xyt_noise_var = nuslam::Pose2D(x_noise, y_noise, theta_noise);
+  nuslam::RangeBear rb_noise_var_ = nuslam::RangeBear(range_noise, bearing_noise);
+  ekf = nuslam::EKF(driver.get_pose(), map_state_, xyt_noise_var, rb_noise_var_, max_range_);
 
   // Init Time
   ros::Time current_time;
@@ -139,6 +177,9 @@ int main(int argc, char** argv)
   // Main While
   while (ros::ok())
   {
+    // NOTE: All callbacks will be executed before rest of main
+    // so if both odom and landmark update are available, both will
+    // execute before rest of main loop. Order cannot be guaranteed however
   	ros::spinOnce();
   	current_time = ros::Time::now();
 

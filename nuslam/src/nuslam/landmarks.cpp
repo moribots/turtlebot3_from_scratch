@@ -22,6 +22,7 @@ namespace nuslam
 	{
 		range_bear = RangeBear();
 		pose = Vector2D();
+		init = false;
 	}
 
 	Point::Point(const Vector2D & pose_)
@@ -29,6 +30,8 @@ namespace nuslam
 		pose = pose_;
 
 		range_bear = cartesianToPolar(pose);
+
+		init = false;
 	}
 
 	Point::Point(const RangeBear & range_bear_)
@@ -36,12 +39,16 @@ namespace nuslam
 		range_bear = range_bear_;
 
 		pose = polarToCartesian(range_bear);
+
+		init = false;
 	}
 
 	Point::Point(const RangeBear & range_bear_, const Vector2D & pose_)
 	{
 		range_bear = range_bear_;
 		pose = pose_;
+
+		init = false;
 	}
 
 	// Landmark
