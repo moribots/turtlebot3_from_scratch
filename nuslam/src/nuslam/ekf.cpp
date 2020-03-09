@@ -297,6 +297,7 @@ namespace nuslam
     		{
     			auto index = std::distance(measurements_.begin(), iter);
     			cov_mtx.cov_mtx(index, index) = std::numeric_limits<double>::infinity();
+    			cov_mtx.cov_mtx(index + 1, index + 1) = std::numeric_limits<double>::infinity();
     		}
 
     		//  Compute the theoretical measurement, given the current state estimate

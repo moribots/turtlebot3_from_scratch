@@ -76,7 +76,7 @@ void gazebo_callback(const gazebo_msgs::ModelStates &model)
 int main(int argc, char** argv)
 /// The Main Function ///
 {
-  ROS_INFO("STARTING NODE: landmarks");
+  ROS_INFO("STARTING NODE: analysis");
 
   double frequency = 60.0;
   std::string frame_id_ = "base_scan";
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
   // Main While
   while (ros::ok())
   {
-  	ros::spinOnce();
+    ros::spinOnce();
 
     if (callback_flag)
     {

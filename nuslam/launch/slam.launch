@@ -77,25 +77,34 @@
 			<param name="landmark_frame_id" value="base_scan" /> 
 			<param name="frequency" value="60.0" />
 		</node>
+		<!-- Draw Map Node -->
+		<node name="draw_map" pkg="nuslam" type="draw_map" output="screen">
+			<param name="frequency" value="60.0" />
+		</node>
 		</group>
 
+		<group if="$(eval arg('debug') == True)">
+		<!-- Analysis (Fake Landmarks) Node -->
+		<node name="analysis" pkg="nuslam" type="analysis" output="screen">
+			<param name="landmark_frame_id" value="odom" /> 
+			<param name="frequency" value="60.0" />
+		</node>
 		<!-- Draw Map Node -->
 		<node name="draw_map" pkg="nuslam" type="draw_map" output="screen">
 			<param name="frequency" value="60.0" />
 			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
 		</node>
-
-		<group if="$(eval arg('debug') == True)">
-		<!-- Analysis (Fake Landmarks) Node -->
-		<node name="analysis" pkg="nuslam" type="analysis" output="screen">
-			<param name="landmark_frame_id" value="base_scan" /> 
-			<param name="frequency" value="60.0" />
-		</node>
 		</group>
 
 		<!-- include turtlebot3 teleop -->
-		<!-- NOTE: do "export export TURTLEBOT3_MODEL=burger" in terminal
+		<!-- NOTE: do "export TURTLEBOT3_MODEL=burger" in terminal -->
 		<include file="$(find turtlebot3_teleop)/launch/turtlebot3_teleop_key.launch"/>
+
+		<!-- Path Visualizer Node -->
+		<node name="visualizer" pkg="nuslam" type="visualizer" output="screen">
+			<param name="frequency" value="60.0" />
+			<param name="path_frame_id" value="odom" /> 
+		</node>
 
 	</group>
 
