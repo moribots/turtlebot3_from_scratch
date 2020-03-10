@@ -127,6 +127,9 @@ namespace nuslam
         /// \returns std::vector<Point>
         std::vector<Point> return_map();
 
+        /// \brief reset internal pose
+        void reset_pose(const Pose2D & pose);
+
     private:
         double max_range;
         Pose2D robot_state;

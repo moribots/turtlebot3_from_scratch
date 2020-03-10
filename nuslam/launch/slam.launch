@@ -60,12 +60,12 @@
 		</node>
 
 		<!-- Odometer Node -->
-		<!-- <node name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
+		<node name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
 			<param name="odom_frame_id" value="odom" />
 			<param name="body_frame_id" value="base_footprint" /> 
 			<param name="right_wheel_joint" value="left_wheel_axle" />
 			<param name="left_wheel_joint" value="left_wheel_axle" />
-		</node> -->
+		</node>
 
 		<group if="$(eval arg('debug') == False)">
 		<!-- Landmarks Node -->
@@ -79,6 +79,13 @@
 		<node name="draw_map" pkg="nuslam" type="draw_map" output="screen">
 			<param name="frequency" value="60.0" />
 		</node>
+		<!-- SLAM Node -->
+		<!-- <node name="slam" pkg="nuslam" type="slam" output="screen">
+			<param name="odom_frame_id" value="slam/odom" />
+			<param name="body_frame_id" value="base_footprint" /> 
+			<param name="right_wheel_joint" value="left_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+		</node> -->
 		</group>
 
 		<group if="$(eval arg('debug') == True)">
@@ -92,6 +99,14 @@
 			<param name="frequency" value="60.0" />
 			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
 		</node>
+		<!-- SLAM Node -->
+		<!-- <node name="slam" pkg="nuslam" type="slam" output="screen">
+			<param name="odom_frame_id" value="slam/odom" />
+			<param name="body_frame_id" value="base_footprint" /> 
+			<param name="right_wheel_joint" value="left_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
+		</node> -->
 		</group>
 
 		<!-- include turtlebot3 teleop -->
@@ -103,14 +118,6 @@
 			<param name="frequency" value="60.0" />
 			<param name="path_frame_id" value="odom" /> 
 		</node>
-
-		<!-- SLAM Node -->
-		<!-- <node name="slam" pkg="nuslam" type="slam" output="screen">
-			<param name="odom_frame_id" value="odom" />
-			<param name="body_frame_id" value="base_footprint" /> 
-			<param name="right_wheel_joint" value="left_wheel_axle" />
-			<param name="left_wheel_joint" value="left_wheel_axle" />
-		</node> -->
 
 	</group>
 

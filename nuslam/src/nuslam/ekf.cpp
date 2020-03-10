@@ -294,6 +294,7 @@ namespace nuslam
     		iter->pose.y = robot_state.y + iter->range_bear.range * sin(robot_state.theta + iter->range_bear.bearing);
 
     		// If a landmark has range > tolerance, skip
+    		// std::cout << "Landmark #" << j << "\tRange: " << iter->range_bear.range << std::endl;
     		if (!(iter->range_bear.range > max_range))
     		// skip landmark if outside of range
     		{
@@ -329,8 +330,8 @@ namespace nuslam
 	    	double y_diff = robot_state.y - iter->pose.y;
 	    	double squared_diff = pow(x_diff, 2) + pow(y_diff, 2);
 	    	Eigen::MatrixXd h(2, 5);
-	    	h << (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), 0.0, (x_diff / sqrt(squared_diff)), (y_diff / sqrt(squared_diff)),
-	    		 (y_diff / sqrt(squared_diff)), (-x_diff / sqrt(squared_diff)), -1.0, (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff));
+	    	h << 0.0, (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff)), (y_diff / sqrt(squared_diff)),
+	    		 -1.0, (y_diff / sqrt(squared_diff)), (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff));
 	    	// 2*(2n+3)
 	    	Eigen::MatrixXd H = h * Fxj;
 
@@ -377,5 +378,10 @@ namespace nuslam
     std::vector<Point> EKF::return_map()
     {
     	return map_state;
+    }
+
+    void EKF::reset_pose(const Pose2D & pose)
+    {
+    	robot_state = pose;
     }
 }

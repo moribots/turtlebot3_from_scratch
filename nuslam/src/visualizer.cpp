@@ -28,6 +28,7 @@
 // Global Vars
 bool gazebo_callback_flag = false;
 bool odom_callback_flag = false;
+bool slam_callback_flag = false;
 std::string robot_name = "diff_drive";
 std::vector<geometry_msgs::PoseStamped> gazebo_poses;
 std::vector<geometry_msgs::PoseStamped> odom_poses;
@@ -69,6 +70,21 @@ void odom_callback(const nav_msgs::Odometry &odom)
   odom_callback_flag = true;
 }
 
+void slam_callback(const nav_msgs::Odometry &odom)
+{
+
+  geometry_msgs::PoseStamped ps;
+
+  ps.header.frame_id = frame_id_;
+  ps.header.stamp = ros::Time::now();
+  ps.pose = odom.pose.pose;
+
+  // Append to poses vector to publish Path msg
+  slam_poses.push_back(ps);
+
+  slam_callback_flag = true;
+}
+
 
 int main(int argc, char** argv)
 /// The Main Function ///
@@ -92,12 +108,16 @@ int main(int argc, char** argv)
   // Init Publishers
   ros::Publisher gzb_path_pub = nh_.advertise<nav_msgs::Path>("gazebo_path", 1);
   ros::Publisher odom_path_pub = nh_.advertise<nav_msgs::Path>("odom_path", 1);
+  ros::Publisher slam_path_pub = nh_.advertise<nav_msgs::Path>("slam_path", 1);
 
   // Init ModelState Subscriber - only calls back if gazebo launched - used to publish ground truth path
   ros::Subscriber gzb_sub = nh.subscribe("/gazebo/model_states", 1, gazebo_callback);
 
   // Init odom subscriber to publish path according to odometry
   ros::Subscriber odom_sub = nh.subscribe("odom", 1, odom_callback);
+
+  // Init slam subscriber to publish path according to odometry
+  ros::Subscriber slam_sub = nh.subscribe("slam/odom", 1, slam_callback);
 
   ros::Rate rate(frequency);
 
@@ -122,6 +142,15 @@ int main(int argc, char** argv)
       path.poses = odom_poses;
       odom_path_pub.publish(path);
       odom_callback_flag = false;
+    }
+
+    if (slam_callback_flag)
+    {
+      path.header.stamp = ros::Time::now();
+      // Populate using growing vector of poses
+      path.poses = slam_poses;
+      slam_path_pub.publish(path);
+      slam_callback_flag = false;
     }
 
 

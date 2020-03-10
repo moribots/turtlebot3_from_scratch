@@ -80,6 +80,8 @@ Visualization Manager:
           Value: false
         rr_wheel:
           Value: false
+        slam/odom:
+          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -261,7 +263,7 @@ Visualization Manager:
       Buffer Length: 1
       Class: rviz/Path
       Color: 204; 0; 0
-      Enabled: false
+      Enabled: true
       Head Diameter: 0.30000001192092896
       Head Length: 0.20000000298023224
       Length: 0.30000001192092896
@@ -277,9 +279,9 @@ Visualization Manager:
       Radius: 0.029999999329447746
       Shaft Diameter: 0.10000000149011612
       Shaft Length: 0.10000000149011612
-      Topic: ""
+      Topic: /visualizer/slam_path
       Unreliable: false
-      Value: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -308,7 +310,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.9587838649749756
+      Distance: 3.870199203491211
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1

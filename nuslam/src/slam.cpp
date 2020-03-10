@@ -169,9 +169,9 @@ int main(int argc, char** argv)
   ros::ServiceServer set_pose_server = nh.advertiseService("set_pose", set_poseCallback);
   // Init Subscriber
   ros::Subscriber js_sub = nh.subscribe("joint_states", 1, js_callback);
-  ros::Subscriber lnd_sub = nh.subscribe("landmarks", 1, landmark_callback);
+  ros::Subscriber lnd_sub = nh.subscribe("landmarks_node/landmarks", 1, landmark_callback);
   // Init Publisher
-  ros::Publisher odom_pub = nh.advertise<nav_msgs::Odometry>("odom", 1);
+  ros::Publisher odom_pub = nh_.advertise<nav_msgs::Odometry>("odom", 1);
   // Init Transform Broadcaster
   tf2_ros::TransformBroadcaster odom_broadcaster;
 
@@ -202,6 +202,7 @@ int main(int argc, char** argv)
     {
       // Reset Driver Pose
       driver.reset(reset_pose);
+      ekf.reset_pose(reset_pose);
       ROS_DEBUG("Reset Pose:");
       ROS_DEBUG("pose x: %f", driver.get_pose().x);
       ROS_DEBUG("pose y: %f", driver.get_pose().y);
