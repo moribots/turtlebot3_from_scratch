@@ -119,6 +119,14 @@ namespace nuslam
         /// \returns
         void msr_update(std::vector<Point> & measurements_);
 
+        /// \brief return current pose belief
+        /// \returns Pose2D
+        Pose2D return_pose();
+
+        /// \brief return current map state belief
+        /// \returns std::vector<Point>
+        std::vector<Point> return_map();
+
     private:
         double max_range;
         Pose2D robot_state;

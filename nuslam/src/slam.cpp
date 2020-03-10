@@ -82,19 +82,32 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
 	// std::cout << driver;
 
   // Perform prediction step of EKF here using twist
-
-
+  rigid2d::Pose2D xyt_noise_mean;
+  ekf.predict(Vb, xyt_noise_mean);
 
   // Use reset function to set driver pose after EKF without affecting wheel angles
+  driver.reset(ekf.return_pose());
 
   callback_flag = true;
 }
 
 void landmark_callback(const nuslam::TurtleMap &map)
 {
+  std::vector<nuslam::Point> measurements;
+  // Convert map to vector of Points
+  // Map data has x,y relative to robot, so no change needed
+  for (long unsigned int i = 0; i < map.radii.size(); i++)
+  {
+    rigid2d::Vector2D map_pose = rigid2d::Vector2D(map.x_pts.at(i), map.y_pts.at(i));
+    nuslam::Point map_point = nuslam::Point(map_pose);
+    measurements.push_back(map_point);
+  }
+
   // Perform measurement update step of EKF here
+  ekf.msr_update(measurements);
 
   // Use reset function to set driver pose after EKF without affecting wheel angles
+  driver.reset(ekf.return_pose());
 
   callback_flag = true;
 }

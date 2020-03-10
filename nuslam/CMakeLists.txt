@@ -166,6 +166,7 @@ add_executable(landmarks_node src/landmarks_node.cpp)
 add_executable(draw_map src/draw_map.cpp)
 add_executable(analysis src/analysis.cpp)
 add_executable(visualizer src/visualizer.cpp)
+add_executable(slam src/slam.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -176,6 +177,7 @@ set_target_properties(landmarks_node PROPERTIES OUTPUT_NAME landmarks_node PREFI
 set_target_properties(draw_map PROPERTIES OUTPUT_NAME draw_map PREFIX "")
 set_target_properties(analysis PROPERTIES OUTPUT_NAME analysis PREFIX "")
 set_target_properties(visualizer PROPERTIES OUTPUT_NAME visualizer PREFIX "")
+set_target_properties(slam PROPERTIES OUTPUT_NAME slam PREFIX "")
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -184,6 +186,7 @@ add_dependencies(landmarks_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${Eigen3_EXP
 add_dependencies(draw_map ${${PROJECT_NAME}_EXPORTED_TARGETS} ${Eigen3_EXPORTED_TARGETS} ${rigid2d_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(analysis ${${PROJECT_NAME}_EXPORTED_TARGETS} ${Eigen3_EXPORTED_TARGETS} ${rigid2d_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(visualizer ${${PROJECT_NAME}_EXPORTED_TARGETS} ${Eigen3_EXPORTED_TARGETS} ${rigid2d_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(slam ${${PROJECT_NAME}_EXPORTED_TARGETS} ${Eigen3_EXPORTED_TARGETS} ${rigid2d_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(
@@ -217,6 +220,14 @@ Eigen3::Eigen
 ${PROJECT_NAME} # this a library that my node will use
 ${catkin_LIBRARIES} # this a library that my node will use
 )
+
+target_link_libraries(
+slam # this is my node that will use below libraries
+${rigid2d_LIBRARIES}
+Eigen3::Eigen
+${PROJECT_NAME} # this a library that my node will use
+${catkin_LIBRARIES} # this a library that my node will use
+)
 #############
 ## Install ##
 #############
@@ -233,7 +244,7 @@ ${catkin_LIBRARIES} # this a library that my node will use
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-install(TARGETS landmarks_node draw_map analysis visualizer
+install(TARGETS landmarks_node draw_map analysis visualizer slam
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

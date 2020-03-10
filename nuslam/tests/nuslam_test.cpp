@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 #include "nuslam/landmarks.hpp"
+#include "nuslam/ekf.hpp"
+#include "rigid2d/diff_drive.hpp"
 
 namespace nuslam
 {
@@ -84,6 +86,64 @@ TEST(landmarks, CircleFitting)
 	ASSERT_NEAR(cluster_2.return_coords().pose.x, 0.4908357, test_threshold);
 	ASSERT_NEAR(cluster_2.return_coords().pose.y, -22.15212, test_threshold);
 	ASSERT_NEAR(cluster_2.return_radius(), 22.17979, test_threshold);
+
+}
+
+TEST(slam, Prediction)
+{
+	rigid2d::DiffDrive driver;
+	// Set Driver Wheel Base and Radius
+	double wbase_ = 0.16;
+	double wrad_ = 0.033;
+	double max_range_ = 3.5;
+	driver.set_static(wbase_, wrad_);
+
+	// Initialize EKF class with robot state, vector of 12 landmarks at 0,0,0, and noise
+	double x_noise, y_noise, theta_noise, range_noise, bearing_noise = 1e-10;
+	std::vector<nuslam::Point> map_state_(12, nuslam::Point());
+	nuslam::Pose2D xyt_noise_var = nuslam::Pose2D(x_noise, y_noise, theta_noise);
+	nuslam::RangeBear rb_noise_var_ = nuslam::RangeBear(range_noise, bearing_noise);
+	nuslam::EKF ekf1 = nuslam::EKF(driver.get_pose(), map_state_, xyt_noise_var, rb_noise_var_, max_range_);
+	rigid2d::Pose2D xyt_noise_mean;
+
+	// Translation Test
+	rigid2d::Twist2D Vb(0, 1, 0);
+	ekf1.predict(Vb, xyt_noise_mean);
+	rigid2d::Pose2D pose = ekf1.return_pose();
+	ASSERT_NEAR(pose.theta, 0, 1e-3);
+	ASSERT_NEAR(pose.x, 1, 1e-3);
+	ASSERT_NEAR(pose.y, 0, 1e-3);
+
+	// // Rotation Test
+	// // reset driver
+	// rigid2d::Pose2D pose_reset;
+	// driver.reset(pose_reset);
+	// Vb.reassign(0, 1, 0);
+	// driver.feedforward(Vb);
+	// pose = driver.get_pose();
+	// ASSERT_NEAR(pose.theta, 0, 1e-3);
+	// ASSERT_NEAR(pose.x, 1, 1e-3);
+	// ASSERT_NEAR(pose.y, 0, 1e-3);
+
+	// // Mixed Motion Test
+	// // reset driver
+	// driver.reset(pose_reset);
+	// Vb.reassign(rigid2d::PI / 4, 1, 0);
+	// driver.feedforward(Vb);
+	// pose = driver.get_pose();
+	// ASSERT_NEAR(pose.theta, 0.785398, 1e-3);
+	// ASSERT_NEAR(pose.x, 0.900316, 1e-3);
+	// ASSERT_NEAR(pose.y, 0.372923, 1e-3);
+
+	// // Zero Test
+	// // reset driver
+	// driver.reset(pose_reset);
+	// Vb.reassign(0, 0, 0);
+	// driver.feedforward(Vb);
+	// pose = driver.get_pose();
+	// ASSERT_NEAR(pose.theta, 0, 1e-3);
+	// ASSERT_NEAR(pose.x, 0, 1e-3);
+	// ASSERT_NEAR(pose.y, 0, 1e-3);
 
 }
 

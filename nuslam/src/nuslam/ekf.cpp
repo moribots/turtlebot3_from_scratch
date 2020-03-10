@@ -187,7 +187,7 @@ namespace nuslam
 
     std::vector<double> get_3d_noise(const Pose2D & xyt_noise_mean, const ProcessNoise & proc_noise)
     {
-    	Eigen::MatrixXd Sigma = proc_noise.q;
+    	Eigen::MatrixXd Sigma = proc_noise.Q;
 
     	// Cholesky Decomposition
     	Eigen::MatrixXd L(Sigma.llt().matrixL());
@@ -278,7 +278,7 @@ namespace nuslam
 
     		G = Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) + g;
     	}
-
+    	std::cout<< "TEST0" << std::endl;
     	cov_mtx.cov_mtx = G * cov_mtx.cov_mtx * G.transpose() + proc_noise.Q;
 
     	// store belief as new robot state for update operation
@@ -369,5 +369,15 @@ namespace nuslam
 	    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * cov_mtx.cov_mtx;
     		}
     	}
+    }
+
+    Pose2D EKF::return_pose()
+    {
+    	return robot_state;
+    }
+
+    std::vector<Point> EKF::return_map()
+    {
+    	return map_state;
     }
 }
