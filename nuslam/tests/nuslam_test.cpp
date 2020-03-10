@@ -99,7 +99,11 @@ TEST(slam, Prediction)
 	driver.set_static(wbase_, wrad_);
 
 	// Initialize EKF class with robot state, vector of 12 landmarks at 0,0,0, and noise
-	double x_noise, y_noise, theta_noise, range_noise, bearing_noise = 1e-10;
+	double x_noise = 1e-10;
+	double y_noise = 1e-10;
+	double theta_noise = 1e-10;
+	double range_noise = 1e-10;
+	double bearing_noise = 1e-10;
 	std::vector<nuslam::Point> map_state_(12, nuslam::Point());
 	nuslam::Pose2D xyt_noise_var = nuslam::Pose2D(x_noise, y_noise, theta_noise);
 	nuslam::RangeBear rb_noise_var_ = nuslam::RangeBear(range_noise, bearing_noise);

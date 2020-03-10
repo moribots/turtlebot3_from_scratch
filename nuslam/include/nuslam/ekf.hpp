@@ -56,8 +56,8 @@ namespace nuslam
     // Struct to store Process Noise for ERK
     struct ProcessNoise
     {
-        // Store Covariance Matrix
-        CovarianceMatrix cov_mtx;
+        // Number of Landmarks
+        unsigned long int map_size;
 
         // Contains noise for x,y,theta
         Pose2D xyt_noise;
@@ -72,7 +72,7 @@ namespace nuslam
         ProcessNoise();
 
         /// \brief constructor for process noise matrix with xyt_noise set to user input
-        ProcessNoise(const Pose2D & xyt_noise_var, const CovarianceMatrix & cov_mtx);
+        ProcessNoise(const Pose2D & xyt_noise_var, const unsigned long int & map_size_);
     };
 
     // Struct to store Measurement Noise for ERK

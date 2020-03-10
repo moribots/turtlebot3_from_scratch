@@ -94,7 +94,7 @@ namespace nuslam
 	// Process Noise
 	ProcessNoise::ProcessNoise()
 	{
-		cov_mtx = CovarianceMatrix();
+		map_size = 0;
 
 		xyt_noise = Pose2D();
 
@@ -109,9 +109,9 @@ namespace nuslam
 
 	}
 
-	ProcessNoise::ProcessNoise(const Pose2D & xyt_noise_var, const CovarianceMatrix & cov_mtx_)
+	ProcessNoise::ProcessNoise(const Pose2D & xyt_noise_var, const unsigned long int & map_size_)
 	{
-		cov_mtx = cov_mtx_;
+		map_size = map_size_;
 		// std::vector<double> noise_vect = get_3d_noise(xyt_noise_mean, xyt_noise_var, cov_mtx);
 		xyt_noise = Pose2D(xyt_noise_var.x, xyt_noise_var.y, xyt_noise_var.theta);
 
@@ -123,11 +123,11 @@ namespace nuslam
 		Eigen::MatrixXd q = xyt_vct.asDiagonal();
 
 		// 2n*3
-        Eigen::MatrixXd bottom_left = Eigen::MatrixXd::Zero(2 * cov_mtx.map_state_cov.size(), 3);
+        Eigen::MatrixXd bottom_left = Eigen::MatrixXd::Zero(2 * map_size, 3);
         // 3*2n
-        Eigen::MatrixXd top_right = Eigen::MatrixXd::Zero(3, 2 * cov_mtx.map_state_cov.size());
+        Eigen::MatrixXd top_right = Eigen::MatrixXd::Zero(3, 2 * map_size);
         // 2*2n
-        Eigen::MatrixXd bottom_right = Eigen::MatrixXd::Zero(2 * cov_mtx.map_state_cov.size(), 2 * cov_mtx.map_state_cov.size());
+        Eigen::MatrixXd bottom_right = Eigen::MatrixXd::Zero(2 * map_size, 2 * map_size);
 
         // Construct left half of matrix
         Eigen::MatrixXd left_mtx(q.rows() + bottom_left.rows(), q.cols());
@@ -231,7 +231,7 @@ namespace nuslam
     	robot_state = robot_state_;
     	map_state = map_state_;
     	cov_mtx = CovarianceMatrix(map_state_);
-    	proc_noise = ProcessNoise(xyt_noise_var, cov_mtx);
+    	proc_noise = ProcessNoise(xyt_noise_var, map_state_.size());
     	msr_noise = MeasurementNoise(rb_noise_var_);
     }
 
@@ -257,28 +257,26 @@ namespace nuslam
     	}
 
     	// Next, we propagate the uncertainty using the linearized state transition model
-    	Eigen::MatrixXd G;
+    	// (3+2n)*(3+2n)
+    	Eigen::MatrixXd d(3 + (2 * map_state.size()), 3 + (2 * map_state.size()));
+    	Eigen::MatrixXd g = Eigen::MatrixXd::Zero(3 + (2 * map_state.size()), 3 + (2 * map_state.size()));
     	if (rigid2d::almost_equal(twist.w_z, 0.0))
     	// If dtheta = 0
     	{
-    		Eigen::MatrixXd g = Eigen::MatrixXd::Zero(3 + (2 * map_state.size()), 3 + (2 * map_state.size()));
     		// Now replace non-zero entries
-    		// using x,y,theta
-    		g(0, 0) = -twist.v_x * sin(robot_state.theta);
-    		g(1, 0) = twist.v_x * cos(robot_state.theta);
-
-    		G = Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) + g;
+    		// using theta,x,y
+    		g(1, 0) = -twist.v_x * sin(robot_state.theta);
+    		g(2, 0) = twist.v_x * cos(robot_state.theta);
     	} else {
 		// If dtheta != 0
-    		Eigen::MatrixXd g = Eigen::MatrixXd::Zero(3 + (2 * map_state.size()), 3 + (2 * map_state.size()));
     		// Now replace non-zero entries
-    		// using x,y,theta
-    		g(0, 0) = (-twist.v_x / twist.w_z) * cos(robot_state.theta) + (twist.v_x / twist.w_z) * cos(robot_state.theta + twist.w_z);
-    		g(1, 0) = (-twist.v_x / twist.w_z) * sin(robot_state.theta) + (twist.v_x / twist.w_z) * sin(robot_state.theta + twist.w_z);
-
-    		G = Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) + g;
+    		// using theta,x,y
+    		g(1, 0) = (-twist.v_x / twist.w_z) * cos(robot_state.theta) + (twist.v_x / twist.w_z) * cos(robot_state.theta + twist.w_z);
+    		g(2, 0) = (-twist.v_x / twist.w_z) * sin(robot_state.theta) + (twist.v_x / twist.w_z) * sin(robot_state.theta + twist.w_z);
     	}
-    	std::cout<< "TEST0" << std::endl;
+
+    	Eigen::MatrixXd G = Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) + g;
+
     	cov_mtx.cov_mtx = G * cov_mtx.cov_mtx * G.transpose() + proc_noise.Q;
 
     	// store belief as new robot state for update operation
