@@ -117,7 +117,7 @@ namespace nuslam
         /// then, update the EKF parameters for the next ieration. Also initializes new landmarks
         /// \param
         /// \returns
-        void msr_update(std::vector<Point> & measurements_);
+        void msr_update(const std::vector<Point> & measurements_);
 
         /// \brief return current pose belief
         /// \returns Pose2D

@@ -226,6 +226,7 @@ namespace nuslam
     	msr_noise = MeasurementNoise();
     	cov_mtx = CovarianceMatrix();
     	sigma_bar = cov_mtx;
+    	sigma_bar.cov_mtx = cov_mtx.cov_mtx;
     }
 
     EKF::EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_, const double & max_range_)
@@ -236,6 +237,7 @@ namespace nuslam
     	map_state = map_state_;
     	cov_mtx = CovarianceMatrix(map_state_);
     	sigma_bar = cov_mtx;
+    	sigma_bar.cov_mtx = cov_mtx.cov_mtx;
     	proc_noise = ProcessNoise(xyt_noise_var, map_state_.size());
     	msr_noise = MeasurementNoise(rb_noise_var_);
     }
@@ -295,7 +297,7 @@ namespace nuslam
     	State(2) = robot_state.y;
     }
 
-    void EKF::msr_update(std::vector<Point> & measurements_)
+    void EKF::msr_update(const std::vector<Point> & measurements_)
     {
     	for (auto iter = measurements_.begin(); iter != measurements_.end(); iter++)
     	{
@@ -304,10 +306,7 @@ namespace nuslam
     		auto j = std::distance(measurements_.begin(), iter);
     		// Angle Wrap Bearing
     		State(0) = rigid2d::normalize_angle(State(0));
-	    	iter->range_bear.bearing = rigid2d::normalize_angle(iter->range_bear.bearing);
-    		// convert landmark cartesian position from robot-relative to world relative
-    		iter->pose.x += State(1);
-    		iter->pose.y += State(2);
+	    	// iter->range_bear.bearing = rigid2d::normalize_angle(iter->range_bear.bearing);
 
     		// If a landmark has range > tolerance, skip
     		// std::cout << "Landmark #" << j << "\tRange: " << iter->range_bear.range << std::endl;
@@ -318,13 +317,13 @@ namespace nuslam
 	    		// If a landmark has not been initialized internally, initialize its position
 	    		if (!map_state.at(j).init)
 	    		{
-	    		map_state.at(j).pose.x = iter->pose.x;
-	    		map_state.at(j).pose.y = iter->pose.y;
+	    		map_state.at(j).pose.x = iter->pose.x + State(1); 
+	    		map_state.at(j).pose.y = iter->pose.y + State(2);
 	    		map_state.at(j).init = true;
 
-	    		// Update State
-	    		State(3 + 2*j) = iter->pose.x;
-	    		State(4 + 2*j) = iter->pose.y;
+	    		// Update State wrt world (map frame)
+	    		State(3 + 2*j) = iter->pose.x + State(1);
+	    		State(4 + 2*j) = iter->pose.y + State(2);
 	    		}
 
 	    		// First, get theoretical expected measurement based on belief in [r,b] format
