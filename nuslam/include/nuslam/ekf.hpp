@@ -131,6 +131,7 @@ namespace nuslam
         void reset_pose(const Pose2D & pose);
 
     private:
+        Eigen::VectorXd State;
         double max_range;
         Pose2D robot_state;
         std::vector<Point> map_state;

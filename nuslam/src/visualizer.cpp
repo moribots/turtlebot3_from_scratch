@@ -70,14 +70,14 @@ void odom_callback(const nav_msgs::Odometry &odom)
   odom_callback_flag = true;
 }
 
-void slam_callback(const nav_msgs::Odometry &odom)
+void slam_callback(const nav_msgs::Odometry &slam)
 {
 
   geometry_msgs::PoseStamped ps;
 
   ps.header.frame_id = frame_id_;
   ps.header.stamp = ros::Time::now();
-  ps.pose = odom.pose.pose;
+  ps.pose = slam.pose.pose;
 
   // Append to poses vector to publish Path msg
   slam_poses.push_back(ps);

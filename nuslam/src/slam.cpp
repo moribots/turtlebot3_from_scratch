@@ -85,9 +85,6 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
   rigid2d::Pose2D xyt_noise_mean;
   ekf.predict(Vb, xyt_noise_mean);
 
-  // Use reset function to set driver pose after EKF without affecting wheel angles
-  driver.reset(ekf.return_pose());
-
   callback_flag = true;
 }
 
@@ -105,9 +102,6 @@ void landmark_callback(const nuslam::TurtleMap &map)
 
   // Perform measurement update step of EKF here
   ekf.msr_update(measurements);
-
-  // Use reset function to set driver pose after EKF without affecting wheel angles
-  driver.reset(ekf.return_pose());
 
   callback_flag = true;
 }
@@ -141,7 +135,11 @@ int main(int argc, char** argv)
   std::string o_fid_, b_fid_;
   float wbase_, wrad_, frequency;
   double max_range_ = 3.5;
-  double x_noise, y_noise, theta_noise, range_noise, bearing_noise = 1e-10;
+  double x_noise = 1e-10;
+  double y_noise = 1e-10;
+  double theta_noise = 1e-10;
+  double range_noise = 1e-20;
+  double bearing_noise = 1e-20;
 
   ros::init(argc, argv, "odometer_node"); // register the node on ROS
   ros::NodeHandle nh_("~"); // PRIVATE handle to ROS
@@ -212,8 +210,22 @@ int main(int argc, char** argv)
 
     if (callback_flag)
     {
-    rigid2d::Pose2D pose;
-    pose = driver.get_pose();
+    // SLAM Node publishes Tmo = map->odom
+    // To get this, we do Tmo = Tmb * Tob.inv
+    // Where Tmb = map->base and Tob = odom->base
+    rigid2d::Pose2D odom_pose = driver.get_pose();
+    rigid2d::Pose2D ekf_pose = ekf.return_pose();
+
+    // Construct Tmb
+    rigid2d::Vector2D Vmb = rigid2d::Vector2D(ekf_pose.x, ekf_pose.y);
+    rigid2d::Transform2D Tmb = rigid2d::Transform2D(Vmb, ekf_pose.theta);
+    // Construct Tob
+    rigid2d::Vector2D Vob = rigid2d::Vector2D(odom_pose.x, odom_pose.y);
+    rigid2d::Transform2D Tob = rigid2d::Transform2D(Vob, odom_pose.theta);
+    // Now find Tmo
+    rigid2d::Transform2D Tmo = Tmb * Tob.inv();
+    rigid2d::Transform2DS TmoS = Tmo.displacement();
+
     geometry_msgs::TransformStamped odom_tf;
     odom_tf.header.stamp = current_time;
     ROS_DEBUG("body_frame_id %s", b_fid_.c_str());
@@ -221,12 +233,12 @@ int main(int argc, char** argv)
     odom_tf.header.frame_id = o_fid_;
     odom_tf.child_frame_id = b_fid_;
     // Pose
-    odom_tf.transform.translation.x = pose.x;
-    odom_tf.transform.translation.y = pose.y;
+    odom_tf.transform.translation.x = TmoS.x;
+    odom_tf.transform.translation.y = TmoS.y;
     odom_tf.transform.translation.z = 0;
     // use tf2 to create transform
     tf2::Quaternion q;
-    q.setRPY(0, 0, pose.theta);
+    q.setRPY(0, 0, TmoS.theta);
     geometry_msgs::Quaternion odom_quat = tf2::toMsg(q);
     odom_tf.transform.rotation = odom_quat;
     // Send the Transform
@@ -238,10 +250,13 @@ int main(int argc, char** argv)
     odom.header.stamp = current_time;
     odom.header.frame_id = o_fid_;
     // Pose
-    odom.pose.pose.position.x = pose.x;
-    odom.pose.pose.position.y = pose.y;
+    odom.pose.pose.position.x = ekf_pose.x;
+    odom.pose.pose.position.y = ekf_pose.y;
     odom.pose.pose.position.z = 0.0;
-    odom.pose.pose.orientation = odom_quat;
+    tf2::Quaternion ekf_q;
+    ekf_q.setRPY(0, 0, TmoS.theta);
+    geometry_msgs::Quaternion ekf_quat = tf2::toMsg(ekf_q);
+    odom.pose.pose.orientation = ekf_quat;
     // Twist
     odom.child_frame_id = b_fid_;
     odom.twist.twist.linear.x = Vb.v_x;

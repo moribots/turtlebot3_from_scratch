@@ -28,12 +28,12 @@
 		</node>
 
 		<!-- Odometer Node -->
-		<!-- <node machine="turtlebot" name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
+		<node machine="turtlebot" name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
 			<param name="odom_frame_id" value="odom" />
 			<param name="body_frame_id" value="base_footprint" /> 
 			<param name="right_wheel_joint" value="left_wheel_axle" />
 			<param name="left_wheel_joint" value="left_wheel_axle" />
-		</node> -->
+		</node>
 
 		<!-- Landmarks Node -->
 		<node machine="turtlebot" name="landmarks_node" pkg="nuslam" type="landmarks_node" output="screen">
@@ -80,12 +80,12 @@
 			<param name="frequency" value="60.0" />
 		</node>
 		<!-- SLAM Node -->
-		<!-- <node name="slam" pkg="nuslam" type="slam" output="screen">
-			<param name="odom_frame_id" value="slam/odom" />
-			<param name="body_frame_id" value="base_footprint" /> 
+		<node name="slam" pkg="nuslam" type="slam" output="screen">
+			<param name="odom_frame_id" value="map" />
+			<param name="body_frame_id" value="odom" /> 
 			<param name="right_wheel_joint" value="left_wheel_axle" />
 			<param name="left_wheel_joint" value="left_wheel_axle" />
-		</node> -->
+		</node>
 		</group>
 
 		<group if="$(eval arg('debug') == True)">
@@ -100,13 +100,13 @@
 			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
 		</node>
 		<!-- SLAM Node -->
-		<!-- <node name="slam" pkg="nuslam" type="slam" output="screen">
-			<param name="odom_frame_id" value="slam/odom" />
-			<param name="body_frame_id" value="base_footprint" /> 
+		<node name="slam" pkg="nuslam" type="slam" output="screen">
+			<param name="odom_frame_id" value="map" />
+			<param name="body_frame_id" value="odom" /> 
 			<param name="right_wheel_joint" value="left_wheel_axle" />
 			<param name="left_wheel_joint" value="left_wheel_axle" />
 			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
-		</node> -->
+		</node>
 		</group>
 
 		<!-- include turtlebot3 teleop -->

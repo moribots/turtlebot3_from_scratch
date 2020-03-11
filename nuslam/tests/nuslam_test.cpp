@@ -151,6 +151,64 @@ TEST(slam, Prediction)
 
 }
 
+TEST(slam, MeasurementUpdateKnownAssociation)
+{
+	rigid2d::DiffDrive driver;
+	// Set Driver Wheel Base and Radius
+	double wbase_ = 0.16;
+	double wrad_ = 0.033;
+	double max_range_ = 3.5;
+	driver.set_static(wbase_, wrad_);
+
+	// Initialize EKF class with robot state, vector of 12 landmarks at 0,0,0, and noise
+	double x_noise = 1e-10;
+	double y_noise = 1e-10;
+	double theta_noise = 1e-10;
+	double range_noise = 1e-10;
+	double bearing_noise = 1e-10;
+	std::vector<nuslam::Point> map_state_(12, nuslam::Point());
+	nuslam::Pose2D xyt_noise_var = nuslam::Pose2D(x_noise, y_noise, theta_noise);
+	nuslam::RangeBear rb_noise_var_ = nuslam::RangeBear(range_noise, bearing_noise);
+	nuslam::EKF ekf = nuslam::EKF(driver.get_pose(), map_state_, xyt_noise_var, rb_noise_var_, max_range_);
+
+	// REAL GAZEBO LANDMARK DATA
+	std::vector<double> x{-0.8240684337283138, -0.8268546089917425, -0.8426874295061547,
+						  -0.22267166552049003, -0.22526846199193448, -0.2134812803988199,
+						  0.43532797990784966, 0.394603754492191, 0.7179168413153326,
+						  0.736237271418327, 0.035504841785529866, -0.5309611588654318};
+	std::vector<double> y{-0.825110435914695, 0.015367254837654318, 0.6691470891355299,
+						  -0.8475887631252624, -0.015079316889313743, 0.6900617842210179,
+						  0.4472352610047268, -0.44906879378599796, -0.03265546146594411,
+						  -0.7963997339405998, 0.40685204783365425, -0.5129981463738073};
+	
+	std::vector<nuslam::Point> measurements;
+	// Store measureents
+	for (long unsigned int i = 0; i < x.size(); i++)
+	{
+		rigid2d::Vector2D landmark = rigid2d::Vector2D(x.at(i), y.at(i));
+		Point point = Point(landmark);
+		measurements.push_back(point);
+	}
+
+	// Now do pose update and measurement update
+	rigid2d::Pose2D xyt_noise_mean;
+
+	// Zero Test
+	rigid2d::Twist2D Vb(0, 0, 0);
+	ekf.predict(Vb, xyt_noise_mean);
+
+	for (long unsigned int i = 0; i < 1000; i++)
+		// 100 updates
+	{
+
+		// Measurement update
+		// // Feed measurements for update - FIRST TIME SEEING MEASUREMENTS
+		// ekf.msr_update(measurements);
+		// Feed measurements for update - MEASUREMENTS ALREADY INITIALIZED
+		ekf.msr_update(measurements);
+	}
+}
+
 }
 
 int main(int argc, char * argv[])
