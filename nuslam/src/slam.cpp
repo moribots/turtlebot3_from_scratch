@@ -48,12 +48,16 @@
 // GLOBAL VARS
 float wl_enc = 0;
 float wr_enc = 0;
+float ekf_wl_enc = 0;
+float ekf_wr_enc = 0;
 rigid2d::Twist2D Vb;
 rigid2d::WheelVelocities w_vel;
 rigid2d::Pose2D reset_pose;
 rigid2d::DiffDrive driver;
-bool callback_flag = true;
-bool landmark_flag = true;
+rigid2d::DiffDrive ekf_driver;
+bool callback_flag = false;
+bool landmark_flag = false;
+bool odom_flag = false;
 bool service_flag = false;
 // EKF object
 nuslam::EKF ekf;
@@ -74,8 +78,10 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
   */
   //ConstPtr is a smart pointer which knows to de-allocate memory
   wl_enc = js->position.at(0);
+  ekf_wl_enc += wl_enc;
   // wl_enc = rigid2d::normalize_encoders(js->position.at(0));
   wr_enc = js->position.at(1);
+  ekf_wr_enc += wr_enc;
   // wr_enc = rigid2d::normalize_encoders(js->position.at(1));
 	w_vel = driver.updateOdometry(wl_enc, wr_enc);
 	// ROS_INFO("wheel vel")
@@ -84,11 +90,8 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
   // Print Wheel Angles
 	// std::cout << driver;
 
-  // Perform prediction step of EKF here using twist
-  rigid2d::Pose2D xyt_noise_mean;
-  ekf.predict(Vb, xyt_noise_mean);
-
   callback_flag = true;
+  odom_flag = true;
 }
 
 void landmark_callback(const nuslam::TurtleMap &map)
@@ -101,6 +104,18 @@ void landmark_callback(const nuslam::TurtleMap &map)
     rigid2d::Vector2D map_pose = rigid2d::Vector2D(map.x_pts.at(i), map.y_pts.at(i));
     nuslam::Point map_point = nuslam::Point(map_pose);
     measurements.push_back(map_point);
+    // std::cout << "\nPOINT: (" << map_point.pose.x << "," << map_point.pose.y << ")" << std::endl;
+  }
+
+  // Perform prediction step of EKF here using twist
+  rigid2d::Pose2D xyt_noise_mean;
+  if (odom_flag)
+  {
+    rigid2d::WheelVelocities ekf_w_vel = ekf_driver.updateOdometry(ekf_wl_enc, ekf_wr_enc);
+    rigid2d::Twist2D ekf_Vb = ekf_driver.wheelsToTwist(ekf_w_vel);
+    ekf.predict(ekf_Vb, xyt_noise_mean);
+    ekf_wl_enc = 0;
+    ekf_wr_enc = 0;
   }
 
   // Perform measurement update step of EKF here
@@ -123,6 +138,7 @@ void landmark_callback(const nuslam::TurtleMap &map)
 
   landmark_flag = true;
   callback_flag = true;
+  odom_flag = false;
 }
 
 bool set_poseCallback(rigid2d::SetPose::Request& req, rigid2d::SetPose::Response& res)
@@ -154,10 +170,10 @@ int main(int argc, char** argv)
   std::string o_fid_, b_fid_;
   std::string frame_id_ = "map";
   float wbase_, wrad_, frequency;
-  double max_range_ = 3.5;
-  double x_noise = 1e-10;
-  double y_noise = 1e-10;
-  double theta_noise = 1e-10;
+  double max_range_ = 1000;
+  double x_noise = 1e-20;
+  double y_noise = 1e-20;
+  double theta_noise = 1e-20;
   double range_noise = 1e-20;
   double bearing_noise = 1e-20;
 
@@ -183,9 +199,10 @@ int main(int argc, char** argv)
   nh_.getParam("landmark_frame_id", frame_id_);
 
   // Freq
-  frequency = 60.0;
+  frequency = 30.0;
   // Set Driver Wheel Base and Radius
   driver.set_static(wbase_, wrad_);
+  ekf_driver.set_static(wbase_, wrad_);
 
   // Init Service Server
   ros::ServiceServer set_pose_server = nh.advertiseService("set_pose", set_poseCallback);

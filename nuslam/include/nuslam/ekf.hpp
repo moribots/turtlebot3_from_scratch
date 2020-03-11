@@ -138,7 +138,7 @@ namespace nuslam
         ProcessNoise proc_noise;
         MeasurementNoise msr_noise;
         CovarianceMatrix cov_mtx;
-
+        CovarianceMatrix sigma_bar;
     };
 
     /// \brief create random number generator with common seed

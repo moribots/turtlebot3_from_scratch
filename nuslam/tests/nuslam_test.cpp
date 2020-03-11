@@ -192,7 +192,6 @@ TEST(slam, MeasurementUpdateKnownAssociation)
 
 	// Now do pose update and measurement update
 	rigid2d::Pose2D xyt_noise_mean;
-
 	// Zero Test
 	rigid2d::Twist2D Vb(0, 0, 0);
 	ekf.predict(Vb, xyt_noise_mean);
@@ -200,7 +199,6 @@ TEST(slam, MeasurementUpdateKnownAssociation)
 	for (long unsigned int i = 0; i < 1000; i++)
 		// 100 updates
 	{
-
 		// Measurement update
 		// // Feed measurements for update - FIRST TIME SEEING MEASUREMENTS
 		// ekf.msr_update(measurements);

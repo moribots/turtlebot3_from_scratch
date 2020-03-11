@@ -225,6 +225,7 @@ namespace nuslam
     	proc_noise = ProcessNoise();
     	msr_noise = MeasurementNoise();
     	cov_mtx = CovarianceMatrix();
+    	sigma_bar = cov_mtx;
     }
 
     EKF::EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_, const double & max_range_)
@@ -234,6 +235,7 @@ namespace nuslam
     	robot_state = robot_state_;
     	map_state = map_state_;
     	cov_mtx = CovarianceMatrix(map_state_);
+    	sigma_bar = cov_mtx;
     	proc_noise = ProcessNoise(xyt_noise_var, map_state_.size());
     	msr_noise = MeasurementNoise(rb_noise_var_);
     }
@@ -282,7 +284,7 @@ namespace nuslam
 
     	Eigen::MatrixXd G = Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) + g;
 
-    	cov_mtx.cov_mtx = G * cov_mtx.cov_mtx * G.transpose() + proc_noise.Q;
+    	sigma_bar.cov_mtx = G * cov_mtx.cov_mtx * G.transpose() + proc_noise.Q;
 
     	// store belief as new robot state for update operation
     	robot_state = belief;
@@ -362,8 +364,8 @@ namespace nuslam
 	    	// std::cout << "Fxj: \n" << Fxj << std::endl;
 
 	    	// Compute the measurement Jacobian
-	    	double x_diff = State(1) - State(3 + 2*j);
-	    	double y_diff = State(2) - State(4 + 2*j);
+	    	double x_diff = State(3 + 2*j) - State(1);
+	    	double y_diff = State(4 + 2*j) - State(2);
 	    	double squared_diff = pow(x_diff, 2) + pow(y_diff, 2);
 	    	// Eigen::MatrixXd h(2, 5);
 	    	// h << 0.0, (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff)), (y_diff / sqrt(squared_diff)),
@@ -400,7 +402,7 @@ namespace nuslam
 
 	    	// Compute the Kalman gain from the linearized measurement model
 	    	// (2n+3)*2
-			Eigen::MatrixXd K = cov_mtx.cov_mtx * H.transpose() * (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R).inverse(); // NOTE: FIND MORE EFFICIENT INV
+			Eigen::MatrixXd K = sigma_bar.cov_mtx * H.transpose() * (H * sigma_bar.cov_mtx * H.transpose() + msr_noise.R).inverse(); // NOTE: FIND MORE EFFICIENT INV
 			// std::cout << "H Transpose: \n" << H.transpose() << std::endl;
 			// std::cout << "cov mtx * H.T: \n" << cov_mtx.cov_mtx * H.transpose() << std::endl;
 			// std::cout << "Matrix to Invert: \n" << (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R) << std::endl;
@@ -411,7 +413,7 @@ namespace nuslam
     		z_diff = z - z_hat;
     		// Angle Wrap Bearing
 	    	z_diff(1) = rigid2d::normalize_angle(z_diff(1));
-    		std::cout << "z_diff: \n" << z_diff << std::endl;
+    		// std::cout << "z_diff: \n" << z_diff << std::endl;
 
     		// (2n+3)*1
     		Eigen::VectorXd K_update = K * z_diff;
@@ -431,9 +433,11 @@ namespace nuslam
     		map_state.at(i).pose.y = State(4 + 2*i);
 	    	}
 	    	// Compute the posterior covariance
-	    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * cov_mtx.cov_mtx;
+	    	sigma_bar.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * sigma_bar.cov_mtx;
 	    	// std::cout << "cov_mtx.cov_mtx: \n" << cov_mtx.cov_mtx << std::endl;
     		}
+
+    		cov_mtx.cov_mtx = sigma_bar.cov_mtx;
     	}
     }
 
