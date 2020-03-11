@@ -43,7 +43,7 @@ int main(int argc, char** argv)
   ROS_INFO("STARTING NODE: draw_map");
   // Vars
   double frequency = 60.0;
-  std::string color = "vanilla";
+  std::string color = "scan";
 
   ros::init(argc, argv, "draw_map_node"); // register the node on ROS
   ros::NodeHandle nh; // get a handle to ROS
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
   nh_.getParam("color", color);
 
   // Init Marker Publisher
-  ros::Publisher marker_pub = nh.advertise<visualization_msgs::Marker>("visualization_marker", 1);
+  ros::Publisher marker_pub = nh.advertise<visualization_msgs::Marker>("scan/marker", 1);
 
   // Init Marker
   visualization_msgs::Marker marker;
@@ -66,7 +66,7 @@ int main(int argc, char** argv)
   marker.color.g = 0.0f;
   marker.color.b = 0.5f;
   marker.color.a = 1.0;
-  if (color == "vanilla")
+  if (color == "scan")
   {
     marker.color.r = 0.5f;
     marker.color.g = 0.0f;
@@ -75,8 +75,8 @@ int main(int argc, char** argv)
   } else if (color == "gazebo")
   {
     marker.color.r = 0.96f;
-    marker.color.g = 0.0f;
-    marker.color.b = 0.475f;
+    marker.color.g = 0.475f;
+    marker.color.b = 0.0f;
     marker.color.a = 1.0;
   } else if (color == "slam")
   {

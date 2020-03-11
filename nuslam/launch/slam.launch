@@ -97,7 +97,9 @@
 		<!-- Draw Map Node -->
 		<node name="draw_map" pkg="nuslam" type="draw_map" output="screen">
 			<param name="frequency" value="60.0" />
+			<param name="color" value="gazebo" />
 			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
+			<remap from="scan/marker" to="gazebo/marker"/>
 		</node>
 		<!-- SLAM Node -->
 		<node name="slam" pkg="nuslam" type="slam" output="screen">
@@ -106,6 +108,13 @@
 			<param name="right_wheel_joint" value="left_wheel_axle" />
 			<param name="left_wheel_joint" value="left_wheel_axle" />
 			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
+		</node>
+		<!-- Draw Map Node -->
+		<node name="slam_draw_map" pkg="nuslam" type="draw_map" output="screen">
+			<param name="frequency" value="60.0" />
+			<param name="color" value="slam" />
+			<remap from="landmarks_node/landmarks" to="slam/landmarks"/>
+			<remap from="scan/marker" to="slam/marker"/>
 		</node>
 		</group>
 

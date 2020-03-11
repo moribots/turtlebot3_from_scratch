@@ -53,10 +53,13 @@ rigid2d::WheelVelocities w_vel;
 rigid2d::Pose2D reset_pose;
 rigid2d::DiffDrive driver;
 bool callback_flag = true;
-bool landmark_callback_flag = true;
+bool landmark_flag = true;
 bool service_flag = false;
-// EKF objcet
+// EKF object
 nuslam::EKF ekf;
+std::vector<double> radii;
+std::vector<double> x_pts;
+std::vector<double> y_pts;
 
 void js_callback(const sensor_msgs::JointState::ConstPtr &js)
 {
@@ -103,6 +106,22 @@ void landmark_callback(const nuslam::TurtleMap &map)
   // Perform measurement update step of EKF here
   ekf.msr_update(measurements);
 
+  // Return Map
+  std::vector<nuslam::Point> map_state = ekf.return_map();
+
+  // Now, return landmarks radii x, and y positions each in a separate vector
+  radii.clear();
+  x_pts.clear();
+  y_pts.clear();
+  for (auto iter = map_state.begin(); iter != map_state.end(); iter++)
+  {
+    radii.push_back(0.1);
+    // std::cout << "RADIUS: " << iter->return_radius() << std::endl;
+    x_pts.push_back(iter->pose.x);
+    y_pts.push_back(iter->pose.y);
+  }
+
+  landmark_flag = true;
   callback_flag = true;
 }
 
@@ -133,6 +152,7 @@ int main(int argc, char** argv)
 {
   // Vars
   std::string o_fid_, b_fid_;
+  std::string frame_id_ = "map";
   float wbase_, wrad_, frequency;
   double max_range_ = 3.5;
   double x_noise = 1e-10;
@@ -158,6 +178,10 @@ int main(int argc, char** argv)
   nh.getParam("theta_noise", theta_noise);
   nh.getParam("range_noise", range_noise);
   nh.getParam("bearing_noise", bearing_noise);
+
+  // For Landmark Pub
+  nh_.getParam("landmark_frame_id", frame_id_);
+
   // Freq
   frequency = 60.0;
   // Set Driver Wheel Base and Radius
@@ -170,6 +194,7 @@ int main(int argc, char** argv)
   ros::Subscriber lnd_sub = nh.subscribe("landmarks_node/landmarks", 1, landmark_callback);
   // Init Publisher
   ros::Publisher odom_pub = nh_.advertise<nav_msgs::Odometry>("odom", 1);
+  ros::Publisher lnd_pub = nh_.advertise<nuslam::TurtleMap>("landmarks", 1);
   // Init Transform Broadcaster
   tf2_ros::TransformBroadcaster odom_broadcaster;
 
@@ -265,6 +290,19 @@ int main(int argc, char** argv)
     // Publish the Message
     odom_pub.publish(odom);
     callback_flag = false;
+
+    // Publish Map State
+    if (landmark_flag)
+    {
+      nuslam::TurtleMap belief_map;
+      belief_map.radii = radii;
+      belief_map.x_pts = x_pts;
+      belief_map.y_pts = y_pts;
+      belief_map.header.stamp = ros::Time::now();
+      belief_map.header.frame_id = frame_id_;
+      lnd_pub.publish(belief_map);
+      landmark_flag = false;
+    }
     }
 
     rate.sleep();
