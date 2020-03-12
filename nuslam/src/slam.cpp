@@ -108,12 +108,11 @@ void landmark_callback(const nuslam::TurtleMap &map)
   }
 
   // Perform prediction step of EKF here using twist
-  rigid2d::Pose2D xyt_noise_mean;
   if (odom_flag)
   {
     rigid2d::WheelVelocities ekf_w_vel = ekf_driver.updateOdometry(ekf_wl_enc, ekf_wr_enc);
     rigid2d::Twist2D ekf_Vb = ekf_driver.wheelsToTwist(ekf_w_vel);
-    ekf.predict(ekf_Vb, xyt_noise_mean);
+    ekf.predict(ekf_Vb);
     ekf_wl_enc = 0;
     ekf_wr_enc = 0;
   }
@@ -170,7 +169,7 @@ int main(int argc, char** argv)
   std::string o_fid_, b_fid_;
   std::string frame_id_ = "map";
   float wbase_, wrad_, frequency;
-  double max_range_ = 1000;
+  double max_range_ = 1;
   double x_noise = 1e-20;
   double y_noise = 1e-20;
   double theta_noise = 1e-20;

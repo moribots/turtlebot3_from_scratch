@@ -108,11 +108,10 @@ TEST(slam, Prediction)
 	nuslam::Pose2D xyt_noise_var = nuslam::Pose2D(x_noise, y_noise, theta_noise);
 	nuslam::RangeBear rb_noise_var_ = nuslam::RangeBear(range_noise, bearing_noise);
 	nuslam::EKF ekf = nuslam::EKF(driver.get_pose(), map_state_, xyt_noise_var, rb_noise_var_, max_range_);
-	rigid2d::Pose2D xyt_noise_mean;
 
 	// Translation Test
 	rigid2d::Twist2D Vb(0, 1, 0);
-	ekf.predict(Vb, xyt_noise_mean);
+	ekf.predict(Vb);
 	rigid2d::Pose2D pose = ekf.return_pose();
 	ASSERT_NEAR(pose.theta, 0, 1e-3);
 	ASSERT_NEAR(pose.x, 1, 1e-3);
@@ -123,7 +122,7 @@ TEST(slam, Prediction)
 	rigid2d::Pose2D pose_reset;
 	ekf.reset_pose(pose_reset);
 	Vb.reassign(1, 0, 0);
-	ekf.predict(Vb, xyt_noise_mean);
+	ekf.predict(Vb);
 	pose = ekf.return_pose();
 	ASSERT_NEAR(pose.theta, 1, 1e-3);
 	ASSERT_NEAR(pose.x, 0, 1e-3);
@@ -133,7 +132,7 @@ TEST(slam, Prediction)
 	// reset driver
 	ekf.reset_pose(pose_reset);
 	Vb.reassign(rigid2d::PI / 4, 1, 0);
-	ekf.predict(Vb, xyt_noise_mean);
+	ekf.predict(Vb);
 	pose = ekf.return_pose();
 	ASSERT_NEAR(pose.theta, 0.785398, 1e-3);
 	ASSERT_NEAR(pose.x, 0.900316, 1e-3);
@@ -143,7 +142,7 @@ TEST(slam, Prediction)
 	// reset driver
 	ekf.reset_pose(pose_reset);
 	Vb.reassign(0, 0, 0);
-	ekf.predict(Vb, xyt_noise_mean);
+	ekf.predict(Vb);
 	pose = ekf.return_pose();
 	ASSERT_NEAR(pose.theta, 0, 1e-3);
 	ASSERT_NEAR(pose.x, 0, 1e-3);
@@ -191,10 +190,9 @@ TEST(slam, MeasurementUpdateKnownAssociation)
 	}
 
 	// Now do pose update and measurement update
-	rigid2d::Pose2D xyt_noise_mean;
 	// Zero Test
 	rigid2d::Twist2D Vb(0, 0, 0);
-	ekf.predict(Vb, xyt_noise_mean);
+	ekf.predict(Vb);
 
 	for (long unsigned int i = 0; i < 1000; i++)
 		// 100 updates

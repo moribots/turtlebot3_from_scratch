@@ -4,6 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /Global Options1
         - /TF1/Frames1
         - /TF1/Tree1
       Splitter Ratio: 0.5
@@ -354,5 +355,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1128
-  X: 192
+  X: 191
   Y: 0

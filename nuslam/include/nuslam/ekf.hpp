@@ -111,7 +111,7 @@ namespace nuslam
         /// Taylor-Series expantion, get a linearized state transition model, which is used to propagate uncertainty.
         /// \param
         /// \returns
-        void predict(const Twist2D & twist, const Pose2D & xyt_noise_mean);
+        void predict(const Twist2D & twist);
 
         /// \brief incorporate sequential landmark measurements to perform a correction of our predicted estimate, 
         /// then, update the EKF parameters for the next ieration. Also initializes new landmarks
@@ -145,12 +145,12 @@ namespace nuslam
     std::mt19937 & get_random();
 
     /// \brief sample normal distribution
-    double sampleNormalDistribution(double var=1.0);
+    Eigen::VectorXd sampleNormalDistribution(int mtx_dimension);
 
     /// \brief returns noise for each dimension (x,y,theta) extracted from
     /// 3D normal distribution using Cholesky Decomposition
     // This is used to sample noise for the state update function
-    std::vector<double> get_3d_noise(const Pose2D & xyt_noise_mean, const ProcessNoise & proc_noise);
+    Eigen::VectorXd getMultivarNoise(const Eigen::MatrixXd & noise_mtx);
 }
 
 #endif

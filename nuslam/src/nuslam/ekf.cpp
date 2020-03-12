@@ -152,7 +152,7 @@ namespace nuslam
 
 		Eigen::VectorXd rb_vct(2);
 
-		rb_vct << sampleNormalDistribution(rb_noise_var.range), sampleNormalDistribution(rb_noise_var.bearing);
+		rb_vct << rb_noise_var.range, rb_noise_var.bearing;
 
 		R = rb_vct.asDiagonal();
 	}
@@ -163,7 +163,7 @@ namespace nuslam
 
 		Eigen::VectorXd rb_vct(2);
 
-		rb_vct << sampleNormalDistribution(rb_noise_var.range), sampleNormalDistribution(rb_noise_var.bearing);
+		rb_vct << rb_noise_var.range, rb_noise_var.bearing;
 
 		R = rb_vct.asDiagonal();
 	}
@@ -180,40 +180,28 @@ namespace nuslam
         return mt;
     }
 
-    double sampleNormalDistribution(double var)
+    Eigen::VectorXd sampleNormalDistribution(int mtx_dimension)
     {
-		std::normal_distribution<> d(0, var);
-		return d(get_random());
+    	Eigen::VectorXd noise_vect = Eigen::VectorXd::Zero(mtx_dimension);
+
+    	for (auto i = 0; i < mtx_dimension; i++)
+    	{
+    		std::normal_distribution<double> d(0, 1);
+    		noise_vect(i) = d(get_random());
+    	}
+		
+		return noise_vect;
     }
 
-    std::vector<double> get_3d_noise(const Pose2D & xyt_noise_mean, const ProcessNoise & proc_noise)
+    Eigen::VectorXd getMultivarNoise(const Eigen::MatrixXd & noise_mtx)
     {
-    	Eigen::MatrixXd Sigma = proc_noise.Q;
+    	// Cholesky Decomposition for Multivariate Noise
+    	Eigen::MatrixXd L(noise_mtx.llt().matrixL());
 
-    	// Cholesky Decomposition
-    	Eigen::MatrixXd L(Sigma.llt().matrixL());
+    	int mtx_dimension = noise_mtx.cols();
+    	Eigen::VectorXd noise_vect = sampleNormalDistribution(mtx_dimension);
 
-    	// Sample Random Noise
-    	// x
-    	const double x_normal = sampleNormalDistribution();
-    	// y
-    	const double y_normal = sampleNormalDistribution();
-    	// theta
-    	const double theta_normal = sampleNormalDistribution();
-
-    	// Get noise from 3D normal distribution and store in vector for each individual dimension
-    	// mean noise is generally zero
-    	const auto theta_noise = xyt_noise_mean.theta + L(0,0) * theta_normal + L(0,1) * x_normal + L(0,2) * y_normal;
-    	const auto x_noise = xyt_noise_mean.x + L(1,0) * theta_normal + L(1,1) * x_normal + L(1,2) * y_normal;
-		const auto y_noise = xyt_noise_mean.y + L(2,0) * theta_normal + L(2,1) * x_normal + L(2,2) * y_normal;
-
-		std::vector<double> noise_vect;
-
-		noise_vect.push_back(theta_noise);
-		noise_vect.push_back(x_noise);
-		noise_vect.push_back(y_noise);
-
-		return noise_vect;
+    	return L * noise_vect;
     }
 
     //EKF
@@ -242,26 +230,26 @@ namespace nuslam
     	msr_noise = MeasurementNoise(rb_noise_var_);
     }
 
-    void EKF::predict(const Twist2D & twist, const Pose2D & xyt_noise_mean)
+    void EKF::predict(const Twist2D & twist)
     {
     	// Angle Wrap Robot Theta
     	robot_state.theta = rigid2d::normalize_angle(robot_state.theta);
     	// First, update the estimate using the forward model
-    	std::vector<double> noise_vect = get_3d_noise(xyt_noise_mean, proc_noise);
+    	Eigen::VectorXd noise_vect = getMultivarNoise(proc_noise.Q);
 
     	Pose2D belief;
 
     	if (rigid2d::almost_equal(twist.w_z, 0.0))
     	// If dtheta = 0
     	{
-    		belief = Pose2D(robot_state.x + (twist.v_x * cos(robot_state.theta)) + noise_vect.at(1),\
-						    robot_state.y + (twist.v_x * sin(robot_state.theta)) + noise_vect.at(2),\
-    						robot_state.theta + noise_vect.at(0));
+    		belief = Pose2D(robot_state.x + (twist.v_x * cos(robot_state.theta)) + noise_vect(1),\
+						    robot_state.y + (twist.v_x * sin(robot_state.theta)) + noise_vect(2),\
+    						robot_state.theta + noise_vect(0));
     	} else {
 		// If dtheta != 0
-    		belief = Pose2D(robot_state.x + ((-twist.v_x / twist.w_z) * sin(robot_state.theta) + (twist.v_x / twist.w_z) * sin(robot_state.theta + twist.w_z)) + noise_vect.at(1),\
-						    robot_state.y + ((twist.v_x / twist.w_z) * cos(robot_state.theta) + (-twist.v_x / twist.w_z) * cos(robot_state.theta + twist.w_z)) + noise_vect.at(2),\
-    						robot_state.theta + twist.w_z + noise_vect.at(0));
+    		belief = Pose2D(robot_state.x + ((-twist.v_x / twist.w_z) * sin(robot_state.theta) + (twist.v_x / twist.w_z) * sin(robot_state.theta + twist.w_z)) + noise_vect(1),\
+						    robot_state.y + ((twist.v_x / twist.w_z) * cos(robot_state.theta) + (-twist.v_x / twist.w_z) * cos(robot_state.theta + twist.w_z)) + noise_vect(2),\
+    						robot_state.theta + twist.w_z + noise_vect(0));
     	}
     	// Angle Wrap Robot Theta
     	belief.theta = rigid2d::normalize_angle(belief.theta);
@@ -344,8 +332,9 @@ namespace nuslam
 	    		//  Add noise to actual range, bearing measurement
 		    	// Note, the nuslam::Point struct contains cartesian and polar measurements, so we just use iter
 		    	// Add Noise
+		    	Eigen::VectorXd noise_vect = getMultivarNoise(msr_noise.R);
 	    		Eigen::VectorXd z(2);
-	    		z << iter->range_bear.range + msr_noise.R(0, 0), iter->range_bear.bearing + msr_noise.R(1, 1);
+	    		z << iter->range_bear.range + noise_vect(0), iter->range_bear.bearing + noise_vect(1);
 	    		z(1) = rigid2d::normalize_angle(z(1));
 	    		// std::cout << "z: " << z << std::endl;
 
