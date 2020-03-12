@@ -196,6 +196,7 @@ namespace nuslam
     Eigen::VectorXd getMultivarNoise(const Eigen::MatrixXd & noise_mtx)
     {
     	// Cholesky Decomposition for Multivariate Noise
+    	// https://math.stackexchange.com/questions/2079137/generating-multivariate-normal-samples-why-cholesky
     	Eigen::MatrixXd L(noise_mtx.llt().matrixL());
 
     	int mtx_dimension = noise_mtx.cols();

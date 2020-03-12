@@ -33,7 +33,7 @@ std::string robot_name = "diff_drive";
 std::vector<geometry_msgs::PoseStamped> gazebo_poses;
 std::vector<geometry_msgs::PoseStamped> odom_poses;
 std::vector<geometry_msgs::PoseStamped> slam_poses;
-std::string frame_id_ = "odom";
+std::string frame_id_ = "map";
 
 
 void gazebo_callback(const gazebo_msgs::ModelStates &model)

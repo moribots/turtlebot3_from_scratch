@@ -125,7 +125,7 @@
 		<!-- Path Visualizer Node -->
 		<node name="visualizer" pkg="nuslam" type="visualizer" output="screen">
 			<param name="frequency" value="60.0" />
-			<param name="path_frame_id" value="odom" /> 
+			<param name="path_frame_id" value="map" /> 
 		</node>
 
 	</group>

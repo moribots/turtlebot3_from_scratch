@@ -198,7 +198,7 @@ int main(int argc, char** argv)
   nh_.getParam("landmark_frame_id", frame_id_);
 
   // Freq
-  frequency = 30.0;
+  frequency = 60.0;
   // Set Driver Wheel Base and Radius
   driver.set_static(wbase_, wrad_);
   ekf_driver.set_static(wbase_, wrad_);
@@ -241,6 +241,7 @@ int main(int argc, char** argv)
     {
       // Reset Driver Pose
       driver.reset(reset_pose);
+      ekf_driver.reset(reset_pose);
       ekf.reset_pose(reset_pose);
       ROS_DEBUG("Reset Pose:");
       ROS_DEBUG("pose x: %f", driver.get_pose().x);
