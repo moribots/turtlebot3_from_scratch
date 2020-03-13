@@ -10,6 +10,6 @@ theta_error: 0.494665533304
 
 
 ## Noise: 0.001
-## Detection Radius: 2.0 m
+## Detection Radius: 1.0 m
 
 ![ekfslam](nuslam/media/L2_2rad_001noise.png)

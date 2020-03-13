@@ -295,9 +295,6 @@ namespace nuslam
     		// std::cout << "cov_mtx.cov_mtx: \n" << cov_mtx.cov_mtx << std::endl;
     		// Current Landmark Index
     		auto j = std::distance(measurements_.begin(), iter);
-    		// Angle Wrap Bearing
-    		State(0) = rigid2d::normalize_angle(State(0));
-	    	// iter->range_bear.bearing = rigid2d::normalize_angle(iter->range_bear.bearing);
 
     		// If a landmark has range > tolerance, skip
     		// std::cout << "Landmark #" << j << "\tRange: " << iter->range_bear.range << std::endl;

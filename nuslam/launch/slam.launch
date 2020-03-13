@@ -107,6 +107,12 @@
 			<param name="body_frame_id" value="odom" /> 
 			<param name="right_wheel_joint" value="left_wheel_axle" />
 			<param name="left_wheel_joint" value="left_wheel_axle" />
+			<!-- <param name="x_noise" value="1e-20" />
+			<param name="y_noise" value="1e-20" />
+			<param name="theta_noise" value="1e-20" />
+			<param name="range_noise" value="1e-7" />
+			<param name="bearing_noise" value="1e-7" />
+			<param name="max_range" value="1.0" /> -->
 			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
 		</node>
 		<!-- Draw Map Node -->
