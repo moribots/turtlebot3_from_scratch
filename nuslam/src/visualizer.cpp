@@ -24,6 +24,11 @@
 #include <functional>  // To use std::bind
 #include <algorithm>  // to use std::find_if
 
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2/LinearMath/Matrix3x3.h>
+
+#include "tsim/PoseError.h"
+
 
 // Global Vars
 bool gazebo_callback_flag = false;
@@ -106,9 +111,13 @@ int main(int argc, char** argv)
   path.header.frame_id = frame_id_;
 
   // Init Publishers
+  // Path Publishers
   ros::Publisher gzb_path_pub = nh_.advertise<nav_msgs::Path>("gazebo_path", 1);
   ros::Publisher odom_path_pub = nh_.advertise<nav_msgs::Path>("odom_path", 1);
   ros::Publisher slam_path_pub = nh_.advertise<nav_msgs::Path>("slam_path", 1);
+  // Pose Error Publishers
+  ros::Publisher odom_err_pub = nh_.advertise<tsim::PoseError>("odom_err", 1);
+  ros::Publisher slam_err_pub = nh_.advertise<tsim::PoseError>("slam_err", 1);
 
   // Init ModelState Subscriber - only calls back if gazebo launched - used to publish ground truth path
   ros::Subscriber gzb_sub = nh.subscribe("/gazebo/model_states", 1, gazebo_callback);
@@ -153,7 +162,54 @@ int main(int argc, char** argv)
       slam_callback_flag = false;
     }
 
+    if (gazebo_poses.size() > 0 and odom_poses.size() > 0 and slam_poses.size() > 0)
+    {
+      // Current Gazebo Pose
+      geometry_msgs::Pose gazebo_pose = gazebo_poses.back().pose;
+      auto roll = 0.0, pitch = 0.0, gazebo_yaw = 0.0;
+      tf2::Quaternion quat(gazebo_pose.orientation.x,\
+                           gazebo_pose.orientation.y,\
+                           gazebo_pose.orientation.z,\
+                           gazebo_pose.orientation.w);
+      tf2::Matrix3x3 mat(quat);
+      mat.getRPY(roll, pitch, gazebo_yaw);    
+  
 
+      // Current Odom Pose
+      geometry_msgs::Pose odom_pose = odom_poses.back().pose;
+      auto odom_yaw = 0.0;
+      quat = tf2::Quaternion(odom_pose.orientation.x,\
+                             odom_pose.orientation.y,\
+                             odom_pose.orientation.z,\
+                             odom_pose.orientation.w);
+      mat = tf2::Matrix3x3(quat);
+      mat.getRPY(roll, pitch, odom_yaw);
+    
+
+      // Current SLAM Pose
+      geometry_msgs::Pose slam_pose = slam_poses.back().pose;
+      auto slam_yaw = 0.0;
+      quat = tf2::Quaternion(slam_pose.orientation.x,\
+                             slam_pose.orientation.y,\
+                             slam_pose.orientation.z,\
+                             slam_pose.orientation.w);
+      mat = tf2::Matrix3x3(quat);
+      mat.getRPY(roll, pitch, slam_yaw);
+
+      // Publish pose error between odom-gazebo
+      tsim::PoseError odom_err;
+      odom_err.x_error = fabs(gazebo_pose.position.x - odom_pose.position.x);
+      odom_err.y_error = fabs(gazebo_pose.position.y - odom_pose.position.y);
+      odom_err.theta_error = fabs(fabs(gazebo_yaw) - fabs(odom_yaw));
+      odom_err_pub.publish(odom_err);
+
+      // Publish pose error between slam-gazebo
+      tsim::PoseError slam_err;
+      slam_err.x_error = fabs(gazebo_pose.position.x - slam_pose.position.x);
+      slam_err.y_error = fabs(gazebo_pose.position.y - slam_pose.position.y);
+      slam_err.theta_error = fabs(fabs(gazebo_yaw) - fabs(slam_yaw));
+      slam_err_pub.publish(slam_err);
+    }
 
     rate.sleep();
   }

@@ -288,6 +288,8 @@ namespace nuslam
 
     void EKF::msr_update(const std::vector<Point> & measurements_)
     {
+    	// By incorporating one measurement at a time, we improve our state estimate over time
+    	// and are thus improving the accuracy of our linearization and getting better EKFSLAM performance
     	for (auto iter = measurements_.begin(); iter != measurements_.end(); iter++)
     	{
     		// std::cout << "cov_mtx.cov_mtx: \n" << cov_mtx.cov_mtx << std::endl;

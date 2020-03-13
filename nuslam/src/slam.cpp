@@ -169,7 +169,7 @@ int main(int argc, char** argv)
   std::string o_fid_, b_fid_;
   std::string frame_id_ = "map";
   float wbase_, wrad_, frequency;
-  double max_range_ = 1;
+  double max_range_ = 2;
   double x_noise = 1e-20;
   double y_noise = 1e-20;
   double theta_noise = 1e-20;
