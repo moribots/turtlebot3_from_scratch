@@ -214,8 +214,7 @@ namespace nuslam
     	proc_noise = ProcessNoise();
     	msr_noise = MeasurementNoise();
     	cov_mtx = CovarianceMatrix();
-    	sigma_bar = cov_mtx;
-    	sigma_bar.cov_mtx = cov_mtx.cov_mtx;
+    	cov_mtx = cov_mtx;
     }
 
     EKF::EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_, const double & max_range_)
@@ -225,8 +224,7 @@ namespace nuslam
     	robot_state = robot_state_;
     	map_state = map_state_;
     	cov_mtx = CovarianceMatrix(map_state_);
-    	sigma_bar = cov_mtx;
-    	sigma_bar.cov_mtx = cov_mtx.cov_mtx;
+    	cov_mtx = cov_mtx;
     	proc_noise = ProcessNoise(xyt_noise_var, map_state_.size());
     	msr_noise = MeasurementNoise(rb_noise_var_);
     }
@@ -275,7 +273,7 @@ namespace nuslam
 
     	Eigen::MatrixXd G = Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) + g;
 
-    	sigma_bar.cov_mtx = G * cov_mtx.cov_mtx * G.transpose() + proc_noise.Q;
+    	cov_mtx.cov_mtx = G * cov_mtx.cov_mtx * G.transpose() + proc_noise.Q;
 
     	// store belief as new robot state for update operation
     	robot_state = belief;
@@ -284,6 +282,43 @@ namespace nuslam
     	State(0) = robot_state.theta;
     	State(1) = robot_state.x;
     	State(2) = robot_state.y;
+    }
+
+    Eigen::MatrixXd EKF::inv_msr_model(const int & j)
+    {
+    	// x-distance to landmark
+    	double x_diff = State(3 + 2*j) - State(1);
+    	// y-distance to landmark
+    	double y_diff = State(4 + 2*j) - State(2);
+    	double squared_diff = pow(x_diff, 2) + pow(y_diff, 2);
+    	// Eigen::MatrixXd h(2, 5);
+    	// h << 0.0, (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff)), (y_diff / sqrt(squared_diff)),
+    	// 	 -1.0, (y_diff / sqrt(squared_diff)), (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff));
+    	// std::cout << "h: \n" << h << std::endl;
+    	// 2*(2n+3)
+		Eigen::MatrixXd H = Eigen::MatrixXd::Zero(2, 3 + 2 * map_state.size());
+		// H constructed from four Matrices: https://nu-msr.github.io/navigation_site/slam.pdf
+		// NOTE: j starts at 1 in slam.pdf
+		Eigen::MatrixXd h_left(2, 3);
+		h_left << 0.0, (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), -1.0, (y_diff / sqrt(squared_diff)), (-x_diff / sqrt(squared_diff));
+
+		Eigen::MatrixXd h_mid_left = Eigen::MatrixXd::Zero(2, 2*j);
+
+		Eigen::MatrixXd h_mid_right(2, 2);
+		h_mid_right << (x_diff / sqrt(squared_diff)), (y_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff));
+
+		Eigen::MatrixXd h_right = Eigen::MatrixXd::Zero(2, 2 * map_state.size() - 2*(j + 1));
+
+		// Construct H - Measurement Jacobian
+		Eigen::MatrixXd h_mtx(h_left.rows(), h_left.cols() + h_mid_left.cols() + h_mid_right.cols() + h_right.cols());
+		h_mtx << h_left, h_mid_left, h_mid_right, h_right;
+		// std::cout << "h_left: \n\n" << h_left << std::endl;
+		// std::cout << "h_mid_left: \n\n" << h_mid_left << std::endl;
+		// std::cout << "h_mid_right: \n\n" << h_mid_right << std::endl;
+		// std::cout << "h_right: \n\n" << h_right << std::endl;
+		// std::cout << "size: " << map_state.size() << std::endl;
+		H = h_mtx;
+		return H;
     }
 
     void EKF::msr_update(const std::vector<Point> & measurements_)
@@ -352,36 +387,7 @@ namespace nuslam
 		    	// std::cout << "Fxj: \n" << Fxj << std::endl;
 
 		    	// Compute the measurement Jacobian
-		    	double x_diff = State(3 + 2*j) - State(1);
-		    	double y_diff = State(4 + 2*j) - State(2);
-		    	double squared_diff = pow(x_diff, 2) + pow(y_diff, 2);
-		    	// Eigen::MatrixXd h(2, 5);
-		    	// h << 0.0, (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff)), (y_diff / sqrt(squared_diff)),
-		    	// 	 -1.0, (y_diff / sqrt(squared_diff)), (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff));
-		    	// std::cout << "h: \n" << h << std::endl;
-		    	// 2*(2n+3)
-				Eigen::MatrixXd H = Eigen::MatrixXd::Zero(2, 3 + 2 * map_state.size());
-				// H constructed from four Matrices: https://nu-msr.github.io/navigation_site/slam.pdf
-				// NOTE: j starts at 1 in slam.pdf
-				Eigen::MatrixXd h_left(2, 3);
-				h_left << 0.0, (-x_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), -1.0, (y_diff / sqrt(squared_diff)), (-x_diff / sqrt(squared_diff));
-
-				Eigen::MatrixXd h_mid_left = Eigen::MatrixXd::Zero(2, 2*j);
-
-				Eigen::MatrixXd h_mid_right(2, 2);
-				h_mid_right << (x_diff / sqrt(squared_diff)), (y_diff / sqrt(squared_diff)), (-y_diff / sqrt(squared_diff)), (x_diff / sqrt(squared_diff));
-
-				Eigen::MatrixXd h_right = Eigen::MatrixXd::Zero(2, 2 * map_state.size() - 2*(j + 1));
-
-				// Construct H - Measurement Jacobian
-				Eigen::MatrixXd h_mtx(h_left.rows(), h_left.cols() + h_mid_left.cols() + h_mid_right.cols() + h_right.cols());
-				h_mtx << h_left, h_mid_left, h_mid_right, h_right;
-				// std::cout << "h_left: \n\n" << h_left << std::endl;
-				// std::cout << "h_mid_left: \n\n" << h_mid_left << std::endl;
-				// std::cout << "h_mid_right: \n\n" << h_mid_right << std::endl;
-				// std::cout << "h_right: \n\n" << h_right << std::endl;
-				// std::cout << "size: " << map_state.size() << std::endl;
-				H = h_mtx;
+		    	Eigen::MatrixXd H = inv_msr_model(j);
 
 		    	// Eigen::MatrixXd H = h * Fxj;
 		    	// std::cout << "H: \n\n" << H << std::endl;
@@ -390,7 +396,7 @@ namespace nuslam
 
 		    	// Compute the Kalman gain from the linearized measurement model
 		    	// (2n+3)*2
-				Eigen::MatrixXd K = sigma_bar.cov_mtx * H.transpose() * (H * sigma_bar.cov_mtx * H.transpose() + msr_noise.R).inverse(); // NOTE: FIND MORE EFFICIENT INV
+				Eigen::MatrixXd K = cov_mtx.cov_mtx * H.transpose() * (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R).inverse(); // NOTE: FIND MORE EFFICIENT INV
 				// std::cout << "H Transpose: \n" << H.transpose() << std::endl;
 				// std::cout << "cov mtx * H.T: \n" << cov_mtx.cov_mtx * H.transpose() << std::endl;
 				// std::cout << "Matrix to Invert: \n" << (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R) << std::endl;
@@ -421,11 +427,10 @@ namespace nuslam
 	    		map_state.at(i).pose.y = State(4 + 2*i);
 		    	}
 		    	// Compute the posterior covariance
-		    	sigma_bar.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * sigma_bar.cov_mtx;
+		    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * cov_mtx.cov_mtx;
 		    	// std::cout << "cov_mtx.cov_mtx: \n" << cov_mtx.cov_mtx << std::endl;
     		}
     	}
-    	cov_mtx.cov_mtx = sigma_bar.cov_mtx;
     }
 
     Pose2D EKF::return_pose()

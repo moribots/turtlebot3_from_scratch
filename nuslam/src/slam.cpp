@@ -170,11 +170,11 @@ int main(int argc, char** argv)
   std::string frame_id_ = "map";
   float wbase_, wrad_, frequency;
   double max_range_ = 1.0;
-  double x_noise = 1e-10;
-  double y_noise = 1e-10;
-  double theta_noise = 1e-10;
-  double range_noise = 1e-7;
-  double bearing_noise = 1e-7;
+  double x_noise = 1e-11;
+  double y_noise = 1e-11;
+  double theta_noise = 1e-11;
+  double range_noise = 1e-6;
+  double bearing_noise = 1e-6;
 
   ros::init(argc, argv, "odometer_node"); // register the node on ROS
   ros::NodeHandle nh_("~"); // PRIVATE handle to ROS

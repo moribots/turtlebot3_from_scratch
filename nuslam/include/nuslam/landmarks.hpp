@@ -33,20 +33,29 @@ namespace nuslam
     {
         RangeBear range_bear;
         Vector2D pose;
-        bool init;
+        // Data Association Vars
+        bool init; // New/Old Landmark
+        int index; // Index in Landmark List
+        int seen_count; // criterion for adding to map state
+        double mahalanobis_dist;
+        double mahalanobis_lower; // < deadband: old landmark | > deadband: new landmark
+        double mahalanobis_upper; // < deadband: old landmark | > deadband: new landmark
 
         // \brief constructor for Point with no inputs, initializes all to zero
         Point();
 
 
         // \brief constructor for Point with cartesian inputs
-        Point(const Vector2D & pose);
+        Point(const Vector2D & pose_);
+
+        // \brief constructor for Point with cartesian inputs and mahalanobis parameters
+        Point(const Vector2D & pose_, double mahalanobis_lower_, double mahalanobis_upper_);
 
         // \brief constructor for Point with polar inputs
         Point(const RangeBear & range_bear_);
 
-        // \brief constructor for Point with all inputs
-        Point(const RangeBear & range_bear_, const Vector2D & pose);
+        // \brief constructor for Point with polar inputs and mahalanobis parameters
+        Point(const RangeBear & range_bear_, double mahalanobis_lower_, double mahalanobis_upper_);
     };
 
     /// \brief create a Landmark with pose relative to turtlebot3

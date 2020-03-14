@@ -113,6 +113,11 @@ namespace nuslam
         /// \returns
         void predict(const Twist2D & twist);
 
+        /// \brief Compute the Measurement Jacobian
+        /// \param j: index of assessed landmark
+        /// \returns H matrix (inverse measurement model)
+        Eigen::MatrixXd inv_msr_model(const int & j);
+
         /// \brief incorporate sequential landmark measurements to perform a correction of our predicted estimate, 
         /// then, update the EKF parameters for the next ieration. Also initializes new landmarks
         /// \param
@@ -138,7 +143,6 @@ namespace nuslam
         ProcessNoise proc_noise;
         MeasurementNoise msr_noise;
         CovarianceMatrix cov_mtx;
-        CovarianceMatrix sigma_bar;
     };
 
     /// \brief create random number generator with common seed
