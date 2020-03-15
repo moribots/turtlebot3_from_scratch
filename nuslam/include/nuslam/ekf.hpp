@@ -105,7 +105,9 @@ namespace nuslam
         /// Start with guess of robot state (0,0,0) with zero covariance for robot state, indicating
         /// full confidence in initial state, and infinite covariance for ladmarks state, indicating we
         /// know nothing about them.
-        EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_, const double & max_range_);
+        EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_,\
+             const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_,\
+             const double & max_range_, double mahalanobis_lower_, double mahalanobis_upper_);
 
         /// \brief forward-propagate the nonlinear motion model to get an estimate (prediction, and, using
         /// Taylor-Series expantion, get a linearized state transition model, which is used to propagate uncertainty.
@@ -123,6 +125,12 @@ namespace nuslam
         /// \param
         /// \returns
         void msr_update(const std::vector<Point> & measurements_);
+
+         /// \brief perform the mahalanobis test and return vector of successful candidates with corresponding
+        /// indeces mapped to map_state vector
+        /// \param measurements
+        /// \returns vector of Point(s) which have fallen outside of the mahalanobis deadband
+        std::vector<double> mahalanobis_test(const Eigen::VectorXd & z);
 
         /// \brief return current pose belief
         /// \returns Pose2D
@@ -143,6 +151,9 @@ namespace nuslam
         ProcessNoise proc_noise;
         MeasurementNoise msr_noise;
         CovarianceMatrix cov_mtx;
+        unsigned int N; // Number of seen landmarks
+        double mahalanobis_lower; // < deadband: old landmark | > deadband: new landmark
+        double mahalanobis_upper; // < deadband: old landmark | > deadband: new landmark
     };
 
     /// \brief create random number generator with common seed

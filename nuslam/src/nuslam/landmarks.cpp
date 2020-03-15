@@ -26,9 +26,6 @@ namespace nuslam
 
 		index = 0;
 		seen_count = 0;
-		mahalanobis_dist = 0;
-		mahalanobis_lower = 0;
-		mahalanobis_upper = 0;
 	}
 
 	Point::Point(const Vector2D & pose_)
@@ -41,24 +38,6 @@ namespace nuslam
 
 		index = 0;
 		seen_count = 0;
-		mahalanobis_dist = 0;
-		mahalanobis_lower = 0;
-		mahalanobis_upper = 0;
-	}
-
-	Point::Point(const Vector2D & pose_, double mahalanobis_lower_, double mahalanobis_upper_)
-	{
-		pose = pose_;
-
-		range_bear = cartesianToPolar(pose);
-
-		init = false;
-
-		index = 0;
-		seen_count = 0;
-		mahalanobis_lower = mahalanobis_lower_;
-		mahalanobis_upper = mahalanobis_upper_;
-		mahalanobis_dist = (mahalanobis_lower + mahalanobis_upper) / 2.0;
 	}
 
 	Point::Point(const RangeBear & range_bear_)
@@ -71,24 +50,6 @@ namespace nuslam
 
 		index = 0;
 		seen_count = 0;
-		mahalanobis_dist = 0;
-		mahalanobis_lower = 0;
-		mahalanobis_upper = 0;
-	}
-
-	Point::Point(const RangeBear & range_bear_, double mahalanobis_lower_, double mahalanobis_upper_)
-	{
-		range_bear = range_bear_;
-
-		pose = polarToCartesian(range_bear);
-
-		init = false;
-
-		index = 0;
-		seen_count = 0;
-		mahalanobis_lower = mahalanobis_lower_;
-		mahalanobis_upper = mahalanobis_upper_;
-		mahalanobis_dist = (mahalanobis_lower + mahalanobis_upper) / 2.0;
 	}
 
 	// Landmark

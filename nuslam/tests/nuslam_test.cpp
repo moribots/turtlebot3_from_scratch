@@ -104,10 +104,12 @@ TEST(slam, Prediction)
 	double theta_noise = 1e-10;
 	double range_noise = 1e-10;
 	double bearing_noise = 1e-10;
+	double mahalanobis_lower = 5.0;
+	double mahalanobis_upper = 100.0;
 	std::vector<nuslam::Point> map_state_(12, nuslam::Point());
 	nuslam::Pose2D xyt_noise_var = nuslam::Pose2D(x_noise, y_noise, theta_noise);
 	nuslam::RangeBear rb_noise_var_ = nuslam::RangeBear(range_noise, bearing_noise);
-	nuslam::EKF ekf = nuslam::EKF(driver.get_pose(), map_state_, xyt_noise_var, rb_noise_var_, max_range_);
+	nuslam::EKF ekf = nuslam::EKF(driver.get_pose(), map_state_, xyt_noise_var, rb_noise_var_, max_range_, mahalanobis_lower, mahalanobis_upper);
 
 	// Translation Test
 	rigid2d::Twist2D Vb(0, 1, 0);
@@ -150,7 +152,7 @@ TEST(slam, Prediction)
 
 }
 
-TEST(slam, MeasurementUpdateKnownAssociation)
+TEST(slam, MeasurementUpdate)
 {
 	rigid2d::DiffDrive driver;
 	// Set Driver Wheel Base and Radius
@@ -165,10 +167,12 @@ TEST(slam, MeasurementUpdateKnownAssociation)
 	double theta_noise = 1e-10;
 	double range_noise = 1e-10;
 	double bearing_noise = 1e-10;
+	double mahalanobis_lower = 5.0;
+	double mahalanobis_upper = 100.0;
 	std::vector<nuslam::Point> map_state_(12, nuslam::Point());
 	nuslam::Pose2D xyt_noise_var = nuslam::Pose2D(x_noise, y_noise, theta_noise);
 	nuslam::RangeBear rb_noise_var_ = nuslam::RangeBear(range_noise, bearing_noise);
-	nuslam::EKF ekf = nuslam::EKF(driver.get_pose(), map_state_, xyt_noise_var, rb_noise_var_, max_range_);
+	nuslam::EKF ekf = nuslam::EKF(driver.get_pose(), map_state_, xyt_noise_var, rb_noise_var_, max_range_, mahalanobis_lower, mahalanobis_upper);
 
 	// REAL GAZEBO LANDMARK DATA
 	std::vector<double> x{-0.8240684337283138, -0.8268546089917425, -0.8426874295061547,
@@ -194,7 +198,7 @@ TEST(slam, MeasurementUpdateKnownAssociation)
 	rigid2d::Twist2D Vb(0, 0, 0);
 	ekf.predict(Vb);
 
-	for (long unsigned int i = 0; i < 1000; i++)
+	for (long unsigned int i = 0; i < 2; i++)
 		// 100 updates
 	{
 		// Measurement update

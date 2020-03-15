@@ -175,6 +175,8 @@ int main(int argc, char** argv)
   double theta_noise = 1e-11;
   double range_noise = 1e-6;
   double bearing_noise = 1e-6;
+  double mahalanobis_lower = 5;
+  double mahalanobis_upper = 100.0;
 
   ros::init(argc, argv, "odometer_node"); // register the node on ROS
   ros::NodeHandle nh_("~"); // PRIVATE handle to ROS
@@ -218,7 +220,8 @@ int main(int argc, char** argv)
   std::vector<nuslam::Point> map_state_(12, nuslam::Point());
   nuslam::Pose2D xyt_noise_var = nuslam::Pose2D(x_noise, y_noise, theta_noise);
   nuslam::RangeBear rb_noise_var_ = nuslam::RangeBear(range_noise, bearing_noise);
-  ekf = nuslam::EKF(driver.get_pose(), map_state_, xyt_noise_var, rb_noise_var_, max_range_);
+  ekf = nuslam::EKF(driver.get_pose(), map_state_, xyt_noise_var, rb_noise_var_, max_range_,\
+                    mahalanobis_lower, mahalanobis_upper);
 
   // Init Time
   ros::Time current_time;

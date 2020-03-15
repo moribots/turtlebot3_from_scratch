@@ -215,9 +215,14 @@ namespace nuslam
     	msr_noise = MeasurementNoise();
     	cov_mtx = CovarianceMatrix();
     	cov_mtx = cov_mtx;
+    	N = 0;
+    	mahalanobis_lower = 0;
+		mahalanobis_upper = 0;
     }
 
-    EKF::EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_, const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_, const double & max_range_)
+    EKF::EKF(const Pose2D & robot_state_, const std::vector<Point> & map_state_,\
+    		 const Pose2D & xyt_noise_var, const RangeBear & rb_noise_var_,\
+    		 const double & max_range_, double mahalanobis_lower_, double mahalanobis_upper_)
     {
     	State = Eigen::VectorXd::Zero(3 + 2 * map_state_.size());
     	max_range = max_range_;
@@ -227,6 +232,9 @@ namespace nuslam
     	cov_mtx = cov_mtx;
     	proc_noise = ProcessNoise(xyt_noise_var, map_state_.size());
     	msr_noise = MeasurementNoise(rb_noise_var_);
+    	N = 0;
+    	mahalanobis_lower = mahalanobis_lower_;
+		mahalanobis_upper = mahalanobis_upper_;
     }
 
     void EKF::predict(const Twist2D & twist)
@@ -327,110 +335,170 @@ namespace nuslam
     	// and are thus improving the accuracy of our linearization and getting better EKFSLAM performance
     	for (auto iter = measurements_.begin(); iter != measurements_.end(); iter++)
     	{
-    		// std::cout << "cov_mtx.cov_mtx: \n" << cov_mtx.cov_mtx << std::endl;
+    		std::cout << "----------------------------------" << std::endl;
     		// Current Landmark Index
     		auto j = std::distance(measurements_.begin(), iter);
 
-    		// If a landmark has range > tolerance, skip
-    		// std::cout << "Landmark #" << j << "\tRange: " << iter->range_bear.range << std::endl;
-    		if (!(iter->range_bear.range > max_range))
-    		// skip landmark if outside of range
-	    	{
+    		// Mahalanobis Distance Test
 
-	    		// If a landmark has not been initialized internally, initialize its position
-	    		if (!map_state.at(j).init)
-	    		{
-	    		map_state.at(j).pose.x = iter->pose.x + State(1); 
-	    		map_state.at(j).pose.y = iter->pose.y + State(2);
-	    		map_state.at(j).init = true;
+    		//  Add noise to actual range, bearing measurement
+	    	Eigen::VectorXd noise_vect = getMultivarNoise(msr_noise.R);
+    		Eigen::VectorXd z(2);
+    		z << iter->range_bear.range + noise_vect(0), iter->range_bear.bearing + noise_vect(1);
+    		z(1) = rigid2d::normalize_angle(z(1));
+    		// std::cout << "z: " << z << std::endl;
 
-	    		// Update State wrt world (map frame)
-	    		State(3 + 2*j) = iter->pose.x + State(1);
-	    		State(4 + 2*j) = iter->pose.y + State(2);
-	    		}
+    		std::vector<double> d_k = mahalanobis_test(z);
 
-	    		// First, get theoretical expected measurement based on belief in [r,b] format
-		    	// Pose difference between robot and landmark
-		    	Vector2D cartesian_measurement = Vector2D(State(3 + 2*j) - State(1), State(4 + 2*j) - State(2));
-		    	RangeBear polar_measurement = cartesianToPolar(cartesian_measurement);
-		    	// Angle Wrap Bearing
-		    	polar_measurement.bearing = rigid2d::normalize_angle(polar_measurement.bearing);
-		    	// Subtract robot heading from bearing
-		    	polar_measurement.bearing -= State(0);
-		    	// Angle Wrap Bearing
-		    	polar_measurement.bearing = rigid2d::normalize_angle(polar_measurement.bearing);
+    		// Find minimum mahalanobis distance d* index of d*
+			auto d_star_index = std::min_element(d_k.begin(), d_k.end()) - d_k.begin();
+			double d_star = d_k.at(d_star_index);
 
-		    	Eigen::VectorXd z_hat(2);
-	    		z_hat << polar_measurement.range, polar_measurement.bearing;
-	    		// std::cout << "z_hat: \n" << z_hat << std::endl;
-
-	    		//  Add noise to actual range, bearing measurement
-		    	// Note, the nuslam::Point struct contains cartesian and polar measurements, so we just use iter
-		    	// Add Noise
-		    	Eigen::VectorXd noise_vect = getMultivarNoise(msr_noise.R);
-	    		Eigen::VectorXd z(2);
-	    		z << iter->range_bear.range + noise_vect(0), iter->range_bear.bearing + noise_vect(1);
-	    		z(1) = rigid2d::normalize_angle(z(1));
-	    		// std::cout << "z: " << z << std::endl;
-
-		    	// http://andrewjkramer.net/intro-to-the-ekf-step-3/
-		    	// Note first 3x3 is IX matrix and there is a 2x2 ID matrix on the bottom two rows starting at column 2j + 3 with j from 0 to n
-		    	// j is the current examined landmark
-		    	// Eigen::MatrixXd Fxj = Eigen::MatrixXd::Zero(5, 3 + (2 * map_state.size()));
-		    	// // top left 3x3
-		    	// Fxj(0, 0) = 1;
-		    	// Fxj(1, 1) = 1;
-		    	// Fxj(2, 2) = 1;
-		    	// // bottom 2 rows 2x2
-		    	// Fxj(3, 2 * j + 3) = 1;
-		    	// Fxj(4, 2 * j + 4) = 1;
-		    	// std::cout << "Fxj: \n" << Fxj << std::endl;
-
-		    	// Compute the measurement Jacobian
-		    	Eigen::MatrixXd H = inv_msr_model(j);
-
-		    	// Eigen::MatrixXd H = h * Fxj;
-		    	// std::cout << "H: \n\n" << H << std::endl;
-
-		    	// std::cout << "H SIZE: (" << H.rows() << "," << H.cols() << ")" << std::endl;
-
-		    	// Compute the Kalman gain from the linearized measurement model
-		    	// (2n+3)*2
-				Eigen::MatrixXd K = cov_mtx.cov_mtx * H.transpose() * (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R).inverse(); // NOTE: FIND MORE EFFICIENT INV
-				// std::cout << "H Transpose: \n" << H.transpose() << std::endl;
-				// std::cout << "cov mtx * H.T: \n" << cov_mtx.cov_mtx * H.transpose() << std::endl;
-				// std::cout << "Matrix to Invert: \n" << (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R) << std::endl;
-				// std::cout << "K: \n" << K << std::endl;
-
-		    	// Compute the posterior state update
-	    		Eigen::VectorXd z_diff(2);
-	    		z_diff = z - z_hat;
-	    		// Angle Wrap Bearing
-		    	z_diff(1) = rigid2d::normalize_angle(z_diff(1));
-	    		// std::cout << "z_diff: \n" << z_diff << std::endl;
-
-	    		// (2n+3)*1
-	    		Eigen::VectorXd K_update = K * z_diff;
-	    		// std::cout << "K_update: \n" << K_update << std::endl;
-		    	State += K_update;
-		    	State(0) = rigid2d::normalize_angle(State(0));
-		    	// Update returnable values (robot and map state)
-		    	robot_state.theta = State(0);
-	    		robot_state.theta = rigid2d::normalize_angle(robot_state.theta);
-	    		robot_state.x = State(1);
-	    		robot_state.y = State(2);
-	    		// Map data starts at index 3
-	    		// Perform update for full map state
-	    		for (long unsigned int i = 0; i < map_state.size(); i++)
+			if (d_star < mahalanobis_lower or d_star > mahalanobis_upper )
+			{
+				int i = 0;
+				if (d_star < mahalanobis_lower)
 				{
-	    		map_state.at(i).pose.x = State(3 + 2*i);
-	    		map_state.at(i).pose.y = State(4 + 2*i);
-		    	}
-		    	// Compute the posterior covariance
-		    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * cov_mtx.cov_mtx;
-		    	// std::cout << "cov_mtx.cov_mtx: \n" << cov_mtx.cov_mtx << std::endl;
-    		}
+					i = d_star_index;
+					std::cout << "Landmark i #: " << i << std::endl;
+
+				} else if (d_star > mahalanobis_upper)
+				{
+					// Increment N
+					N += 1;
+					i = N - 1; // we use N as an index
+
+					// Add New Landmark to State
+					if (N <= map_state.size())
+					{
+						State(3 + 2*i) = iter->pose.x;
+						State(4 + 2*i) = iter->pose.y;
+					}
+
+					std::cout << "New Landmark index #: " << i << std::endl;
+
+				}
+
+				if (N <= map_state.size())
+				{
+					// std::cout << "N: " << N << std::endl;
+					// std::cout << "dstar index " << d_star_index << std::endl;
+					std::cout << "dstar " << d_star << std::endl;
+
+					std::cout << "Measurement # " << j << std::endl;
+
+					// std::cout << "i: " << i << std::endl;
+
+					// Add measurement to state and incorporate into EKF
+					// First, get theoretical expected measurement based on belief in [r,b] format
+			    	// Pose difference between robot and landmark
+			    	Vector2D cartesian_measurement = Vector2D(State(3 + 2*i) - State(1), State(4 + 2*i) - State(2));
+			    	RangeBear polar_measurement = cartesianToPolar(cartesian_measurement);
+			    	// Angle Wrap Bearing
+			    	polar_measurement.bearing = rigid2d::normalize_angle(polar_measurement.bearing);
+			    	// Subtract robot heading from bearing
+			    	polar_measurement.bearing -= State(0);
+			    	// Angle Wrap Bearing
+			    	polar_measurement.bearing = rigid2d::normalize_angle(polar_measurement.bearing);
+
+			    	Eigen::VectorXd z_hat(2);
+		    		z_hat << polar_measurement.range, polar_measurement.bearing;
+		    		// std::cout << "z_hat: \n" << z_hat << std::endl;
+
+			    	// Compute the measurement Jacobian
+			    	Eigen::MatrixXd H = inv_msr_model(i);
+			    	// std::cout << "H: \n\n" << H << std::endl;
+
+			    	// Compute the Kalman gain from the linearized measurement model
+			    	// (2n+3)*2
+					Eigen::MatrixXd K = cov_mtx.cov_mtx * H.transpose() * (H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R).inverse();
+					// std::cout << "K: \n" << K << std::endl;
+
+			    	// Compute the posterior state update
+		    		Eigen::VectorXd z_diff(2);
+		    		z_diff = z - z_hat;
+		    		// Angle Wrap Bearing
+			    	z_diff(1) = rigid2d::normalize_angle(z_diff(1));
+		    		// std::cout << "z_diff: \n" << z_diff << std::endl;
+
+		    		// (2n+3)*1
+		    		Eigen::VectorXd K_update = K * z_diff;
+		    		// std::cout << "K_update: \n" << K_update << std::endl;
+			    	State += K_update;
+			    	State(0) = rigid2d::normalize_angle(State(0));
+			 
+			    	// Compute the posterior covariance
+			    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * cov_mtx.cov_mtx;
+			    	// std::cout << "cov_mtx.cov_mtx: \n" << cov_mtx.cov_mtx << std::endl;
+				} else {
+					N = map_state.size();
+				}
+			}
+    		
     	}
+
+    	// Update returnable values (robot and map state)
+    	robot_state.theta = State(0);
+		robot_state.theta = rigid2d::normalize_angle(robot_state.theta);
+		robot_state.x = State(1);
+		robot_state.y = State(2);
+		// Map data starts at index 3
+		// Perform update for full map state
+		for (long unsigned int i = 0; i < map_state.size(); i++)
+		{
+		map_state.at(i).pose.x = State(3 + 2*i);
+		map_state.at(i).pose.y = State(4 + 2*i);
+    	}
+    }
+
+    std::vector<double> EKF::mahalanobis_test(const Eigen::VectorXd & z)
+    {
+    	// steps 10-18 in Probabilistic Robotics, EKFSLAM with Unknown Data Association
+    	// for k = 0 to k < N (N from 0 to max_num_landmarks) | if N=0, skip
+
+    	// First, create a vector of size N to store our mahalanobis distances
+    	// if N = 0, skip loop and return empty vector, which will indicate that the
+    	// current measurement is our first landmark, and it will automatically be initialized
+    	std::vector<double> d_k;
+
+    	// Populate since loop will be skipped if N=0
+ 		if (N == 0)
+ 		{
+ 			d_k.push_back(1e12);
+ 		}
+
+    	// Step 10 PR
+    	for (unsigned int k = 0; k < N; k++)
+    	{
+    		// Steps 11-15
+    		Eigen::MatrixXd H = inv_msr_model(k);
+    		// Step 16
+    		Eigen::MatrixXd psi = H * cov_mtx.cov_mtx * H.transpose() + msr_noise.R;
+
+    		// Step 17
+    		Vector2D cartesian_measurement = Vector2D(State(3 + 2*k) - State(1), State(4 + 2*k) - State(2));
+	    	RangeBear polar_measurement = cartesianToPolar(cartesian_measurement);
+	    	// Angle Wrap Bearing
+	    	polar_measurement.bearing = rigid2d::normalize_angle(polar_measurement.bearing);
+	    	// Subtract robot heading from bearing
+	    	polar_measurement.bearing -= State(0);
+	    	// Angle Wrap Bearing
+	    	polar_measurement.bearing = rigid2d::normalize_angle(polar_measurement.bearing);
+
+	    	Eigen::VectorXd z_hat(2);
+    		z_hat << polar_measurement.range, polar_measurement.bearing;
+
+			Eigen::VectorXd z_diff(2);
+    		z_diff = z - z_hat;
+    		// Angle Wrap Bearing
+	    	z_diff(1) = rigid2d::normalize_angle(z_diff(1));    		
+
+    		double d = z_diff.transpose() * psi.inverse() * z_diff;
+
+    		d_k.push_back(d);
+    	}
+    	// step 18
+    	return d_k;
     }
 
     Pose2D EKF::return_pose()
