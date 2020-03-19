@@ -143,7 +143,7 @@ Visualization Manager:
       Marker Topic: /scan/marker
       Name: ScanMarker
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Class: rviz/Marker
@@ -319,7 +319,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.4776451587677
+      Distance: 3.8949625492095947
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -355,5 +355,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1128
-  X: 191
+  X: 190
   Y: 0

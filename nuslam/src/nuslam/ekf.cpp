@@ -338,7 +338,7 @@ namespace nuslam
     	{
     		// std::cout << "----------------------------------" << std::endl;
     		// Current Landmark Index
-    		auto j = std::distance(measurements_.begin(), iter);
+    		// auto j = std::distance(measurements_.begin(), iter);
 
     		// Mahalanobis Distance Test
 
@@ -355,7 +355,7 @@ namespace nuslam
 			auto d_star_index = std::min_element(d_k.begin(), d_k.end()) - d_k.begin();
 			double d_star = d_k.at(d_star_index);
 
-			std::cout << "dstar " << d_star << std::endl;
+			// std::cout << "dstar " << d_star << std::endl;
 
 			if (d_star < mahalanobis_lower or d_star > mahalanobis_upper )
 			{
@@ -363,7 +363,7 @@ namespace nuslam
 				if (d_star < mahalanobis_lower)
 				{
 					i = d_star_index;
-					std::cout << "Landmark i #: " << i << std::endl;
+					// std::cout << "Landmark i #: " << i << std::endl;
 
 				} else if (d_star > mahalanobis_upper)
 				{
@@ -378,7 +378,7 @@ namespace nuslam
 						State(4 + 2*i) = iter->pose.y + State(2);
 					}
 
-					std::cout << "New Landmark index #: " << i << std::endl;
+					// std::cout << "New Landmark index #: " << i << std::endl;
 
 				}
 
@@ -386,9 +386,9 @@ namespace nuslam
 				{
 					// std::cout << "N: " << N << std::endl;
 					// std::cout << "dstar index " << d_star_index << std::endl;
-					std::cout << "dstar " << d_star << std::endl;
+					// std::cout << "dstar " << d_star << std::endl;
 
-					std::cout << "Measurement # " << j << std::endl;
+					// std::cout << "Measurement # " << j << std::endl;
 
 					// std::cout << "i: " << i << std::endl;
 

@@ -129,7 +129,7 @@ void landmark_callback(const nuslam::TurtleMap &map)
   y_pts.clear();
   for (auto iter = map_state.begin(); iter != map_state.end(); iter++)
   {
-    radii.push_back(0.1);
+    radii.push_back(0.08);
     // std::cout << "RADIUS: " << iter->return_radius() << std::endl;
     x_pts.push_back(iter->pose.x);
     y_pts.push_back(iter->pose.y);
@@ -176,7 +176,7 @@ int main(int argc, char** argv)
   double range_noise = 1e-10;
   double bearing_noise = 1e-10;
   double mahalanobis_lower = 100.0;
-  double mahalanobis_upper = 1e6;
+  double mahalanobis_upper = 1e5;
 
   ros::init(argc, argv, "odometer_node"); // register the node on ROS
   ros::NodeHandle nh_("~"); // PRIVATE handle to ROS

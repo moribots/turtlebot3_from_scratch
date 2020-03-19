@@ -67,7 +67,7 @@ void gazebo_callback(const gazebo_msgs::ModelStates &model)
       mat.getRPY(roll, pitch, yaw);
       lnd_pt.range_bear.bearing -= yaw;
       nuslam::Point adjusted_landmark = nuslam::Point(lnd_pt.range_bear);
-      double radius = 0.1;
+      double radius = 0.12;
 
       // Populate Vectors
       radii.push_back(radius);

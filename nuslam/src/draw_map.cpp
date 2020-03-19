@@ -68,18 +68,24 @@ int main(int argc, char** argv)
   marker.color.a = 1.0;
   if (color == "scan")
   {
+    // Heighest Marker
+    marker.scale.z = 1.0;
     marker.color.r = 0.5f;
     marker.color.g = 0.0f;
     marker.color.b = 0.5f;
     marker.color.a = 1.0;
   } else if (color == "gazebo")
   {
+    // Lowest Marker
+    marker.scale.z = 0.25;
     marker.color.r = 0.96f;
     marker.color.g = 0.475f;
     marker.color.b = 0.0f;
     marker.color.a = 1.0;
   } else if (color == "slam")
   {
+    // Mid Marker
+    marker.scale.z = 0.5;
     marker.color.r = 1.0f;
     marker.color.g = 0.0f;
     marker.color.b = 0.0f;
@@ -111,7 +117,7 @@ int main(int argc, char** argv)
         // This is a 6DOF pose wrt frame/time specified in the header
         marker.pose.position.x = global_map.x_pts.at(i);
         marker.pose.position.y = global_map.y_pts.at(i);
-        marker.pose.position.z = 0.0; // height
+        marker.pose.position.z = marker.scale.z / 2.0; // height
         marker.pose.orientation.x = 0.0;
         marker.pose.orientation.y = 0.0;
         marker.pose.orientation.z = 0.0;
@@ -119,7 +125,6 @@ int main(int argc, char** argv)
         // Set the scale of the marker -- 1x1x1 here means 1m on a side
         marker.scale.x = global_map.radii.at(i);
         marker.scale.y = global_map.radii.at(i);
-        marker.scale.z = 1.0;
         marker.lifetime = ros::Duration(0.5);
         // std::cout << "POS: (" << global_map.x_pts.at(i) << ", " << global_map.y_pts.at(i) << ")" << std::endl;
         marker_pub.publish(marker);

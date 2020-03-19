@@ -71,7 +71,7 @@
 		<!-- Landmarks Node -->
 		<node name="landmarks_node" pkg="nuslam" type="landmarks_node" output="screen">
 			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
-			<param name="threshold" value="0.15" />
+			<param name="threshold" value="0.3" />
 			<param name="landmark_frame_id" value="base_scan" /> 
 			<param name="frequency" value="60.0" />
 		</node>
@@ -89,18 +89,6 @@
 		</group>
 
 		<group if="$(eval arg('debug') == True)">
-		<!-- Analysis (Fake Landmarks) Node -->
-		<node name="analysis" pkg="nuslam" type="analysis" output="screen">
-			<param name="landmark_frame_id" value="base_scan" /> 
-			<param name="frequency" value="60.0" />
-		</node>
-		<!-- Draw Map Node -->
-		<node name="draw_map" pkg="nuslam" type="draw_map" output="screen">
-			<param name="frequency" value="60.0" />
-			<param name="color" value="gazebo" />
-			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
-			<remap from="scan/marker" to="gazebo/marker"/>
-		</node>
 		<!-- SLAM Node -->
 		<node name="slam" pkg="nuslam" type="slam" output="screen">
 			<param name="odom_frame_id" value="map" />
@@ -115,14 +103,29 @@
 			<param name="max_range" value="1.0" /> -->
 			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
 		</node>
-		<!-- Draw Map Node -->
+		</group>
+
+		<!-- Draw Map Node: SLAM -->
 		<node name="slam_draw_map" pkg="nuslam" type="draw_map" output="screen">
 			<param name="frequency" value="60.0" />
 			<param name="color" value="slam" />
 			<remap from="landmarks_node/landmarks" to="slam/landmarks"/>
 			<remap from="scan/marker" to="slam/marker"/>
 		</node>
-		</group>
+
+		<!-- Analysis (Fake Landmarks) Node -->
+		<node name="analysis" pkg="nuslam" type="analysis" output="screen">
+			<param name="landmark_frame_id" value="base_scan" /> 
+			<param name="frequency" value="60.0" />
+		</node>
+
+		<!-- Draw Map Node: GAZEBO -->
+		<node name="gazebo_draw_map" pkg="nuslam" type="draw_map" output="screen">
+			<param name="frequency" value="60.0" />
+			<param name="color" value="gazebo" />
+			<remap from="landmarks_node/landmarks" to="analysis/landmarks"/>
+			<remap from="scan/marker" to="gazebo/marker"/>
+		</node>
 
 		<!-- include turtlebot3 teleop -->
 		<!-- NOTE: do "export TURTLEBOT3_MODEL=burger" in terminal -->
