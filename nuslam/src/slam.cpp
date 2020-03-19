@@ -78,10 +78,10 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
   */
   //ConstPtr is a smart pointer which knows to de-allocate memory
   wl_enc = js->position.at(0);
-  ekf_wl_enc += wl_enc;
+  ekf_wl_enc = wl_enc;
   // wl_enc = rigid2d::normalize_encoders(js->position.at(0));
   wr_enc = js->position.at(1);
-  ekf_wr_enc += wr_enc;
+  ekf_wr_enc = wr_enc;
   // wr_enc = rigid2d::normalize_encoders(js->position.at(1));
 	w_vel = driver.updateOdometry(wl_enc, wr_enc);
 	// ROS_INFO("wheel vel")
@@ -112,13 +112,13 @@ void landmark_callback(const nuslam::TurtleMap &map)
   {
     rigid2d::WheelVelocities ekf_w_vel = ekf_driver.updateOdometry(ekf_wl_enc, ekf_wr_enc);
     rigid2d::Twist2D ekf_Vb = ekf_driver.wheelsToTwist(ekf_w_vel);
+    // Prediction Update EKF
     ekf.predict(ekf_Vb);
-    ekf_wl_enc = 0;
-    ekf_wr_enc = 0;
+    // Perform measurement update step of EKF here
+    ekf.msr_update(measurements);
+    // ekf_wl_enc = 0;
+    // ekf_wr_enc = 0;
   }
-
-  // Perform measurement update step of EKF here
-  ekf.msr_update(measurements);
 
   // Return Map
   std::vector<nuslam::Point> map_state = ekf.return_map();
@@ -170,13 +170,13 @@ int main(int argc, char** argv)
   std::string frame_id_ = "map";
   float wbase_, wrad_, frequency;
   double max_range_ = 1.0;
-  double x_noise = 1e-11;
-  double y_noise = 1e-11;
-  double theta_noise = 1e-11;
-  double range_noise = 1e-6;
-  double bearing_noise = 1e-6;
-  double mahalanobis_lower = 5;
-  double mahalanobis_upper = 100.0;
+  double x_noise = 1e-6;
+  double y_noise = 1e-6;
+  double theta_noise = 1e-5;
+  double range_noise = 1e-10;
+  double bearing_noise = 1e-10;
+  double mahalanobis_lower = 100.0;
+  double mahalanobis_upper = 1e6;
 
   ros::init(argc, argv, "odometer_node"); // register the node on ROS
   ros::NodeHandle nh_("~"); // PRIVATE handle to ROS

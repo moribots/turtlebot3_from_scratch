@@ -126,11 +126,21 @@ namespace nuslam
         /// \returns
         void msr_update(const std::vector<Point> & measurements_);
 
-         /// \brief perform the mahalanobis test and return vector of successful candidates with corresponding
+        /// \brief perform the mahalanobis test and return vector of successful candidates with corresponding
         /// indeces mapped to map_state vector
         /// \param measurements
         /// \returns vector of Point(s) which have fallen outside of the mahalanobis deadband
         std::vector<double> mahalanobis_test(const Eigen::VectorXd & z);
+
+
+        /// \brief computes and returns Nearest Semi-Positive Definite Matrix
+        // From Higham: "The nearest symmetric positive semidefinite matrix in the
+        // Frobenius norm to an arbitrary real matrix A is shown to be (B + H)/2,
+        // where H is the symmetric polar factor of B=(A + A')/2."
+        /// \param Eigen::MatrixXd
+        /// \returns Eigen::MatrixXd
+        // souce: https://www.mathworks.com/matlabcentral/mlc-downloads/downloads/submissions/61755/versions/9/previews/nearestSPD.m/index.html
+        // Eigen::MatrixXd nearestSPD(const Eigen::MatrixXd & mtx);
 
         /// \brief return current pose belief
         /// \returns Pose2D

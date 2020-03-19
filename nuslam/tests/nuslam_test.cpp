@@ -167,8 +167,8 @@ TEST(slam, MeasurementUpdate)
 	double theta_noise = 1e-10;
 	double range_noise = 1e-10;
 	double bearing_noise = 1e-10;
-	double mahalanobis_lower = 5.0;
-	double mahalanobis_upper = 100.0;
+	double mahalanobis_lower = 15.0;
+	double mahalanobis_upper = 500.0;
 	std::vector<nuslam::Point> map_state_(12, nuslam::Point());
 	nuslam::Pose2D xyt_noise_var = nuslam::Pose2D(x_noise, y_noise, theta_noise);
 	nuslam::RangeBear rb_noise_var_ = nuslam::RangeBear(range_noise, bearing_noise);
@@ -196,11 +196,11 @@ TEST(slam, MeasurementUpdate)
 	// Now do pose update and measurement update
 	// Zero Test
 	rigid2d::Twist2D Vb(0, 0, 0);
-	ekf.predict(Vb);
 
 	for (long unsigned int i = 0; i < 2; i++)
 		// 100 updates
 	{
+		ekf.predict(Vb);
 		// Measurement update
 		// // Feed measurements for update - FIRST TIME SEEING MEASUREMENTS
 		// ekf.msr_update(measurements);

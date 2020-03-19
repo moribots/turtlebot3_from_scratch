@@ -1,4 +1,5 @@
 #include "nuslam/ekf.hpp"
+#include <exception>
 
 namespace nuslam
 {
@@ -34,7 +35,7 @@ namespace nuslam
         map_state = map_state_;
         // 2n*2n diag matrix since map containts x1,y1, ... xn,yn
         // std::vector<double> map_state_cov(2 * map_state.size(), std::numeric_limits<double>::infinity()); // init to 0,0,0
-        std::vector<double> map_state_cov(2 * map_state.size(), 1e12); // init to 0,0,0
+        std::vector<double> map_state_cov(2 * map_state.size(), 1000); // init to 0,0,0
         // construct EigenVector from Vector
         Eigen::VectorXd map_state_cov_vct = Eigen::VectorXd::Map(map_state_cov.data(), map_state_cov.size());
         Eigen::MatrixXd map_cov_mtx = map_state_cov_vct.asDiagonal();
@@ -335,7 +336,7 @@ namespace nuslam
     	// and are thus improving the accuracy of our linearization and getting better EKFSLAM performance
     	for (auto iter = measurements_.begin(); iter != measurements_.end(); iter++)
     	{
-    		std::cout << "----------------------------------" << std::endl;
+    		// std::cout << "----------------------------------" << std::endl;
     		// Current Landmark Index
     		auto j = std::distance(measurements_.begin(), iter);
 
@@ -354,6 +355,8 @@ namespace nuslam
 			auto d_star_index = std::min_element(d_k.begin(), d_k.end()) - d_k.begin();
 			double d_star = d_k.at(d_star_index);
 
+			std::cout << "dstar " << d_star << std::endl;
+
 			if (d_star < mahalanobis_lower or d_star > mahalanobis_upper )
 			{
 				int i = 0;
@@ -365,14 +368,14 @@ namespace nuslam
 				} else if (d_star > mahalanobis_upper)
 				{
 					// Increment N
+					i = N;
 					N += 1;
-					i = N - 1; // we use N as an index
 
 					// Add New Landmark to State
 					if (N <= map_state.size())
 					{
-						State(3 + 2*i) = iter->pose.x;
-						State(4 + 2*i) = iter->pose.y;
+						State(3 + 2*i) = iter->pose.x + State(1);
+						State(4 + 2*i) = iter->pose.y + State(2);
 					}
 
 					std::cout << "New Landmark index #: " << i << std::endl;
@@ -431,6 +434,7 @@ namespace nuslam
 			    	cov_mtx.cov_mtx = (Eigen::MatrixXd::Identity(3 + (2 * map_state.size()), 3 + (2 * map_state.size())) - K * H) * cov_mtx.cov_mtx;
 			    	// std::cout << "cov_mtx.cov_mtx: \n" << cov_mtx.cov_mtx << std::endl;
 				} else {
+					// throw std::invalid_argument("N CANNOT EXCEED MAXIMUM NUMBER OF LANDMARKS");
 					N = map_state.size();
 				}
 			}
@@ -495,11 +499,16 @@ namespace nuslam
 
     		double d = z_diff.transpose() * psi.inverse() * z_diff;
 
-    		d_k.push_back(d);
+	    	d_k.push_back(d);
     	}
     	// step 18
     	return d_k;
     }
+
+    // Eigen::MatrixXd EKF::nearestSPD(const Eigen::MatrixXd & mtx)
+    // {
+
+    // }
 
     Pose2D EKF::return_pose()
     {
