@@ -2,11 +2,22 @@
 /// \brief Interprets LaserScan data and detects and publishes attributes of discovered landmarks
 ///
 /// PARAMETERS:
+///   threshold (double): used to determine whether two points from LaserScan belong to one cluster
+///   callback_flag (bool): specifies whether to publish landmarks based on callback trigger
+///   pc (sensor_msgs::PointCloud): contains interpreted pointcloud which is published for debugging purposes
+///   map (nuslam::TurtleMap): stores lists of x,y coordinates and radii of detected landmarks
+///   frequency (int): frequency of control loop.
+///   frame_id_ (string): frame ID of discovered landmarks (in this case, relative to base_scan)
 ///
 /// PUBLISHES:
+///   landmarkks (nuslam::TurtleMap): publishes TurtleMap message containing landmark coordinates (x,y) and radii
+///   pointcloud (sensor_msgs::PointCloud): publishes PointCloud for visualization in RViz for debugging purposees
+///
 /// SUBSCRIBES:
+///   /scan (sensor_msgs::LaserScan), which contains data with which it is possible to extract range,bearing measurements
+///
 /// FUNCTIONS:
-/// SERVICES:
+///   scan_callback (void): callback for /scan subscriber, which processes LaserScan data and detects landmarks
 
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
@@ -36,13 +47,12 @@ sensor_msgs::PointCloud pc;
 
 void scan_callback(const sensor_msgs::LaserScan &lsr)
 { 
-  /// \brief 
-  ///
-  /// \param
+  /// \brief forms clusters from LaserScan data and fits circles to
+  /// them before assessing whether or not they are landmarks (or walls)
+  /// \param sensor_msgs::LaserScan, which contains data with
+  /// which it is possible to extract range,bearing measurements
 
   std::vector<nuslam::Landmark> landmarks;
-
-  // First, clear the vector of landmarks upon receiving a scan
   // landmarks.clear();
 
   // Clear Point Cloud
