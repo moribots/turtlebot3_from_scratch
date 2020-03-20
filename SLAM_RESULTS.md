@@ -14,8 +14,13 @@ theta_error: 0.494665533304
 ### Noise: 0.001
 ### Detection Radius: 1.0 m
 
+Note that the code no longer supports unknown data association, and the reason for the jittery performance was later discovered to be related to my wheel encoders update.
+
 ![ekfslam](nuslam/media/L2_2rad_001noise.png)
 
+The below screenshot shows unknown data association but with the Gazebo-read landmarks for comparison.
+
+![ekfslam](nuslam/media/unknown_gzb.png)
 
 # Unknown Data Association
 
