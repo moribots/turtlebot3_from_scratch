@@ -66,6 +66,10 @@ std::string frame_id_ = "map";
 
 void gazebo_callback(const gazebo_msgs::ModelStates &model)
 {
+  /// \brief extract turtlebot pose from ModelStates
+  /// \param gazebo_msgs::ModelStates, containing the pose of all
+  /// models in the environment
+
   // First, find current Diff Drive Robot Pose
   std::string robot_name = "diff_drive";
   auto dd_it = std::find(model.name.begin(), model.name.end(), robot_name);
@@ -86,6 +90,8 @@ void gazebo_callback(const gazebo_msgs::ModelStates &model)
 
 void odom_callback(const nav_msgs::Odometry &odom)
 {
+  /// \brief extract turtlebot pose from Odometry msg
+  /// \param nav_msgs::Odometry, containing the robot pose
 
   geometry_msgs::PoseStamped ps;
 
@@ -101,6 +107,8 @@ void odom_callback(const nav_msgs::Odometry &odom)
 
 void slam_callback(const nav_msgs::Odometry &slam)
 {
+  /// \brief extract turtlebot pose from Odometry msg
+  /// \param nav_msgs::Odometry, containing the robot pose
 
   geometry_msgs::PoseStamped ps;
 

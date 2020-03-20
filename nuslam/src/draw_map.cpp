@@ -1,12 +1,20 @@
 /// \file
-/// \brief TurtleMap data and publish markers to RViz which indicate landmark estimations
+/// \brief Receives TurtleMap data and publishes markers to RViz which indicate landmark estimations
 ///
 /// PARAMETERS:
+///   callback_flag (bool): specifies whether to draw landmarks from based on callback trigger
+///   global_map (nuslam::TurtleMap): stores lists of x,y coordinates and radii of landmarks to publish
+///   frequency (double): frequency of control loop.
+///   color (string): "gazebo", "scan", or "slam" determines color and size of markers for clarity
 ///
 /// PUBLISHES:
+///   scan/marker (visualization_msgs::Marker): publishes markers to indicate detected landmark positions
+///
 /// SUBSCRIBES:
+///   /landmarks_node/landmarks (nuslam::TurtleMap), stores lists of x,y coordinates and radii of detected landmarks
+///
 /// FUNCTIONS:
-/// SERVICES:
+///   mapCallback (void): callback for /landmarks_node/landmarks subscriber, which stores TurtleMap data for exraction
 
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
@@ -30,6 +38,8 @@ nuslam::TurtleMap global_map;
 
 void mapCallback(const nuslam::TurtleMap &map)
 {
+  /// \brief store TurtleMap data for converting into marker coordinates
+  /// \param nuslam::TurtleMap, which stores lists of x,y coordinates and radii of detected landmarks
   global_map = map;
 
   // std::cout << "NUM OF CLUSTERS: " << global_map.radii.size() << std::endl;

@@ -1,12 +1,11 @@
 /// \file
-/// \brief Publishes attributes of discovered landmarks straight from gazebo (no noise)
+/// \brief Publishes coordinates of available landmarks straight from gazebo (no noise)
 ///
 /// PARAMETERS:
 ///
 /// PUBLISHES:
 /// SUBSCRIBES:
 /// FUNCTIONS:
-/// SERVICES:
 
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
