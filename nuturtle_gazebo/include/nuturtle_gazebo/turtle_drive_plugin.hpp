@@ -22,17 +22,27 @@ namespace gazebo
 {
   class TurtleDrivePlugin : public ModelPlugin
   {
-    /// \brief Constructor
+    /// \brief Constructor for TurtleDrivePlugin. Models real Turtlebot interface for use in Gazebo
     public: 
 
+        /// \brief empty constructor for plugin
         TurtleDrivePlugin();
 
+        /// \brief callback to convert wheel commands (+- 256) to velocities and applies them to gazebo model
+        /// \param nuturtlebot::WheelCommands: integer value between +-256 to indicate wheel speed
         void wheel_cmdCallback(const nuturtlebot::WheelCommands &wc);
 
+        /// \brief Loads the plugin and uses the physics::ModelPtr object to manipulate model physics and
+        /// the sdf::ElementPtr to read user-specified parameters such as joint names and ros topics
+        /// \param physics::ModelPtr: pointer to manipulate model physics (set joint speeds/torques etc)
+        /// \param sdf::ElementPtr: pointer to read user input from .gazebo.xacro file to set plugin parameters
         virtual void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf);
 
     private:
 
+        /// \brief Plugin equivalent of ross:Spin() where model updates happen according to callbacks or otherwise
+        /// in this case, sets the wheel joint velocities and torques (always max specified) according to wheel_cmdCallback
+        /// using physics::ModelPtr
         void OnUpdate();
 
         std::vector<event::ConnectionPtr> connections;

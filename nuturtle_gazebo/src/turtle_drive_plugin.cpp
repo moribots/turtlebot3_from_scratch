@@ -1,6 +1,6 @@
 #include "nuturtle_gazebo/turtle_drive_plugin.hpp"
 
-/////////////////////////////////////////////////
+
 gazebo::TurtleDrivePlugin::TurtleDrivePlugin()
 {
 }
@@ -119,7 +119,7 @@ void gazebo::TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _
   connections.push_back(event::Events::ConnectWorldUpdateBegin(
           boost::bind(&gazebo::TurtleDrivePlugin::OnUpdate, this)));
 
-  // This is the Gazebo version of a nove (see gazebo_tools_test.cpp in plen_ros package)
+  // This is the Gazebo version of a node (see gazebo_tools_test.cpp in plen_ros package)
   node = gazebo::transport::NodePtr(new transport::Node());
 
   node->Init(model->GetWorld()->Name());
