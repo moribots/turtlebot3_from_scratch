@@ -6,7 +6,7 @@
 ///   callback_flag (bool): specifies whether to publish landmarks based on callback trigger
 ///   pc (sensor_msgs::PointCloud): contains interpreted pointcloud which is published for debugging purposes
 ///   map (nuslam::TurtleMap): stores lists of x,y coordinates and radii of detected landmarks
-///   frequency (int): frequency of control loop.
+///   frequency (double): frequency of control loop.
 ///   frame_id_ (string): frame ID of discovered landmarks (in this case, relative to base_scan)
 ///
 /// PUBLISHES:

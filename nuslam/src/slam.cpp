@@ -6,7 +6,7 @@
 ///   o_fid_ (string): child frame ID for the published tf transform
 ///   wbase_ (float): wheel base of modeled diff drive robot
 ///   wrad_ (float): wheel radius of modeled diff drive robot
-///   frequency (int): frequency of control loop.
+///   frequency (double): frequency of control loop.
 ///   callback_flag (bool): specifies whether to send a new transform (only when new pose is read)
 ///
 ///   pose (rigid2d::Pose2D): modeled diff drive robot pose based on read wheel encoder angles

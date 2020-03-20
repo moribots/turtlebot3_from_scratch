@@ -1,12 +1,36 @@
 /// \file
-/// \brief Publishes attributes of discovered landmarks straight from gazebo (no noise)
+/// \brief Publishes aggregate robot paths based on pure odometry, ground truth (Gazebo data) or the SLAM estimate.
+///  Also publishes tsim::PoseError message to display error in x,y,theta between odometry and ground truth, as
+///  well as SLAM and ground truth
 ///
 /// PARAMETERS:
+///   gazebo_callback_flag (bool): specifies whether to publish robot path from gazebo based on callback trigger
+///   odom_callback_flag (bool): specifies whether to publish robot path from odometry based on callback trigger
+///   slam_callback_flag (bool): specifies whether to publish robot path from SLAM estimate based on callback trigger
+///   gazebo_poses (std::vector<geometry_msgs::PoseStamped>): vector containing PoseStamped messages for Path generation
+///   odom_poses (std::vector<geometry_msgs::PoseStamped>): vector containing PoseStamped messages for Path generation
+///   slam_poses (std::vector<geometry_msgs::PoseStamped>): vector containing PoseStamped messages for Path generation
+///   frame_id_ (string): frame with respect to which path is published ("map" is the static frame in this implementation)
+///   frequency (double): frequency of control loop.
 ///
 /// PUBLISHES:
+///   gazebo_path (nav_msgs::Path): publishes Path based on gazebo pose readings
+///   odom_path (nav_msgs::Path): publishes Path based on odometry pose estimate
+///   slam_path (nav_msgs::Path): publishes Path based on SLAM pose estimate
+///   odom_err (tsim::PoseError): publishes error between odometry estimate and gazebo pose readings
+///   slam_err (tsim::PoseError): publishes error between SLAM estimate and gazebo pose readings
+///
 /// SUBSCRIBES:
+///   /gazebo/model_states (gazebo_msgs::ModelStates) to read robot Pose from gazebo estimate
+///   /odom (nav_msgs::Odometry) to read robot pose from odometry estimate
+///   /slam/odom (nav_msgs::Odometry) to read robot pose from SLAM estimate
+///
 /// FUNCTIONS:
-/// SERVICES:
+///   gazebo_callback (void): callback for /gazebo/model_states subscriber which appends the current pose to recorded pose history
+///   odom_callback (void): callback for /odom subscriber which appends the current pose to recorded pose history
+///   slam_callback (void): callback for /slam/odom subscriber which appends the current pose to recorded pose history
+
+
 
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
@@ -34,7 +58,6 @@
 bool gazebo_callback_flag = false;
 bool odom_callback_flag = false;
 bool slam_callback_flag = false;
-std::string robot_name = "diff_drive";
 std::vector<geometry_msgs::PoseStamped> gazebo_poses;
 std::vector<geometry_msgs::PoseStamped> odom_poses;
 std::vector<geometry_msgs::PoseStamped> slam_poses;
@@ -44,6 +67,7 @@ std::string frame_id_ = "map";
 void gazebo_callback(const gazebo_msgs::ModelStates &model)
 {
   // First, find current Diff Drive Robot Pose
+  std::string robot_name = "diff_drive";
   auto dd_it = std::find(model.name.begin(), model.name.end(), robot_name);
   auto dd_index = std::distance(model.name.begin(), dd_it);
   geometry_msgs::Pose dd_pose = model.pose.at(dd_index);
