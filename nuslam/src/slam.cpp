@@ -1,5 +1,5 @@
 /// \file
-/// \brief Main: Publishes Odometry messages for diff drive robot with Extended Kalman Filter SLAM
+/// \brief Main: Publishes Odometry messages for diff drive robot using Extended Kalman Filter SLAM
 ///
 /// PARAMETERS:
 ///   o_fid_ (string): parent frame ID for the published tf transform
@@ -8,24 +8,39 @@
 ///   wrad_ (float): wheel radius of modeled diff drive robot
 ///   frequency (double): frequency of control loop.
 ///   callback_flag (bool): specifies whether to send a new transform (only when new pose is read)
+///   odom_flag (bool): specifies whether a new joint position was recorded (used in EKF Prediction)
+///   landmark_flag (bool): specifies whether a new landmark position was recorded (used in EKF Update)
 ///
 ///   pose (rigid2d::Pose2D): modeled diff drive robot pose based on read wheel encoder angles
 ///   wl_enc (float): left wheel encoder angles
 ///   wr_enc (float): right wheel encoder angles
 ///   driver (rigid2d::DiffDrive): model of the diff drive robot
 ///   Vb (rigid2d::Twist2D): read from driver instances to publish to odom message
+///   NOTE: using Vb instead of EKF Vb for smoother visualization in RViz; no impact on EKFSLAM estimate
 ///   w_vel (rigid2d::WheelVelocities): wheel velocities used to calculate ddrive robot twist
+///
+///   ekf_wl_enc (float): left wheel encoder angles used for EKFSLAM
+///   ekf_wr_enc (float): right wheel encoder angles used for EKFSLAM
+///   ekf_driver (rigid2d::DiffDrive): model of the diff drive robot used for EKFSLAM
+///   ekf (nuslam::EKF): contains state vector for both robot and map state, as well as methods for computing estimates
+///   radii (std::vector<double>): radii of landmarks reported by EKF estimate
+///   x_pts (std::vector<double>): x coordinates of landmarks reported by EKF estimate
+///   y_pts (std::vector<double>): y coordinates of landmarks reported by EKF estimate
 ///
 ///   odom_tf (geometry_msgs::TransformStamped): odometry frame transform used to update RViz sim
 ///   odom (nav_msgs::Odometry): odometry message containing pose and twist published to odom topic
 ///
 /// PUBLISHES:
 ///   odom (nav_msgs::Odometry): publishes odometry message containing pose(x,y,z) and twist(lin,ang)
+///   landmarks (nuslam::TurtleMap): publishes TurtleMap message containing landmark coordinates (x,y) and radii
+///
 /// SUBSCRIBES:
 ///   /joint_states (sensor_msgs::JointState), which records the ddrive robot's joint states
+///   /landmarks_node/landmarks (nuslam::TurtleMap), stores lists of x,y coordinates and radii of detected landmarks
 ///
 /// FUNCTIONS:
 ///   js_callback (void): callback for /joint_states subscriber, which records the ddrive robot's joint states
+///   landmark_callback (void): callback for /landmarks_node/landmarks subscriber, used to perform EKFSLAM
 ///   set_poseCallback (bool): callback for set_pose service, which resets the robot's pose in the tf tree
 
 #include <ros/ros.h>
@@ -96,6 +111,13 @@ void js_callback(const sensor_msgs::JointState::ConstPtr &js)
 
 void landmark_callback(const nuslam::TurtleMap &map)
 {
+  /// \brief /landmarks_node/landmarks subscriber callback. Used to perform
+  /// EKFSLAM Measurement Update. Prediction Update also happens here.
+  /// Condition for both updates: both happen only if joint state callback and landmark
+  /// are triggered
+  ///
+  /// \param map (nuslam::TurtleMap): message containing landmark coordinates (x,y) and radii
+
   std::vector<nuslam::Point> measurements;
   // Convert map to vector of Points
   // Map data has x,y relative to robot, so no change needed
@@ -110,14 +132,14 @@ void landmark_callback(const nuslam::TurtleMap &map)
   // Perform prediction step of EKF here using twist
   if (odom_flag)
   {
+    // NOTE: these wheel_vels will be different than the ones calculated using driver, as the internal
+    // encoder measure will be different between both objects
     rigid2d::WheelVelocities ekf_w_vel = ekf_driver.updateOdometry(ekf_wl_enc, ekf_wr_enc);
     rigid2d::Twist2D ekf_Vb = ekf_driver.wheelsToTwist(ekf_w_vel);
     // Prediction Update EKF
     ekf.predict(ekf_Vb);
     // Perform measurement update step of EKF here
     ekf.msr_update(measurements);
-    // ekf_wl_enc = 0;
-    // ekf_wr_enc = 0;
   }
 
   // Return Map
@@ -169,12 +191,14 @@ int main(int argc, char** argv)
   std::string o_fid_, b_fid_;
   std::string frame_id_ = "map";
   float wbase_, wrad_, frequency;
+  // NOTE: TUNABLE PARAMETERS
   double max_range_ = 1.0;
   double x_noise = 1e-6;
   double y_noise = 1e-6;
   double theta_noise = 1e-5;
   double range_noise = 1e-10;
   double bearing_noise = 1e-10;
+  // NOTE: MOST IMPORTANT TUNABLE PARAMETERS - see ekf.hpp and ekf.cpp
   double mahalanobis_lower = 100.0;
   double mahalanobis_upper = 1e5;
 

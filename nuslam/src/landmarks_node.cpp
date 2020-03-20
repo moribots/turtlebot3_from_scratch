@@ -10,7 +10,7 @@
 ///   frame_id_ (string): frame ID of discovered landmarks (in this case, relative to base_scan)
 ///
 /// PUBLISHES:
-///   landmarkks (nuslam::TurtleMap): publishes TurtleMap message containing landmark coordinates (x,y) and radii
+///   landmarks (nuslam::TurtleMap): publishes TurtleMap message containing landmark coordinates (x,y) and radii
 ///   pointcloud (sensor_msgs::PointCloud): publishes PointCloud for visualization in RViz for debugging purposees
 ///
 /// SUBSCRIBES:

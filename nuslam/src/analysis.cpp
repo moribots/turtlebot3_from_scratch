@@ -1,11 +1,21 @@
 /// \file
-/// \brief Publishes coordinates of available landmarks straight from gazebo (no noise)
+/// \brief Publishes coordinates of available landmarks straight from gazebo (no noise) relative to robot
 ///
 /// PARAMETERS:
+///   callback_flag (bool): specifies whether to draw landmarks from based on callback trigger
+///   map (nuslam::TurtleMap): stores lists of x,y coordinates and radii of landmarks to publish
+///   frequency (double): frequency of control loop.
+///   frame_id_ (string): frame with respect to which landmark coordinates are published ("base_scan" here)
 ///
 /// PUBLISHES:
+///   landmarks (nuslam::TurtleMap): publishes TurtleMap message containing landmark coordinates (x,y) and radii
+///
 /// SUBSCRIBES:
+///   /gazebo/model_states (gazebo_msgs::ModelStates) to read robot and landmark Poses
+///
 /// FUNCTIONS:
+///   gazebo_callback (void): callback for /gazebo/model_states subscriber to get landmark coordinates relative to robot
+
 
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
@@ -29,12 +39,18 @@
 // Global Vars
 bool callback_flag = false;
 nuslam::TurtleMap map;
-std::string robot_name = "diff_drive";
 std::string landmark_name = "cylinder";
+std::string robot_name = "diff_drive";
 
 
 void gazebo_callback(const gazebo_msgs::ModelStates &model)
 {
+  /// \brief extract turtlebot pose and landmark poses from ModelStates,
+  /// then computes relative cartesian coordinates to publish as TurtleMap
+  /// message with arbitrary radius
+  /// \param gazebo_msgs::ModelStates, containing the pose of all
+  /// models in the environment
+
   // First, find current Diff Drive Robot Pose
   auto dd_it = std::find(model.name.begin(), model.name.end(), robot_name);
   auto dd_index = std::distance(model.name.begin(), dd_it);
