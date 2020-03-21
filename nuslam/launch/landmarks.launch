@@ -91,6 +91,7 @@
 	<include file="$(find nuturtle_description)/launch/view_diff_drive.launch">
 	<arg name="js_pub" value="False" />
 	<arg name="robot" value="$(arg robot)"/>
+	<arg name="rviz_view" value="$(find nuturtle_description)/rviz/ddrive_odom.rviz"/>
 	</include> 
 
 </launch>

@@ -1,55 +1,115 @@
 <launch>
 
-	<arg name="robot" default="0" doc="Whether launchfile is run on turtlebot(1-5) directly (0), in simulation (-1) or on remote PC (X: 1-5)"/>
+	<arg name="robot" default="-1" doc="Whether launchfile is run on turtlebot(1-5) directly (0), in simulation (-1) or on remote PC (X: 1-5)"/>
 
-	<!-- Basic Remote Launch -->
-	<include file="$(find nuturtle_robot)/launch/basic_remote.launch">
-		<arg name="robot" value="$(arg robot)"/>
-	</include>
+	<group if="$(eval arg('robot') != -1)">
+		<!-- RUN ON TURTLEBOT -->
 
-	<!-- Load Diff Params Yaml -->
-	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml" />
+		<!-- Basic Remote Launch -->
+		<include file="$(find nuturtle_robot)/launch/basic_remote.launch">
+			<arg name="robot" value="$(arg robot)"/>
+		</include>
 
-	<!-- Turtle Interface -->
-	<node machine="turtlebot" pkg="nuturtle_robot" type="turtle_interface" name="turtle_interface" output="screen">
-		<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
-		<param name="right_wheel_joint" value="right_wheel_axle" />
-		<param name="left_wheel_joint" value="left_wheel_axle" />
-	</node>
+		<!-- Load Diff Params Yaml -->
+		<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml" />
 
-	<!-- Rotation -->
-	<node machine="turtlebot" pkg="nuturtle_robot" type="rotation" name="rotation" output="screen">
-		<param name="frac_vel" value="0.2"/>
-	</node>
+		<!-- Turtle Interface -->
+		<node machine="turtlebot" pkg="nuturtle_robot" type="turtle_interface" name="turtle_interface" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<param name="right_wheel_joint" value="right_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+		</node>
 
-	<!-- Odometer Node -->
-	<node machine="turtlebot" name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
-		<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
-		<param name="odom_frame_id" value="odom" />
-		<param name="body_frame_id" value="base_footprint" /> 
-		<param name="right_wheel_joint" value="left_wheel_axle" />
-		<param name="left_wheel_joint" value="left_wheel_axle" />
-	</node>
+		<!-- Rotation -->
+		<node machine="turtlebot" pkg="nuturtle_robot" type="rotation" name="rotation" output="screen">
+			<param name="frac_vel" value="0.2"/>
+		</node>
 
-	<!-- Fake Encoders Node -->
-	<node machine="turtlebot" name="fake_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node" output="screen">
-		<rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
-		<remap from="joint_states" to="fake/joint_states" />
-		<remap from="turtle1/cmd_vel" to="cmd_vel" />
-	</node>
+		<!-- Odometer Node -->
+		<node machine="turtlebot" name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<param name="odom_frame_id" value="odom" />
+			<param name="body_frame_id" value="base_footprint" /> 
+			<param name="right_wheel_joint" value="left_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+		</node>
 
-	<!-- Fake Odometer Node -->
-	<node machine="turtlebot" name="fake_odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
-		<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
-		<remap from="set_pose" to="fake/set_pose" />
-		<remap from="joint_states" to="fake/joint_states" />
-		<remap from="set_pose" to="fake/set_pose" />
-		<remap from="odom" to="fake/odom" />
-		<param name="odom_frame_id" value="fake_odom" />
-		<param name="body_frame_id" value="fake_base_footprint" /> 
-		<param name="right_wheel_joint" value="right_wheel_axle" />
-		<param name="left_wheel_joint" value="left_wheel_axle" />
-	</node>
+		<!-- Fake Encoders Node -->
+		<node machine="turtlebot" name="fake_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node" output="screen">
+			<rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
+			<remap from="joint_states" to="fake/joint_states" />
+			<remap from="turtle1/cmd_vel" to="cmd_vel" />
+		</node>
+
+		<!-- Fake Odometer Node -->
+		<node machine="turtlebot" name="fake_odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<remap from="set_pose" to="fake/set_pose" />
+			<remap from="joint_states" to="fake/joint_states" />
+			<remap from="set_pose" to="fake/set_pose" />
+			<remap from="odom" to="fake/odom" />
+			<param name="odom_frame_id" value="fake_odom" />
+			<param name="body_frame_id" value="fake_base_footprint" /> 
+			<param name="right_wheel_joint" value="right_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+		</node>
+
+	</group>
+
+	<group if="$(eval arg('robot') == -1)">
+		<!-- Load Diff Params Yaml -->
+		<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml" />
+
+		<!-- Turtle Interface -->
+		<!-- <node pkg="nuturtle_robot" type="turtle_interface" name="turtle_interface" output="screen">
+			<rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
+			<param name="right_wheel_joint" value="right_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+		</node> -->
+
+		<!-- Rotation -->
+		<node pkg="nuturtle_robot" type="rotation" name="rotation" output="screen">
+			<param name="frac_vel" value="0.2"/>
+		</node>
+
+		<!-- Odometer Node -->
+		<node name="odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<param name="odom_frame_id" value="odom" />
+			<param name="body_frame_id" value="base_footprint" /> 
+			<param name="right_wheel_joint" value="left_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+		</node>
+
+		<!-- Sim Encoders Node -->
+		<node name="sim_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node" output="screen">
+			<rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
+			<remap from="turtle1/cmd_vel" to="cmd_vel" />
+		</node>
+
+		<!-- Fake Encoders Node -->
+		<node name="fake_diff_encoders_node" pkg="rigid2d" type="fake_diff_encoders_node" output="screen">
+			<rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/>
+			<remap from="joint_states" to="fake/joint_states" />
+			<remap from="turtle1/cmd_vel" to="cmd_vel" />
+		</node>
+
+		<!-- Fake Odometer Node -->
+		<node name="fake_odometer_node" pkg="rigid2d" type="odometer_node" output="screen">
+			<!-- <rosparam command="load" file="$(find rigid2d)/config/odometer.yaml"/> -->
+			<remap from="set_pose" to="fake/set_pose" />
+			<remap from="joint_states" to="fake/joint_states" />
+			<remap from="set_pose" to="fake/set_pose" />
+			<remap from="odom" to="fake/odom" />
+			<param name="odom_frame_id" value="fake_odom" />
+			<param name="body_frame_id" value="fake_base_footprint" /> 
+			<param name="right_wheel_joint" value="right_wheel_axle" />
+			<param name="left_wheel_joint" value="left_wheel_axle" />
+		</node>
+
+	</group>
+
+	
 
 	<!-- Transform Broadcaster between odom and fake_odom -->
 	<node pkg="tf2_ros" type="static_transform_publisher" name="fake_odom_broadcaster" args="0 0 0 0 0 0 1 odom fake_odom" />
@@ -58,6 +118,7 @@
 	<include file="$(find nuturtle_description)/launch/view_diff_drive.launch">
 	<arg name="js_pub" value="False" />
 	<arg name="robot" value="$(arg robot)"/>
+	<arg name="rviz_view" value="$(find nuturtle_description)/rviz/ddrive_odom.rviz"/>
 	</include> 
 
 </launch>
