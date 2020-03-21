@@ -43,6 +43,6 @@ Contains the node implementation of feature detection.
 
 Contains the EKF class used for EKF SLAM with Unknown Data Association.
 
-# slam.cpp
+## slam.cpp
 
 Contains the node implementation of EKF SLAM with Unknown Data Association.

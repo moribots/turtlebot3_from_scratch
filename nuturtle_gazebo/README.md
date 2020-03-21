@@ -6,7 +6,7 @@ Author: Maurice Rahme
 
 This package simulates a differential drive robot in Gazebo with a custom plugin for low-level controls identical to what is available on a real Turtlebot3.
 
-![ddrive](media/gazb_bot.png)
+![ddrive](media/gzb_bot.png)
 
 ## Launch Instructions
 
