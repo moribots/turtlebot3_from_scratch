@@ -143,7 +143,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${rigid2d_INCLUDE_DIRS}
+#   ${rigid2d_INCLUDE_DIRS}
   ${Eigen3_INCLUDE_DIRS}
 )
 
