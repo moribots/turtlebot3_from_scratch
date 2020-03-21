@@ -6,7 +6,7 @@ Author: Maurice Rahme
 
 This package houses the description of a differential drive robot with a caster wheel for support. The robot is viewable in `RViz` using `view_diff_drive.launch`.
 
-![ddrive](media/ddrive.png)
+![ddrive](media/rv_bot.png)
 
 ## Launch Instructions
 

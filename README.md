@@ -1,6 +1,8 @@
 # ME495 Sensing, Navigation, and Machine Learning
 Author: Maurice Rahme
 
+**Please visit [my website](https://moribots.github.io/project/ekfslam) for a project description**
+
 # Tasks Submitted
 <!-- TODO: general cleanup of rigid2d.cpp/hpp and diff_drive.cpp/hpp (constructor calls) -->
 <!-- TODO: cleanup namespace -->
@@ -27,7 +29,7 @@ L.002
 
 L.003
 
-L.004 **postponed**
+L.004 **postponed due to COVID-19**
 
 # Tasks Completed
 
