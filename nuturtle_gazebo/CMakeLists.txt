@@ -108,12 +108,8 @@ find_package(nuturtlebot REQUIRED)
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
- INCLUDE_DIRS include
- LIBRARIES ${PROJECT_NAME}
- CATKIN_DEPENDS gazebo_ros roscpp
-#  DEPENDS system_lib
-)
+
+link_directories(${GAZEBO_LIBRARY_DIRS})
 
 ###########
 ## Build ##
@@ -126,18 +122,26 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${rigid2d_INCLUDE_DIRS}
   ${nuturtlebot_INCLUDE_DIRS}
+  ${GAZEBO_INCLUDE_DIRS}
+)
+
+catkin_package(
+ INCLUDE_DIRS include
+ LIBRARIES ${PROJECT_NAME}
+ CATKIN_DEPENDS gazebo_ros roscpp
+#  DEPENDS system_lib
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/nuturtle_gazebo.cpp
 # )
-link_directories(${GAZEBO_LIBRARY_DIRS})
-list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
+# list(APPEND CMAKE_CXX_FLAGS "${GAZEBO_CXX_FLAGS}")
 # make a library and link it with the gazebo libraries
-add_library(${PROJECT_NAME}_plugin SHARED src/turtle_drive_plugin.cpp)
+add_library(${PROJECT_NAME}_plugin src/turtle_drive_plugin.cpp)
 target_link_libraries(${PROJECT_NAME}_plugin ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES} ${rigid2d_LIBRARIES} ${nuturtlebot_LIBRARIES})
-target_include_directories(${PROJECT_NAME}_plugin PUBLIC ${GAZEBO_INCLUDE_DIRS})
+
+# target_include_directories(${PROJECT_NAME}_plugin PUBLIC ${GAZEBO_INCLUDE_DIRS})
 add_dependencies(${PROJECT_NAME}_plugin ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Add cmake target dependencies of the library
