@@ -12,10 +12,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  message_generation
-  message_runtime
   gazebo_msgs
   geometry_msgs
+  message_generation
+  message_runtime
   nav_msgs
   rigid2d
   roscpp
@@ -129,7 +129,7 @@ generate_messages(
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES ${PROJECT_NAME} rigid2d
- CATKIN_DEPENDS message_generation message_runtime gazebo_msgs geometry_msgs nav_msgs rigid2d roscpp sensor_msgs std_msgs visualization_msgs
+ CATKIN_DEPENDS gazebo_msgs geometry_msgs message_generation message_runtime nav_msgs rigid2d roscpp sensor_msgs std_msgs visualization_msgs
 #  DEPENDS system_lib
 )
 
@@ -149,8 +149,8 @@ include_directories(
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
-  src/${PROJECT_NAME}/landmarks.cpp
   src/${PROJECT_NAME}/ekf.cpp
+  src/${PROJECT_NAME}/landmarks.cpp
 )
 
 ## Add cmake target dependencies of the library
@@ -244,7 +244,7 @@ ${catkin_LIBRARIES} # this a library that my node will use
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-install(TARGETS landmarks_node draw_map analysis visualizer slam
+install(TARGETS analysis draw_map landmarks_node slam visualizer
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
