@@ -1,4 +1,3 @@
-# ME495 Sensing, Navigation, and Machine Learning
 # Package: nuturtle_gazebo
 Author: Maurice Rahme
 

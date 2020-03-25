@@ -1,4 +1,4 @@
-# Mori's ROS Navigation Stack
+# ROS Navigation Stack
 
 **Please visit [my website](https://moribots.github.io/project/ekfslam) for the theory behind this project**
 

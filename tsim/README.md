@@ -1,4 +1,3 @@
-# ME495 Sensing, Navigation, and Machine Learning
 # Package: tsim
 Author: Maurice Rahme
 

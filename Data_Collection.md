@@ -1,5 +1,4 @@
-# ME495 Sensing, Navigation, and Machine Learning
-## Data acquisition: rotational, linear and waypoint-reaching movements
+# Data acquisition: rotational, linear and waypoint-reaching movements
 Author: Maurice Rahme
 
 | Motion | Fv  | Av  | ET  | EX  | EY  | OT  | OX  | OY  | FT  | FX  | FY  | GT  | GX  | GY  | DT  | DX  | DY  |
