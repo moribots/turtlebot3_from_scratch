@@ -7,11 +7,11 @@ This totally-from-scratch project involved modeling a `Turtlebot3` in Gazebo and
 
 The core project components are:
 
-* `rigid2d` library containing 2D Lie Group operations for Transforms, Vectors and Twists as well as differential drive robot kinematics for odometry updates.
-* `nuturtle_description`: houses the description of a differential drive robot with a caster wheel for support.
-* `nuturtle_robot`: interfaces with the real Turtlebot3's low-level controls such as setting wheel speeds and reading sensors.
-* `nuturtle_gazebo`: contains a Gazebo Plugin to emulate the Turtlebot3's low-level controls in Gazebo for the ability to develop in simulation.
-* `nuslam`: library containing LIDAR feature detection methods and EKF SLAM implementation with Unknown Data Association.
+* [rigid2d](rigid2d/): library containing 2D Lie Group operations for Transforms, Vectors and Twists as well as differential drive robot kinematics for odometry updates.
+* [nuturtle_description](nuturtle_description/): houses the description of a differential drive robot with a caster wheel for support.
+* [nuturtle_robot](nuturtle_robot/): interfaces with the real Turtlebot3's low-level controls such as setting wheel speeds and reading sensors.
+* [nuturtle_gazebo](nuturtle_gazebo/): contains a Gazebo Plugin to emulate the Turtlebot3's low-level controls in Gazebo for the ability to develop in simulation.
+* [nuslam](nuslam/): library containing LIDAR feature detection methods and EKF SLAM implementation with Unknown Data Association.
 
 Please navigate to the respective directories for a detailed description of each component.
 
