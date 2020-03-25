@@ -10,3 +10,4 @@ srv_gen/
 *.so
 *.a
 rigid2d_test
+dox_warnings.txt
