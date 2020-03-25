@@ -1,0 +1,17 @@
+Author\+: Maurice Rahme
+
+\subsection*{Package Summary}
+
+This package is an implementation of 2D Lie Group Operations and Differential Drive Kinematics based on \href{http://hades.mech.northwestern.edu/index.php/Modern_Robotics}{\tt Modern Robotics} by Kevin Lynch. Visit \href{https://moribots.github.io/project/ekfslam}{\tt my website} for details
+
+\subsection*{\hyperlink{rigid2d_8hpp}{rigid2d.\+hpp}/cpp}
+
+2D Lie Group operations Library. Includes Transform, Vector, and Twist operations. Run {\ttfamily rigid2d\+\_\+node.\+cpp} to test it for yourself.
+
+\subsection*{\hyperlink{diff__drive_8hpp}{diff\+\_\+drive.\+hpp}/cpp}
+
+Differential Drive Kinematics Library. Run {\ttfamily \hyperlink{odometer__node_8cpp}{odometer\+\_\+node.\+cpp}} for odometry estimates based on wheel angles. Run {\ttfamily \hyperlink{fake__diff__encoders__node_8cpp}{fake\+\_\+diff\+\_\+encoders\+\_\+node.\+cpp}} to publish fake wheel angles to {\ttfamily /joint\+\_\+states}, read by {\ttfamily \hyperlink{odometer__node_8cpp}{odometer\+\_\+node.\+cpp}}.
+
+\subsection*{\hyperlink{waypoints_8hpp}{waypoints.\+hpp}/cpp}
+
+Waypoint navigation Library with Proportional Bang-\/\+Bang control. 

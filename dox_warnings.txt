@@ -21,12 +21,6 @@ Possible candidates:
   void turtle_rect::TurtleRect::predict()
 
 /home/mori/Projects/slam/ws/src/main/tsim/src/turtle_rect.cpp:334: warning: documented symbol `void turtle_rect::TurtleRect::control' was not declared or defined.
-/home/mori/Projects/slam/ws/src/main/nuturtle_description/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
-/home/mori/Projects/slam/ws/src/main/nuturtle_gazebo/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
-/home/mori/Projects/slam/ws/src/main/nuturtle_robot/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
-/home/mori/Projects/slam/ws/src/main/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
-/home/mori/Projects/slam/ws/src/main/rigid2d/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
-/home/mori/Projects/slam/ws/src/main/tsim/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
 /home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:179: warning: parameters of member nuslam::getMultivarNoise are not (all) documented
 /home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:173: warning: parameters of member nuslam::sampleNormalDistribution are not (all) documented
 /home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:116: warning: argument 'RangeBear' of command @param is not found in the argument list of nuslam::polarToCartesian(const RangeBear &range_bear)

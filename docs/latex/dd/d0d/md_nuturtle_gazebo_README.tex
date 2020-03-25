@@ -1,0 +1,19 @@
+Author\+: Maurice Rahme
+
+\subsection*{Package Summary}
+
+This package simulates a differential drive robot in Gazebo with a custom plugin for low-\/level controls identical to what is available on a real Turtlebot3.
+
+
+
+\subsection*{Launch Instructions}
+
+Run {\ttfamily roslaunch $<$package\+\_\+name$>$ $<$launchfile.\+launch$>$ -\/-\/ros-\/args} to view any optional arguments and their instructions.
+
+Run {\ttfamily roslaunch nuturtle\+\_\+gazebo diff\+\_\+drive\+\_\+gazebo.\+launch} to spawn the differential drive robot in Gazebo with a Li\+D\+AR
+
+Run {\ttfamily roslaunch nuturtle\+\_\+gazebo gazebo\+\_\+waypoints.\+launch} to make the robot follow 5 waypoints with visualization in R\+Viz.
+
+\subsection*{turtle\+\_\+drive\+\_\+plugin.\+cpp}
+
+This plugin provides the user with low-\/level control over the differential drive robot\textquotesingle{}s wheel speed and encoder readings akin to what is available on a real Turtlebot3. You can edit the input parameters in {\ttfamily diff\+\_\+drive.\+gazebo.\+xacro} under the {\ttfamily urdf} directory. 

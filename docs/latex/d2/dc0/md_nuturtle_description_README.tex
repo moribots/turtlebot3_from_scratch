@@ -1,0 +1,57 @@
+Author\+: Maurice Rahme
+
+\subsection*{Package Summary}
+
+This package houses the description of a differential drive robot with a caster wheel for support. The robot is viewable in {\ttfamily R\+Viz} using {\ttfamily view\+\_\+diff\+\_\+drive.\+launch}.
+
+
+
+\subsection*{Launch Instructions}
+
+Run {\ttfamily roslaunch nuturtle\+\_\+description view\+\_\+diff\+\_\+drive.\+launch -\/-\/ros-\/args} to view any optional arguments and their instructions.
+
+Run {\ttfamily roslaunch nuturtle\+\_\+description view\+\_\+diff\+\_\+drive.\+launch} to view the differential drive robot in R\+Viz alongside the joint state publisher G\+UI, which allows you to control the rear wheel joint angles.
+
+Run {\ttfamily roslaunch nuturtle\+\_\+description view\+\_\+diff\+\_\+drive.\+launch jsp\+\_\+gui\+:=0} to view the robot without the G\+UI.
+
+\subsection*{diff\+\_\+params.\+yaml}
+
+This file loads the differential drive robot\textquotesingle{}s parameters into the parameter server.
+
+
+\begin{DoxyItemize}
+\item {\ttfamily wheel\+\_\+width}\+: the width of the rear wheels.
+\item {\ttfamily wheel\+\_\+radius}\+: the radius of the rear wheels.
+\item {\ttfamily wheel\+\_\+base}\+: the distance betweem the centres of the wheels.
+\item {\ttfamily chassis\+\_\+length}\+: the length of the main chassis link.
+\item {\ttfamily chassis\+\_\+thickness}\+: the thickness of the plate that forms the chassis.
+\end{DoxyItemize}
+
+\subsection*{diff\+\_\+drive\+\_\+macro.\+xacro}
+
+This file contains {\ttfamily macros} which describe generic bodies and joints required for the robot for modularity and brevity.
+
+
+\begin{DoxyItemize}
+\item {\ttfamily xacro\+:macro name=\char`\"{}wheel\+\_\+joint\char`\"{}}\+: describes a wheel joint used for the wheels.
+\item {\ttfamily xacro\+:macro name=\char`\"{}frame\+\_\+joint\char`\"{}}\+: describes a joint which holds the {\ttfamily base\+\_\+link} frame to the {\ttfamily base\+\_\+footprint} frame.
+\item {\ttfamily xacro\+:macro name=\char`\"{}r\+\_\+box\char`\"{}}\+: describes a generic rectangular prism, used for the chassis.
+\item {\ttfamily xacro\+:macro name=\char`\"{}r\+\_\+cyl\char`\"{}}\+: describes generic cylindres, used for the rear wheels.
+\item {\ttfamily xacro\+:macro name=\char`\"{}r\+\_\+sph\char`\"{}}\+: describes a generic sphere, used for the ball caster support.
+\end{DoxyItemize}
+
+\subsection*{diff\+\_\+drive.\+urdf.\+xacro}
+
+This file loads {\ttfamily diff\+\_\+drive\+\_\+macro.\+xacro} as well as {\ttfamily diff\+\_\+params.\+yaml} to create a {\ttfamily U\+R\+DF} description of the robot modularly.
+
+\subsection*{ddrive\+\_\+bl.\+rviz}
+
+This {\ttfamily R\+Viz} config file saves a view which hides all frames except {\ttfamily base\+\_\+link} and {\ttfamily rl\+\_\+wheel}.
+
+\subsection*{ddrive.\+rviz}
+
+This {\ttfamily R\+Viz} config file shows the differential drive robot with all its frames.
+
+\subsection*{view\+\_\+diff\+\_\+drive.\+launch}
+
+This launchfile starts by loading the robot\textquotesingle{}s description through {\ttfamily diff\+\_\+drive.\+urdf.\+xacro}, alongside the robot and joint state publishers, which are necessary to display the robot in {\ttfamily R\+Viz}. It has an optional parameter {\ttfamily use\+\_\+jsp\+\_\+gui} that defaults to true to show the joint state publisher G\+UI, which allows the user to control the robot\textquotesingle{}s wheel joint angles. Next, it loads the paramters from {\ttfamily diff\+\_\+params.\+yaml} into the parameter server, and calls the {\ttfamily R\+Viz} node along with the {\ttfamily ddrive\+\_\+bl.\+rviz} config file to show the robot with only its {\ttfamily base\+\_\+link} and {\ttfamily rl\+\_\+wheel} frames visible. 

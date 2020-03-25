@@ -1,0 +1,48 @@
+Author\+: Maurice Rahme
+
+\subsection*{Package Summary}
+
+This incorporates feature detection on the Turtlebot3\textquotesingle{}s Li\+D\+AR, as well as E\+KF S\+L\+AM with Unknown Data Association using the Mahalanobis Distance.
+
+E\+KF S\+L\+AM with Li\+D\+AR Measurements\+:
+
+
+
+E\+KF S\+L\+AM with Gazebo Landmarks\+:
+
+
+
+{\bfseries K\+EY}
+\begin{DoxyItemize}
+\item Gazebo Data\+: Orange
+\item Odometry/\+Sensor Data\+: Purple
+\item S\+L\+AM Data\+: Red
+\end{DoxyItemize}
+
+Feature Detection\+:
+
+
+
+\subsection*{Launch Instructions}
+
+Run {\ttfamily roslaunch $<$package\+\_\+name$>$ $<$launchfile.\+launch$>$ -\/-\/ros-\/args} to view any optional arguments and their instructions.
+
+Run {\ttfamily roslaunch nuturtle\+\_\+robot landmarks.\+launch} to launch the feature detection node.
+
+Run {\ttfamily roslaunch nuturtle\+\_\+robot slam.\+launch debug\+:=True/\+False} to launch the E\+KF S\+L\+AM node using Li\+D\+AR data (False) or Gazebo data (True) for landmarks. Also launches Turtlebot3 teleop node.
+
+\subsection*{\hyperlink{landmarks_8hpp}{landmarks.\+hpp}/cpp}
+
+Contains the {\ttfamily Landmark} class used for feature detection.
+
+\subsection*{\hyperlink{landmarks__node_8cpp}{landmarks\+\_\+node.\+cpp}}
+
+Contains the node implementation of feature detection.
+
+\subsection*{\hyperlink{ekf_8hpp}{ekf.\+hpp}/cpp}
+
+Contains the E\+KF class used for E\+KF S\+L\+AM with Unknown Data Association.
+
+\subsection*{\hyperlink{slam_8cpp}{slam.\+cpp}}
+
+Contains the node implementation of E\+KF S\+L\+AM with Unknown Data Association. 

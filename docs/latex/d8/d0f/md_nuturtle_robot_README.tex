@@ -1,0 +1,31 @@
+Author\+: Maurice Rahme
+
+\subsection*{Package Summary}
+
+This package is an illustrative example of how to control the Turtlebot3 using low-\/level actuation and sensing.
+
+
+
+
+
+\subsection*{Launch Instructions}
+
+Run {\ttfamily roslaunch $<$package\+\_\+name$>$ $<$launchfile.\+launch$>$ -\/-\/ros-\/args} to view any optional arguments and their instructions.
+
+Run {\ttfamily roslaunch nuturtle\+\_\+robot basic\+\_\+remote.\+launch robot\+:=X} to enable serial communication and actuate the Li\+D\+AR scanner on the Turtlebot3. Substitute {\ttfamily X} with the turtlebot number you are controlling (1-\/5).
+
+Run {\ttfamily roslaunch nuturtle\+\_\+robot follow\+\_\+waypoints.\+launch} to make the robot follow 5 waypoints with visualization in R\+Viz.
+
+Run {\ttfamily roslaunch nuturtle\+\_\+robot test\+\_\+movement.\+launch} to enable services to allow the robot to perform pure rotational and translational motions for data acquisition.
+
+\subsection*{\hyperlink{turtle__interface_8cpp}{turtle\+\_\+interface.\+cpp}}
+
+This is the main useful node in the package. It converts Twists to wheel commands and reads encoder values and converts them to wheel angles. It works both on the real Turtlebot3 and in the Gazebo implementation.
+
+\subsection*{\hyperlink{rotation_8cpp}{rotation.\+cpp}}
+
+This node provides services to allow the Turtlebot3 to perform pure rotations(C\+W/\+C\+Cw) or translations (F\+W\+D/\+B\+WD).
+
+\subsection*{\hyperlink{real__waypoint_8cpp}{real\+\_\+waypoint.\+cpp}}
+
+This node allows the Turtlebot3 (real or sim) to follow a user-\/specified number of waypoints using closed-\/loop bang-\/bang control with the wheel encoder readings as an input. 

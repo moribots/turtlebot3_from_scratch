@@ -1,0 +1,94 @@
+Author\+: Maurice Rahme
+
+\subsection*{Package Summary}
+
+
+
+This package makes the turtle in turtlesim trace a rectangular trajectory while showing a plot of the absolute position error (x, y, theta) between the pure-\/feedforward and the actual turtle position as read from the {\ttfamily turtle1/pose} topic. It also has a service, {\ttfamily traj\+\_\+reset}, which teleports the turtle back to its initial configuration whenever called.
+
+A separate launchfile within this package makes the turtlesim trace a pentagon by default -\/ although you may change the trajectory shape by updating {\ttfamily turtle\+\_\+way.\+yaml} -\/ and launches Rviz to make the {\ttfamily diff\+\_\+drive} robot trace the same trajectory using an kinematic model. The {\ttfamily turtle\+\_\+pent.\+launch} launchfile performs the turtlesim portion of this task.
+
+Resultant Simulation for both launchfiles respectively\+:
+
+
+
+
+
+\subsection*{Launch Instructions}
+
+To launch the {\ttfamily turtle\+\_\+rect} node without showing the position error plot, run\+: {\ttfamily roslaunch tsim trect.\+launch}.
+
+To launch the {\ttfamily turtle\+\_\+rect} node while showing the position error plot, run\+: {\ttfamily roslaunch tsim trect.\+launch plot\+\_\+gui\+:=1}.
+
+To launch the {\ttfamily turtle\+\_\+way} node, which traces the pentagon by default with no position error plot, run\+: {\ttfamily roslaunch tsim turtle\+\_\+pent.\+launch}.
+
+To launch the {\ttfamily turtle\+\_\+way} node while showing the position error plot, run\+: {\ttfamily roslaunch tsim turtle\+\_\+pent.\+launch plot\+\_\+gui\+:=1}.
+
+To launch the Rviz tracing subset of the package without the position error plot, run\+: {\ttfamily roslaunch tsim turtle\+\_\+odom.\+launch}.
+
+To launch the Rviz tracing subset of the package while showing the position error plot, run\+: {\ttfamily roslaunch tsim turtle\+\_\+odom.\+launch plot\+\_\+gui\+:=1}.
+
+\subsection*{\hyperlink{turtle__way__node_8cpp}{turtle\+\_\+way\+\_\+node.\+cpp}}
+
+This node uses functionality from the {\ttfamily rigid2d} package, namely the {\ttfamily Diff\+Drive} and {\ttfamily Waypoints} classes, which model a differential drive robot and actuate the waypoint following sequence respectively. It uses open-\/loop Proportional control with the fordward-\/predicted differential drive model pose as an input to the control loop, to send appropriate Twist commands to the turtlesim. The {\ttfamily pose\+Callback (void)}, position callback function subscribes to {\ttfamily turtle1/pose} and uses this information to create the position error plot alongside the forward-\/predicted differential drive model pose. Note that the Twist sent to the turtlesim is divided by the loop rate before it is fed to the differential drive model for forward propagation.
+
+\subsection*{\hyperlink{fake__diff__encoders__node_8cpp}{fake\+\_\+diff\+\_\+encoders\+\_\+node.\+cpp} (rigid2d package)}
+
+This node reads the Twist commanded to the turtle via the {\ttfamily cmd\+\_\+vel} topic, divides it by the loop rate of the {\ttfamily turtle\+\_\+way\+\_\+node} node, and uses it to forward-\/propagate the differential drive model using {\ttfamily Diff\+Drive\+::feedforward()} to retrieve the resultant wheel angles from performing this twist. These are then published to the {\ttfamily /joint\+\_\+states} topic, which Rviz reads to assign the wheel angles.
+
+\subsection*{\hyperlink{odometer__node_8cpp}{odometer\+\_\+node.\+cpp} (rigid2d package)}
+
+This node subscribes to {\ttfamily /joint\+\_\+states} to get the wheel angle values from the joint state publisher, and uses these to forward-\/propagate the differential drive model using {\ttfamily Diff\+Drive\+::update\+Odometry}, which also returns the resultant wheel velocities and internally updates the robot\textquotesingle{}s pose. These wheel velocities are fed to {\ttfamily Diff\+Drive\+::wheels\+To\+Twist()} to return the corresponding Twist of the robot. Finally, the pose and Twist retrieved from these operations are published as {\ttfamily tf2} frames to simulate the robot\textquotesingle{}s motion in R\+Viz.
+
+\subsection*{\hyperlink{turtle__rect__node_8cpp}{turtle\+\_\+rect\+\_\+node.\+cpp}}
+
+This is the executable node, which initialises the node, creates a {\ttfamily Node Handle}, and includes the {\ttfamily Turtle\+Rect} class to make the turtle in turtlesim trace a rectangular trajectory while showing a plot of the absolute position error (x, y, theta) by calling its public {\ttfamily control} method, making it loop indefinitely until it is interrupted.
+
+\subsection*{\hyperlink{turtle__rect_8cpp}{turtle\+\_\+rect.\+cpp}}
+
+This is the Class Constructor for {\ttfamily Turtle\+Rect} containing the following methods\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily traj\+\_\+reset\+Callback (bool)}\+: callback for {\ttfamily traj\+\_\+reset service}, which teleports turtle back to initial config.
+\item {\ttfamily pose\+Callback (void)}\+: callback for {\ttfamily turtle1/pose} subscriber, which records the turtle\textquotesingle{}s pose for use elsewhere.
+\item {\ttfamily move (void)}\+: helper function which publishes {\ttfamily Twist} messages to {\ttfamily turtle1/cmd\+\_\+vel} to actuate the turtle.
+\item {\ttfamily predict(void)}\+: helper function which forward propagates the open-\/loop model and publishes {\ttfamily Pose\+Error} to {\ttfamily pose\+\_\+error}.
+\item {\ttfamily control(void)}\+: main class method. Houses state machine and calls helper function to perform trajectory and plot.
+\end{DoxyItemize}
+
+\subsection*{turtle\+\_\+rect.\+h}
+
+Header file for the {\ttfamily Turtle\+Rect} class.
+
+\subsection*{trect.\+launch}
+
+Calls the {\ttfamily roaming\+\_\+turtle} node from {\ttfamily turtlesim}, as well as the {\ttfamily turtle\+\_\+rect\+\_\+node} node from this package, and gives the user an option to show the error plot using the {\ttfamily plot\+\_\+gui} argument, which defaults to {\ttfamily False}.
+
+\subsection*{turtle\+\_\+rect.\+yaml}
+
+Contains the parameters for executing the rectangular trajectory.
+
+
+\begin{DoxyItemize}
+\item {\ttfamily x (int)}\+: x coordinate for lower left corner of rectangle.
+\item {\ttfamily y (int)}\+: y coordinate for lower left corner of rectangle.
+\item {\ttfamily width (int)}\+: width of rectangle.
+\item {\ttfamily height (int)}\+: height of rectangle.
+\item {\ttfamily trans\+\_\+vel (int)}\+: translational velocity of robot.
+\item {\ttfamily rot\+\_\+vel (int)}\+: rotational velocity of robot.
+\item {\ttfamily frequency (int)}\+: frequency of control loop.
+\item {\ttfamily threshold (float)}\+: specifies when the target pose has been reached.
+\end{DoxyItemize}
+
+\subsection*{Resultant Plot for turtle\+\_\+rect\+\_\+node}
+
+
+
+Note that the plot increases in drift over time as the forward propagated controls would result in several superimposed but slanted rectangular trajectories (as you saw from Josh ealier today) were it not for the feedback control implemented here to stop and start the linear and angular velocity commands. The error plot hence descibres the difference between pure feedforward control and the implementation done here. Calling the {\ttfamily traj\+\_\+reset} service resets this error to zero temporarily, before re-\/commencing the trajectory and ensuing in drift as seen below.
+
+
+
+\subsection*{Resultant Plot for turtle\+\_\+way\+\_\+node}
+
+ 

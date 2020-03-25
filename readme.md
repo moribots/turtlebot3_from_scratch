@@ -20,3 +20,5 @@ Please navigate to the respective directories for a detailed description of each
 Use the [nuturtle.rosinstall](nuturtle.rosinstall) file to get all the necessary files and packages. This will download some custom Gazebo worlds as well as my `rigid2d` and `ekf` libraries.
 
 You should consult the [Documentation](https://moribots.github.io/turtlebot3_from_scratch/) for details on how to use the `classes` and `methods` in this navigation stack.
+
+<!-- DOCUMENTATION TUTORIAL: https://goseeky.wordpress.com/2017/07/22/documentation-101-doxygen-with-github-pages/ -->
