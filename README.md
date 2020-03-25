@@ -19,4 +19,4 @@ Please navigate to the respective directories for a detailed description of each
 
 Use the [nuturtle.rosinstall](nuturtle.rosinstall) file to get all the necessary files and packages. This will download some custom Gazebo worlds as well as my `rigid2d` and `ekf` libraries.
 
-You should consult the [Documentation](doc/html/index.html) for details on how to use the `classes` and `methods` in this navigation stack.
+You should consult the [Documentation](docs/html/index.html) for details on how to use the `classes` and `methods` in this navigation stack.
