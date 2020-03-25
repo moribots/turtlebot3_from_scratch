@@ -59,9 +59,22 @@ $(function() {
 
 <div class="header">
   <div class="headertitle">
-<div class="title">ROS Navigation Stack Documentation</div>  </div>
+<div class="title">ROS Navigation Stack</div>  </div>
 </div><!--header-->
 <div class="contents">
+<h2>Project Overview</h2>
+This totally-from-scratch project involved modeling a <code>Turtlebot3</code> in Gazebo and using <code>Differential Drive Kinematics</code> to perform Odometry calculations. The <code>Gazebo Plugin</code> was developed to emulate the low-level interface on the real Turtlebot3 for the ability to develop high-fidelity code in simulation. I also implemented <code>landmark detection</code> on the Turtlebot3's <code>LIDAR</code>, and used these features to perform <code>EKF SLAM</code> with <code>Unknown Data Association</code>. 
+<h2>Packages</h2>
+<p>The core packages in this navigation stack are:</p>
+<ul>
+<li><code>rigid2d</code>: library containing 2D Lie Group operations for Transforms, Vectors and Twists as well as differential drive robot kinematics for odometry updates.</li>
+<li><code>nuturtle_description</code>: houses the description of a differential drive robot with a caster wheel for support.</li>
+</ul>
+<li><code>nuturtle_robot</code>: interfaces with the real Turtlebot3's low-level controls such as setting wheel speeds and reading sensors.</li>
+</ul>
+<li><code>nuturtle_gazebo</code>: contains a Gazebo Plugin to emulate the Turtlebot3's low-level controls in Gazebo for the ability to develop in simulation.</li>
+<li><code>nuslam</code>: library containing LIDAR feature detection methods and EKF SLAM implementation with Unknown Data Association.</li>
+</ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
