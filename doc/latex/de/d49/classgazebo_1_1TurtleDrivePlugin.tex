@@ -1,0 +1,85 @@
+\hypertarget{classgazebo_1_1TurtleDrivePlugin}{}\section{gazebo\+:\+:Turtle\+Drive\+Plugin Class Reference}
+\label{classgazebo_1_1TurtleDrivePlugin}\index{gazebo\+::\+Turtle\+Drive\+Plugin@{gazebo\+::\+Turtle\+Drive\+Plugin}}
+
+
+Inheritance diagram for gazebo\+:\+:Turtle\+Drive\+Plugin\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=209pt]{d6/d21/classgazebo_1_1TurtleDrivePlugin__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for gazebo\+:\+:Turtle\+Drive\+Plugin\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=209pt]{da/d2c/classgazebo_1_1TurtleDrivePlugin__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classgazebo_1_1TurtleDrivePlugin_a7a36efc4658c4e4b1cedcdd70517e7dc}{Turtle\+Drive\+Plugin} ()
+\begin{DoxyCompactList}\small\item\em Constructor for \hyperlink{classgazebo_1_1TurtleDrivePlugin}{Turtle\+Drive\+Plugin}. Models real Turtlebot interface for use in Gazebo. \end{DoxyCompactList}\item 
+void \hyperlink{classgazebo_1_1TurtleDrivePlugin_ab80df6990ee5bc40d968834ba97c7bb2}{wheel\+\_\+cmd\+Callback} (const nuturtlebot\+::\+Wheel\+Commands \&wc)
+\begin{DoxyCompactList}\small\item\em callback to convert wheel commands (+-\/ 256) to velocities and applies them to gazebo model \end{DoxyCompactList}\item 
+virtual void \hyperlink{classgazebo_1_1TurtleDrivePlugin_a41993122444281e45f38a5e5171be76a}{Load} (physics\+::\+Model\+Ptr \+\_\+model, sdf\+::\+Element\+Ptr \+\_\+sdf)
+\begin{DoxyCompactList}\small\item\em Loads the plugin and uses the physics\+::\+Model\+Ptr object to manipulate model physics and the sdf\+::\+Element\+Ptr to read user-\/specified parameters such as joint names and ros topics. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classgazebo_1_1TurtleDrivePlugin_a7a36efc4658c4e4b1cedcdd70517e7dc}\label{classgazebo_1_1TurtleDrivePlugin_a7a36efc4658c4e4b1cedcdd70517e7dc}} 
+\index{gazebo\+::\+Turtle\+Drive\+Plugin@{gazebo\+::\+Turtle\+Drive\+Plugin}!Turtle\+Drive\+Plugin@{Turtle\+Drive\+Plugin}}
+\index{Turtle\+Drive\+Plugin@{Turtle\+Drive\+Plugin}!gazebo\+::\+Turtle\+Drive\+Plugin@{gazebo\+::\+Turtle\+Drive\+Plugin}}
+\subsubsection{\texorpdfstring{Turtle\+Drive\+Plugin()}{TurtleDrivePlugin()}}
+{\footnotesize\ttfamily gazebo\+::\+Turtle\+Drive\+Plugin\+::\+Turtle\+Drive\+Plugin (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Constructor for \hyperlink{classgazebo_1_1TurtleDrivePlugin}{Turtle\+Drive\+Plugin}. Models real Turtlebot interface for use in Gazebo. 
+
+empty constructor for plugin 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classgazebo_1_1TurtleDrivePlugin_a41993122444281e45f38a5e5171be76a}\label{classgazebo_1_1TurtleDrivePlugin_a41993122444281e45f38a5e5171be76a}} 
+\index{gazebo\+::\+Turtle\+Drive\+Plugin@{gazebo\+::\+Turtle\+Drive\+Plugin}!Load@{Load}}
+\index{Load@{Load}!gazebo\+::\+Turtle\+Drive\+Plugin@{gazebo\+::\+Turtle\+Drive\+Plugin}}
+\subsubsection{\texorpdfstring{Load()}{Load()}}
+{\footnotesize\ttfamily void gazebo\+::\+Turtle\+Drive\+Plugin\+::\+Load (\begin{DoxyParamCaption}\item[{physics\+::\+Model\+Ptr}]{\+\_\+model,  }\item[{sdf\+::\+Element\+Ptr}]{\+\_\+sdf }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Loads the plugin and uses the physics\+::\+Model\+Ptr object to manipulate model physics and the sdf\+::\+Element\+Ptr to read user-\/specified parameters such as joint names and ros topics. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em physics\+::\+Model\+Ptr} & pointer to manipulate model physics (set joint speeds/torques etc) \\
+\hline
+{\em sdf\+::\+Element\+Ptr} & pointer to read user input from .gazebo.\+xacro file to set plugin parameters \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classgazebo_1_1TurtleDrivePlugin_ab80df6990ee5bc40d968834ba97c7bb2}\label{classgazebo_1_1TurtleDrivePlugin_ab80df6990ee5bc40d968834ba97c7bb2}} 
+\index{gazebo\+::\+Turtle\+Drive\+Plugin@{gazebo\+::\+Turtle\+Drive\+Plugin}!wheel\+\_\+cmd\+Callback@{wheel\+\_\+cmd\+Callback}}
+\index{wheel\+\_\+cmd\+Callback@{wheel\+\_\+cmd\+Callback}!gazebo\+::\+Turtle\+Drive\+Plugin@{gazebo\+::\+Turtle\+Drive\+Plugin}}
+\subsubsection{\texorpdfstring{wheel\+\_\+cmd\+Callback()}{wheel\_cmdCallback()}}
+{\footnotesize\ttfamily void gazebo\+::\+Turtle\+Drive\+Plugin\+::wheel\+\_\+cmd\+Callback (\begin{DoxyParamCaption}\item[{const nuturtlebot\+::\+Wheel\+Commands \&}]{wc }\end{DoxyParamCaption})}
+
+
+
+callback to convert wheel commands (+-\/ 256) to velocities and applies them to gazebo model 
+
+
+\begin{DoxyParams}{Parameters}
+{\em nuturtlebot\+::\+Wheel\+Commands} & integer value between +-\/256 to indicate wheel speed \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+nuturtle\+\_\+gazebo/include/nuturtle\+\_\+gazebo/turtle\+\_\+drive\+\_\+plugin.\+hpp\item 
+nuturtle\+\_\+gazebo/src/turtle\+\_\+drive\+\_\+plugin.\+cpp\end{DoxyCompactItemize}

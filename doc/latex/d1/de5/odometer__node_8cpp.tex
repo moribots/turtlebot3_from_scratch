@@ -1,0 +1,116 @@
+\hypertarget{odometer__node_8cpp}{}\section{rigid2d/src/odometer\+\_\+node.cpp File Reference}
+\label{odometer__node_8cpp}\index{rigid2d/src/odometer\+\_\+node.\+cpp@{rigid2d/src/odometer\+\_\+node.\+cpp}}
+
+
+Main\+: Publishes Odometry messages for diff drive robot based on wheel joint states.  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$sensor\+\_\+msgs/\+Joint\+State.\+h$>$}\newline
+{\ttfamily \#include $<$nav\+\_\+msgs/\+Odometry.\+h$>$}\newline
+{\ttfamily \#include $<$tf2/\+Linear\+Math/\+Quaternion.\+h$>$}\newline
+{\ttfamily \#include $<$tf2\+\_\+ros/transform\+\_\+broadcaster.\+h$>$}\newline
+{\ttfamily \#include $<$tf2\+\_\+geometry\+\_\+msgs/tf2\+\_\+geometry\+\_\+msgs.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}rigid2d/\+Set\+Pose.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include \char`\"{}rigid2d/rigid2d.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rigid2d/diff\+\_\+drive.\+hpp\char`\"{}}\newline
+Include dependency graph for odometer\+\_\+node.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d9/d43/odometer__node_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{odometer__node_8cpp_a8f0c3d2ac4fed55d807bd69afb5243b4}{js\+\_\+callback} (const sensor\+\_\+msgs\+::\+Joint\+State\+::\+Const\+Ptr \&js)
+\item 
+bool \hyperlink{odometer__node_8cpp_adb6929707bcc4d4fb332481cb33e4f2b}{set\+\_\+pose\+Callback} (rigid2d\+::\+Set\+Pose\+::\+Request \&req, rigid2d\+::\+Set\+Pose\+::\+Response \&res)
+\begin{DoxyCompactList}\small\item\em set\+\_\+pose service callback. Sets the turtlebot\textquotesingle{}s pose belief to desired value. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{odometer__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{odometer__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{odometer__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The Main Function ///. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{odometer__node_8cpp_ad1ee493a9c3d90ec79d68e9de39a0d62}\label{odometer__node_8cpp_ad1ee493a9c3d90ec79d68e9de39a0d62}} 
+float {\bfseries wl\+\_\+enc} = 0
+\item 
+\mbox{\Hypertarget{odometer__node_8cpp_a82d2473bdd4614b5a4532a95a0382487}\label{odometer__node_8cpp_a82d2473bdd4614b5a4532a95a0382487}} 
+float {\bfseries wr\+\_\+enc} = 0
+\item 
+\mbox{\Hypertarget{odometer__node_8cpp_abb35a308e88b2a5d113795948e6273a3}\label{odometer__node_8cpp_abb35a308e88b2a5d113795948e6273a3}} 
+\hyperlink{classrigid2d_1_1Twist2D}{rigid2d\+::\+Twist2D} {\bfseries Vb}
+\item 
+\mbox{\Hypertarget{odometer__node_8cpp_a002f817728ce76d60fecd0d2b5bcd214}\label{odometer__node_8cpp_a002f817728ce76d60fecd0d2b5bcd214}} 
+\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities} {\bfseries w\+\_\+vel}
+\item 
+\mbox{\Hypertarget{odometer__node_8cpp_aabf3dfeb602efbe1bc76a7918ae6e838}\label{odometer__node_8cpp_aabf3dfeb602efbe1bc76a7918ae6e838}} 
+\hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D} {\bfseries reset\+\_\+pose}
+\item 
+\mbox{\Hypertarget{odometer__node_8cpp_aae05b70475acb90fabcbcb02075b4a5c}\label{odometer__node_8cpp_aae05b70475acb90fabcbcb02075b4a5c}} 
+\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive} {\bfseries driver}
+\item 
+\mbox{\Hypertarget{odometer__node_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}\label{odometer__node_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}} 
+bool {\bfseries callback\+\_\+flag} = true
+\item 
+\mbox{\Hypertarget{odometer__node_8cpp_a13c6e8170f4eaffabda3cd95e02d139c}\label{odometer__node_8cpp_a13c6e8170f4eaffabda3cd95e02d139c}} 
+bool {\bfseries service\+\_\+flag} = false
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Main\+: Publishes Odometry messages for diff drive robot based on wheel joint states. 
+
+P\+A\+R\+A\+M\+E\+T\+E\+RS\+: o\+\_\+fid\+\_\+ (string)\+: parent frame ID for the published tf transform o\+\_\+fid\+\_\+ (string)\+: child frame ID for the published tf transform wbase\+\_\+ (float)\+: wheel base of modeled diff drive robot wrad\+\_\+ (float)\+: wheel radius of modeled diff drive robot frequency (int)\+: frequency of control loop. callback\+\_\+flag (bool)\+: specifies whether to send a new transform (only when new pose is read)
+
+pose (\hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D})\+: modeled diff drive robot pose based on read wheel encoder angles wl\+\_\+enc (float)\+: left wheel encoder angles wr\+\_\+enc (float)\+: right wheel encoder angles driver (\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive})\+: model of the diff drive robot Vb (\hyperlink{classrigid2d_1_1Twist2D}{rigid2d\+::\+Twist2D})\+: read from driver instances to publish to odom message w\+\_\+vel (\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities})\+: wheel velocities used to calculate ddrive robot twist
+
+odom\+\_\+tf (geometry\+\_\+msgs\+::\+Transform\+Stamped)\+: odometry frame transform used to update R\+Viz sim odom (nav\+\_\+msgs\+::\+Odometry)\+: odometry message containing pose and twist published to odom topic
+
+P\+U\+B\+L\+I\+S\+H\+ES\+: odom (nav\+\_\+msgs\+::\+Odometry)\+: publishes odometry message containing pose(x,y,z) and twist(lin,ang) S\+U\+B\+S\+C\+R\+I\+B\+ES\+: /joint\+\_\+states (sensor\+\_\+msgs\+::\+Joint\+State), which records the ddrive robot\textquotesingle{}s joint states
+
+F\+U\+N\+C\+T\+I\+O\+NS\+: js\+\_\+callback (void)\+: callback for /joint\+\_\+states subscriber, which records the ddrive robot\textquotesingle{}s joint states set\+\_\+pose\+Callback (bool)\+: callback for set\+\_\+pose service, which resets the robot\textquotesingle{}s pose in the tf tree 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{odometer__node_8cpp_a8f0c3d2ac4fed55d807bd69afb5243b4}\label{odometer__node_8cpp_a8f0c3d2ac4fed55d807bd69afb5243b4}} 
+\index{odometer\+\_\+node.\+cpp@{odometer\+\_\+node.\+cpp}!js\+\_\+callback@{js\+\_\+callback}}
+\index{js\+\_\+callback@{js\+\_\+callback}!odometer\+\_\+node.\+cpp@{odometer\+\_\+node.\+cpp}}
+\subsubsection{\texorpdfstring{js\+\_\+callback()}{js\_callback()}}
+{\footnotesize\ttfamily void js\+\_\+callback (\begin{DoxyParamCaption}\item[{const sensor\+\_\+msgs\+::\+Joint\+State\+::\+Const\+Ptr \&}]{js }\end{DoxyParamCaption})}
+
+/joint\+\_\+states subscriber callback. Records left and right wheel angles
+
+
+\begin{DoxyParams}{Parameters}
+{\em js} & (sensor\+\_\+msgs\+::\+Joint\+State)\+: the left and right wheel joint angles \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+pose (\hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D})\+: modeled diff drive robot pose based on read wheel encoder angles
+\end{DoxyReturn}
+This function runs every time we get a sensor\+\_\+msgs\+::\+Joint\+State message on the \char`\"{}/joint\+\_\+states\char`\"{} topic. We generally use the const $<$message$>$Const\+Ptr \&msg syntax to prevent our node from accidentally changing the message, in the case that another node is also listening to it.\mbox{\Hypertarget{odometer__node_8cpp_adb6929707bcc4d4fb332481cb33e4f2b}\label{odometer__node_8cpp_adb6929707bcc4d4fb332481cb33e4f2b}} 
+\index{odometer\+\_\+node.\+cpp@{odometer\+\_\+node.\+cpp}!set\+\_\+pose\+Callback@{set\+\_\+pose\+Callback}}
+\index{set\+\_\+pose\+Callback@{set\+\_\+pose\+Callback}!odometer\+\_\+node.\+cpp@{odometer\+\_\+node.\+cpp}}
+\subsubsection{\texorpdfstring{set\+\_\+pose\+Callback()}{set\_poseCallback()}}
+{\footnotesize\ttfamily bool set\+\_\+pose\+Callback (\begin{DoxyParamCaption}\item[{rigid2d\+::\+Set\+Pose\+::\+Request \&}]{req,  }\item[{rigid2d\+::\+Set\+Pose\+::\+Response \&}]{res }\end{DoxyParamCaption})}
+
+
+
+set\+\_\+pose service callback. Sets the turtlebot\textquotesingle{}s pose belief to desired value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & (float32)\+: desired x pose. \\
+\hline
+{\em y} & (float32)\+: desired y pose. \\
+\hline
+{\em theta} & (float32)\+: desired theta pose. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+result (bool)\+: True or False. 
+\end{DoxyReturn}

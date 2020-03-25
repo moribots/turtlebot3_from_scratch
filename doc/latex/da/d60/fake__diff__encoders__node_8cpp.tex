@@ -1,0 +1,77 @@
+\hypertarget{fake__diff__encoders__node_8cpp}{}\section{rigid2d/src/fake\+\_\+diff\+\_\+encoders\+\_\+node.cpp File Reference}
+\label{fake__diff__encoders__node_8cpp}\index{rigid2d/src/fake\+\_\+diff\+\_\+encoders\+\_\+node.\+cpp@{rigid2d/src/fake\+\_\+diff\+\_\+encoders\+\_\+node.\+cpp}}
+
+
+Main\+: Publishes Fake Encoder Messages to /joint\+\_\+states.  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$geometry\+\_\+msgs/\+Twist.\+h$>$}\newline
+{\ttfamily \#include $<$sensor\+\_\+msgs/\+Joint\+State.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include \char`\"{}rigid2d/rigid2d.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rigid2d/diff\+\_\+drive.\+hpp\char`\"{}}\newline
+Include dependency graph for fake\+\_\+diff\+\_\+encoders\+\_\+node.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d4/dd2/fake__diff__encoders__node_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{fake__diff__encoders__node_8cpp_a647c2d49e90958302787373cf0bf90b7}{vel\+\_\+callback} (const geometry\+\_\+msgs\+::\+Twist \&tw)
+\item 
+\mbox{\Hypertarget{fake__diff__encoders__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{fake__diff__encoders__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{fake__diff__encoders__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The Main Function ///. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{fake__diff__encoders__node_8cpp_a2e231184bf093953a82dd28fe0151cd6}\label{fake__diff__encoders__node_8cpp_a2e231184bf093953a82dd28fe0151cd6}} 
+\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities} {\bfseries w\+\_\+ang}
+\item 
+\mbox{\Hypertarget{fake__diff__encoders__node_8cpp_aae05b70475acb90fabcbcb02075b4a5c}\label{fake__diff__encoders__node_8cpp_aae05b70475acb90fabcbcb02075b4a5c}} 
+\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive} {\bfseries driver}
+\item 
+\mbox{\Hypertarget{fake__diff__encoders__node_8cpp_a4c45cdff103e6644a620ba5061509f22}\label{fake__diff__encoders__node_8cpp_a4c45cdff103e6644a620ba5061509f22}} 
+double {\bfseries frequency} = 60
+\item 
+\mbox{\Hypertarget{fake__diff__encoders__node_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}\label{fake__diff__encoders__node_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}} 
+bool {\bfseries callback\+\_\+flag} = false
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Main\+: Publishes Fake Encoder Messages to /joint\+\_\+states. 
+
+P\+A\+R\+A\+M\+E\+T\+E\+RS\+: wl\+\_\+fid\+\_\+ (string)\+: the left wheel joint name in diff\+\_\+drive.\+urdf.\+xacro of nuturtle\+\_\+desctipion pkg wr\+\_\+fid\+\_\+ (string)\+: the right wheel joint name in diff\+\_\+drive.\+urdf.\+xacro of nuturtle\+\_\+desctipion pkg wbase\+\_\+ (float)\+: wheel base of modeled diff drive robot wrad\+\_\+ (float)\+: wheel radius of modeled diff drive robot frequency (int)\+: frequency of control loop. callback\+\_\+flag (bool)\+: specifies whether to send a new transform (only when new pose is read)
+
+pose (\hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D})\+: modeled diff drive robot pose based on read wheel encoder angles wl\+\_\+enc (float)\+: left wheel encoder angles wr\+\_\+enc (float)\+: right wheel encoder angles driver (\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive})\+: model of the diff drive robot Vb (\hyperlink{classrigid2d_1_1Twist2D}{rigid2d\+::\+Twist2D})\+: read from cmd\+\_\+vel subscriber w\+\_\+ang (\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities})\+: wheel angles used to calculate ddrive robot twist (overloaded struct)
+
+js (sensor\+\_\+msgs\+::\+Joint\+State)\+: used to publish simulated wheel encoder readings to /joint\+\_\+states topic
+
+P\+U\+B\+L\+I\+S\+H\+ES\+: js (sensor\+\_\+msgs\+::\+Joint\+State)\+: publishes joint state message containing left and right wheel angles S\+U\+B\+S\+C\+R\+I\+B\+ES\+: /cmd\+\_\+vel (geometry\+\_\+msgs\+::\+Twist)\+: subscriber, which records the commanded twist
+
+F\+U\+N\+C\+T\+I\+O\+NS\+: vel\+\_\+callback (void)\+: callback for /cmd\+\_\+vel subscriber, which records the commanded twist 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{fake__diff__encoders__node_8cpp_a647c2d49e90958302787373cf0bf90b7}\label{fake__diff__encoders__node_8cpp_a647c2d49e90958302787373cf0bf90b7}} 
+\index{fake\+\_\+diff\+\_\+encoders\+\_\+node.\+cpp@{fake\+\_\+diff\+\_\+encoders\+\_\+node.\+cpp}!vel\+\_\+callback@{vel\+\_\+callback}}
+\index{vel\+\_\+callback@{vel\+\_\+callback}!fake\+\_\+diff\+\_\+encoders\+\_\+node.\+cpp@{fake\+\_\+diff\+\_\+encoders\+\_\+node.\+cpp}}
+\subsubsection{\texorpdfstring{vel\+\_\+callback()}{vel\_callback()}}
+{\footnotesize\ttfamily void vel\+\_\+callback (\begin{DoxyParamCaption}\item[{const geometry\+\_\+msgs\+::\+Twist \&}]{tw }\end{DoxyParamCaption})}
+
+cmd\+\_\+vel subscriber callback. Records commanded twist
+
+
+\begin{DoxyParams}{Parameters}
+{\em tw} & (geometry\+\_\+msgs\+::\+Twist)\+: the commanded linear and angular velocity \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+w\+\_\+ang (\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities})\+: the left and right wheel angles
+\end{DoxyReturn}
+This function runs every time we get a geometry\+\_\+msgs\+::\+Twist message on the \char`\"{}cmd\+\_\+vel\char`\"{} topic. We generally use the const $<$message$>$Const\+Ptr \&msg syntax to prevent our node from accidentally changing the message, in the case that another node is also listening to it.

@@ -1,0 +1,109 @@
+\hypertarget{structrigid2d_1_1Vector2D}{}\section{rigid2d\+:\+:Vector2D Struct Reference}
+\label{structrigid2d_1_1Vector2D}\index{rigid2d\+::\+Vector2D@{rigid2d\+::\+Vector2D}}
+
+
+A 2-\/\+Dimensional Vector.  
+
+
+
+
+{\ttfamily \#include $<$rigid2d.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structrigid2d_1_1Vector2D_a7676be61234533fc4c569fc27fd78a9e}\label{structrigid2d_1_1Vector2D_a7676be61234533fc4c569fc27fd78a9e}} 
+{\bfseries Vector2D} (double x\+\_\+, double y\+\_\+)
+\item 
+\mbox{\Hypertarget{structrigid2d_1_1Vector2D_a0be56967b3920a398291ea722c540114}\label{structrigid2d_1_1Vector2D_a0be56967b3920a398291ea722c540114}} 
+void {\bfseries normalize} ()
+\item 
+\hyperlink{structrigid2d_1_1Vector2D}{Vector2D} \& \hyperlink{structrigid2d_1_1Vector2D_a2e20ab3a7d186527955370e58df504ec}{operator+=} (const \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} \&rhs)
+\begin{DoxyCompactList}\small\item\em perform vector addition \end{DoxyCompactList}\item 
+\hyperlink{structrigid2d_1_1Vector2D}{Vector2D} \& \hyperlink{structrigid2d_1_1Vector2D_a43ee2a20c766c24809e243cebbdae224}{operator-\/=} (const \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} \&rhs)
+\begin{DoxyCompactList}\small\item\em perform vector subtraction \end{DoxyCompactList}\item 
+\hyperlink{structrigid2d_1_1Vector2D}{Vector2D} \& \hyperlink{structrigid2d_1_1Vector2D_a28ed19c24dd07b32695109c55fe95686}{operator$\ast$=} (const double \&scalar)
+\begin{DoxyCompactList}\small\item\em perform scalar multiplication on a vector \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structrigid2d_1_1Vector2D_a1876d655fe2da548c4813777c450845c}\label{structrigid2d_1_1Vector2D_a1876d655fe2da548c4813777c450845c}} 
+double {\bfseries x}
+\item 
+\mbox{\Hypertarget{structrigid2d_1_1Vector2D_aa814ea37ffe4a161b0020609580e4d17}\label{structrigid2d_1_1Vector2D_aa814ea37ffe4a161b0020609580e4d17}} 
+double {\bfseries y}
+\item 
+\mbox{\Hypertarget{structrigid2d_1_1Vector2D_a187215ccee09402486afad8107592639}\label{structrigid2d_1_1Vector2D_a187215ccee09402486afad8107592639}} 
+double {\bfseries norm\+\_\+x}
+\item 
+\mbox{\Hypertarget{structrigid2d_1_1Vector2D_ad4a3b1bc820490672c5a339e61ff8db2}\label{structrigid2d_1_1Vector2D_ad4a3b1bc820490672c5a339e61ff8db2}} 
+double {\bfseries norm\+\_\+y}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A 2-\/\+Dimensional Vector. 
+
+static\+\_\+assertions test compile time assumptions. You should write at least one more test for each function You should also purposely (and temporarily) make one of these tests fail just to see what happens 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{structrigid2d_1_1Vector2D_a28ed19c24dd07b32695109c55fe95686}\label{structrigid2d_1_1Vector2D_a28ed19c24dd07b32695109c55fe95686}} 
+\index{rigid2d\+::\+Vector2D@{rigid2d\+::\+Vector2D}!operator$\ast$=@{operator$\ast$=}}
+\index{operator$\ast$=@{operator$\ast$=}!rigid2d\+::\+Vector2D@{rigid2d\+::\+Vector2D}}
+\subsubsection{\texorpdfstring{operator$\ast$=()}{operator*=()}}
+{\footnotesize\ttfamily \hyperlink{structrigid2d_1_1Vector2D}{rigid2d\+::\+Vector2D} \& rigid2d\+::\+Vector2\+D\+::operator$\ast$= (\begin{DoxyParamCaption}\item[{const double \&}]{scalar }\end{DoxyParamCaption})}
+
+
+
+perform scalar multiplication on a vector 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rhs} & -\/ the vector to add \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a reference to the newly transformed operator 
+\end{DoxyReturn}
+\mbox{\Hypertarget{structrigid2d_1_1Vector2D_a2e20ab3a7d186527955370e58df504ec}\label{structrigid2d_1_1Vector2D_a2e20ab3a7d186527955370e58df504ec}} 
+\index{rigid2d\+::\+Vector2D@{rigid2d\+::\+Vector2D}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!rigid2d\+::\+Vector2D@{rigid2d\+::\+Vector2D}}
+\subsubsection{\texorpdfstring{operator+=()}{operator+=()}}
+{\footnotesize\ttfamily \hyperlink{structrigid2d_1_1Vector2D}{rigid2d\+::\+Vector2D} \& rigid2d\+::\+Vector2\+D\+::operator+= (\begin{DoxyParamCaption}\item[{const \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} \&}]{rhs }\end{DoxyParamCaption})}
+
+
+
+perform vector addition 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rhs} & -\/ the vector to add \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a reference to the newly transformed operator 
+\end{DoxyReturn}
+\mbox{\Hypertarget{structrigid2d_1_1Vector2D_a43ee2a20c766c24809e243cebbdae224}\label{structrigid2d_1_1Vector2D_a43ee2a20c766c24809e243cebbdae224}} 
+\index{rigid2d\+::\+Vector2D@{rigid2d\+::\+Vector2D}!operator-\/=@{operator-\/=}}
+\index{operator-\/=@{operator-\/=}!rigid2d\+::\+Vector2D@{rigid2d\+::\+Vector2D}}
+\subsubsection{\texorpdfstring{operator-\/=()}{operator-=()}}
+{\footnotesize\ttfamily \hyperlink{structrigid2d_1_1Vector2D}{rigid2d\+::\+Vector2D} \& rigid2d\+::\+Vector2\+D\+::operator-\/= (\begin{DoxyParamCaption}\item[{const \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} \&}]{rhs }\end{DoxyParamCaption})}
+
+
+
+perform vector subtraction 
+
+
+\begin{DoxyParams}{Parameters}
+{\em rhs} & -\/ the vector to subtract \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a reference to the newly transformed operator 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+rigid2d/include/rigid2d/\hyperlink{rigid2d_8hpp}{rigid2d.\+hpp}\item 
+rigid2d/src/rigid2d/rigid2d.\+cpp\end{DoxyCompactItemize}

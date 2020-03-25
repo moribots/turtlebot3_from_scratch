@@ -1,0 +1,91 @@
+\hypertarget{landmarks_8hpp}{}\section{nuslam/include/nuslam/landmarks.hpp File Reference}
+\label{landmarks_8hpp}\index{nuslam/include/nuslam/landmarks.\+hpp@{nuslam/include/nuslam/landmarks.\+hpp}}
+
+
+Library Landmarks landmark detection and classification.  
+
+
+{\ttfamily \#include $<$rigid2d/rigid2d.\+hpp$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$eigen3/\+Eigen/\+Dense$>$}\newline
+{\ttfamily \#include $<$eigen3/\+Eigen/\+S\+VD$>$}\newline
+{\ttfamily \#include $<$eigen3/\+Eigen/\+Eigenvalues$>$}\newline
+{\ttfamily \#include $<$numeric$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+Include dependency graph for landmarks.\+hpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d4/d7b/landmarks_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d6/dc7/landmarks_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structnuslam_1_1RangeBear}{nuslam\+::\+Range\+Bear}
+\item 
+struct \hyperlink{structnuslam_1_1Point}{nuslam\+::\+Point}
+\item 
+class \hyperlink{classnuslam_1_1Landmark}{nuslam\+::\+Landmark}
+\begin{DoxyCompactList}\small\item\em create a \hyperlink{classnuslam_1_1Landmark}{Landmark} with pose relative to turtlebot3 \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+Range\+Bear \hyperlink{landmarks_8hpp_a89c1543adf36dbb0ab21be32cfd40d13}{nuslam\+::cartesian\+To\+Polar} (const Vector2D \&pose)
+\begin{DoxyCompactList}\small\item\em gets polar coordinates from cartesian coodinates \end{DoxyCompactList}\item 
+Vector2D \hyperlink{landmarks_8hpp_aa8d74c83e481a6b574639b241b925f2f}{nuslam\+::polar\+To\+Cartesian} (const Range\+Bear \&range\+\_\+bear)
+\begin{DoxyCompactList}\small\item\em gets cartesian coordinates from polar coodinates \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Library Landmarks landmark detection and classification. 
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{landmarks_8hpp_file_a89c1543adf36dbb0ab21be32cfd40d13}\label{landmarks_8hpp_file_a89c1543adf36dbb0ab21be32cfd40d13}} 
+\index{landmarks.\+hpp@{landmarks.\+hpp}!cartesian\+To\+Polar@{cartesian\+To\+Polar}}
+\index{cartesian\+To\+Polar@{cartesian\+To\+Polar}!landmarks.\+hpp@{landmarks.\+hpp}}
+\subsubsection{\texorpdfstring{cartesian\+To\+Polar()}{cartesianToPolar()}}
+{\footnotesize\ttfamily Range\+Bear nuslam\+::cartesian\+To\+Polar (\begin{DoxyParamCaption}\item[{const \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} \&}]{pose }\end{DoxyParamCaption})}
+
+
+
+gets polar coordinates from cartesian coodinates 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pose} & containing x and y position relative to robot \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Range\+Bear struct containing range and bearing 
+\end{DoxyReturn}
+\mbox{\Hypertarget{landmarks_8hpp_file_aa8d74c83e481a6b574639b241b925f2f}\label{landmarks_8hpp_file_aa8d74c83e481a6b574639b241b925f2f}} 
+\index{landmarks.\+hpp@{landmarks.\+hpp}!polar\+To\+Cartesian@{polar\+To\+Cartesian}}
+\index{polar\+To\+Cartesian@{polar\+To\+Cartesian}!landmarks.\+hpp@{landmarks.\+hpp}}
+\subsubsection{\texorpdfstring{polar\+To\+Cartesian()}{polarToCartesian()}}
+{\footnotesize\ttfamily Vector2D nuslam\+::polar\+To\+Cartesian (\begin{DoxyParamCaption}\item[{const \hyperlink{structnuslam_1_1RangeBear}{Range\+Bear} \&}]{range\+\_\+bear }\end{DoxyParamCaption})}
+
+
+
+gets cartesian coordinates from polar coodinates 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Range\+Bear} & struct containing range and bearing \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Vector2D containing cartesian coordinates 
+\end{DoxyReturn}

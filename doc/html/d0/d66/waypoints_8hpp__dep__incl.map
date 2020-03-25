@@ -1,0 +1,4 @@
+<map id="rigid2d/include/rigid2d/waypoints.hpp" name="rigid2d/include/rigid2d/waypoints.hpp">
+<area shape="rect" id="node2" href="$da/dec/real__waypoint_8cpp.html" title="Makes the turtlebot3 follow a series of waypoints using closed&#45;loop odometer&#45;based feedback control..." alt="" coords="5,95,136,136"/>
+<area shape="rect" id="node3" href="$d9/db6/turtle__way__node_8cpp.html" title="Makes turtlesim modeled as Diff Drive robot follow a user&#45;specified trajectory in turtle_way..." alt="" coords="160,95,293,136"/>
+</map>

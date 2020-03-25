@@ -1,0 +1,34 @@
+\hypertarget{turtle__rect__node_8cpp}{}\section{tsim/src/turtle\+\_\+rect\+\_\+node.cpp File Reference}
+\label{turtle__rect__node_8cpp}\index{tsim/src/turtle\+\_\+rect\+\_\+node.\+cpp@{tsim/src/turtle\+\_\+rect\+\_\+node.\+cpp}}
+
+
+Main\+: makes turtle in turtlesim move in a rectangular trajectory.  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$turtlesim/\+Pose.\+h$>$}\newline
+{\ttfamily \#include $<$geometry\+\_\+msgs/\+Twist.\+h$>$}\newline
+{\ttfamily \#include $<$std\+\_\+srvs/\+Empty.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}tsim/turtle\+\_\+rect.\+h\char`\"{}}\newline
+Include dependency graph for turtle\+\_\+rect\+\_\+node.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/d1c/turtle__rect__node_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{turtle__rect__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{turtle__rect__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{turtle__rect__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The Main Function ///. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Main\+: makes turtle in turtlesim move in a rectangular trajectory. 
+
+P\+A\+R\+A\+M\+E\+T\+E\+RS\+: x (int)\+: x coordinate for lower left corner of rectangle. y (int)\+: y coordinate for lower left corner of rectangle. width (int)\+: width of rectangle. height (int)\+: height of rectangle. trans\+\_\+vel (int)\+: translational velocity of robot. rot\+\_\+vel (int)\+: rotational velocity of robot. frequency(int)\+: frequency of control loop. threshold(float)\+: specifies when the target pose has been reached. P\+U\+B\+L\+I\+S\+H\+ES\+: turtle1/cmd\+\_\+vel (Twist)\+: publishes a twist with linear (x) and angular (z) velocities to command turtle pose\+\_\+error (Pose\+Error)\+: publishes pose error in x, y, and theta for plotting S\+U\+B\+S\+C\+R\+I\+B\+ES\+: turtle1/pose (Pose)\+: feceives the x, y, and theta position of the turtle from turtlesim. S\+E\+R\+V\+I\+C\+ES\+: traj\+\_\+reset (Empty)\+: teleports the turtle back to (x,y) with 0 heading, and without leaving a pen trace. also resets the predicted pose estimate to these values.
+
+taken from \href{https://magiccvs.byu.edu/wiki/#!ros_tutorials/c++_node_class.md}{\tt https\+://magiccvs.\+byu.\+edu/wiki/\#!ros\+\_\+tutorials/c++\+\_\+node\+\_\+class.\+md} 

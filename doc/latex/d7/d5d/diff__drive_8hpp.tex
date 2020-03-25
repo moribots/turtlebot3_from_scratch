@@ -1,0 +1,66 @@
+\hypertarget{diff__drive_8hpp}{}\section{rigid2d/include/rigid2d/diff\+\_\+drive.hpp File Reference}
+\label{diff__drive_8hpp}\index{rigid2d/include/rigid2d/diff\+\_\+drive.\+hpp@{rigid2d/include/rigid2d/diff\+\_\+drive.\+hpp}}
+
+
+Library Diff\+Drive robot kinematics and odometry.  
+
+
+{\ttfamily \#include \char`\"{}rigid2d/rigid2d.\+hpp\char`\"{}}\newline
+Include dependency graph for diff\+\_\+drive.\+hpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=260pt]{dd/d54/diff__drive_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/d97/diff__drive_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D}
+\begin{DoxyCompactList}\small\item\em A 2-\/\+Dimensional Pose. \end{DoxyCompactList}\item 
+struct \hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities}
+\begin{DoxyCompactList}\small\item\em Wheel Velocities (rad/s) \end{DoxyCompactList}\item 
+class \hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive}
+\begin{DoxyCompactList}\small\item\em create a \hyperlink{classrigid2d_1_1DiffDrive}{Diff\+Drive} model \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{diff__drive_8hpp_ae19b8bb4161a8164cdcedd017f0c1ef5}\label{diff__drive_8hpp_ae19b8bb4161a8164cdcedd017f0c1ef5}} 
+constexpr double {\bfseries rigid2d\+::normalize\+\_\+encoders} (double rad)
+\item 
+std\+::ostream \& \hyperlink{diff__drive_8hpp_a7d9be2ae92a074c86f6d10807509a98a}{rigid2d\+::operator$<$$<$} (std\+::ostream \&os, const Diff\+Drive \&driver)
+\begin{DoxyCompactList}\small\item\em should print a human readable version of the twist\+: An example output\+: wl\+: (rad), wr\+: (rad) \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Library Diff\+Drive robot kinematics and odometry. 
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{diff__drive_8hpp_file_a7d9be2ae92a074c86f6d10807509a98a}\label{diff__drive_8hpp_file_a7d9be2ae92a074c86f6d10807509a98a}} 
+\index{diff\+\_\+drive.\+hpp@{diff\+\_\+drive.\+hpp}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!diff\+\_\+drive.\+hpp@{diff\+\_\+drive.\+hpp}}
+\subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}}
+{\footnotesize\ttfamily std\+::ostream \& rigid2d\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os,  }\item[{const \hyperlink{classrigid2d_1_1DiffDrive}{Diff\+Drive} \&}]{driver }\end{DoxyParamCaption})}
+
+
+
+should print a human readable version of the twist\+: An example output\+: wl\+: (rad), wr\+: (rad) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em os} & -\/ an output stream \\
+\hline
+{\em dd} & -\/ the diffdrive wheel angles to print \\
+\hline
+\end{DoxyParams}

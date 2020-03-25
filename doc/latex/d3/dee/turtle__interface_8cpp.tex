@@ -1,0 +1,115 @@
+\hypertarget{turtle__interface_8cpp}{}\section{nuturtle\+\_\+robot/src/turtle\+\_\+interface.cpp File Reference}
+\label{turtle__interface_8cpp}\index{nuturtle\+\_\+robot/src/turtle\+\_\+interface.\+cpp@{nuturtle\+\_\+robot/src/turtle\+\_\+interface.\+cpp}}
+
+
+This node executes low-\/level control for the turtlebot, engaging its motors depending on desired twist, and reading its wheel encoder values.  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$geometry\+\_\+msgs/\+Twist.\+h$>$}\newline
+{\ttfamily \#include $<$sensor\+\_\+msgs/\+Joint\+State.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include \char`\"{}rigid2d/rigid2d.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rigid2d/diff\+\_\+drive.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}nuturtlebot/\+Wheel\+Commands.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}nuturtlebot/\+Sensor\+Data.\+h\char`\"{}}\newline
+Include dependency graph for turtle\+\_\+interface.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/d71/turtle__interface_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{turtle__interface_8cpp_a647c2d49e90958302787373cf0bf90b7}{vel\+\_\+callback} (const geometry\+\_\+msgs\+::\+Twist \&tw)
+\item 
+void \hyperlink{turtle__interface_8cpp_aefea32b63b7ca4bc8c0d4d72245e3308}{sensor\+\_\+callback} (const nuturtlebot\+::\+Sensor\+Data \&sns)
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{turtle__interface_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{turtle__interface_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The Main Function ///. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_a002f817728ce76d60fecd0d2b5bcd214}\label{turtle__interface_8cpp_a002f817728ce76d60fecd0d2b5bcd214}} 
+\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities} {\bfseries w\+\_\+vel}
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_ac1f993698ce846b2cf46cc4b76f40e2f}\label{turtle__interface_8cpp_ac1f993698ce846b2cf46cc4b76f40e2f}} 
+\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities} {\bfseries w\+\_\+vel\+\_\+measured}
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_a2e231184bf093953a82dd28fe0151cd6}\label{turtle__interface_8cpp_a2e231184bf093953a82dd28fe0151cd6}} 
+\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities} {\bfseries w\+\_\+ang}
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_aae05b70475acb90fabcbcb02075b4a5c}\label{turtle__interface_8cpp_aae05b70475acb90fabcbcb02075b4a5c}} 
+\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive} {\bfseries driver}
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_a4c45cdff103e6644a620ba5061509f22}\label{turtle__interface_8cpp_a4c45cdff103e6644a620ba5061509f22}} 
+double {\bfseries frequency} = 60
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_a26852b023731e379cdad159adc7057a1}\label{turtle__interface_8cpp_a26852b023731e379cdad159adc7057a1}} 
+bool {\bfseries vel\+\_\+flag} = false
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_ad0f8f30758fdc7dce29ed6bc0c7ec022}\label{turtle__interface_8cpp_ad0f8f30758fdc7dce29ed6bc0c7ec022}} 
+bool {\bfseries sensor\+\_\+flag} = false
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_aa9a594746d47d94a5781f23394dc6552}\label{turtle__interface_8cpp_aa9a594746d47d94a5781f23394dc6552}} 
+float {\bfseries max\+\_\+lin\+\_\+vel\+\_\+} = 0
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_a1114e456737892d7ceea75bf06edb7b6}\label{turtle__interface_8cpp_a1114e456737892d7ceea75bf06edb7b6}} 
+float {\bfseries max\+\_\+ang\+\_\+vel\+\_\+} = 0
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_ae1f1f750988ce185081f948f43488cd2}\label{turtle__interface_8cpp_ae1f1f750988ce185081f948f43488cd2}} 
+float {\bfseries motor\+\_\+rot\+\_\+max\+\_\+} = 0
+\item 
+\mbox{\Hypertarget{turtle__interface_8cpp_a4a7181cc1f73825c5452e0310f73d2a2}\label{turtle__interface_8cpp_a4a7181cc1f73825c5452e0310f73d2a2}} 
+float {\bfseries encoder\+\_\+ticks\+\_\+per\+\_\+rev\+\_\+} = 0
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This node executes low-\/level control for the turtlebot, engaging its motors depending on desired twist, and reading its wheel encoder values. 
+
+P\+A\+R\+A\+M\+E\+T\+E\+RS\+: w\+\_\+vel (\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities})\+: used to store wheel commands, ranging from -\/265 to +265 as converted from actual wheel velocities. w\+\_\+vel\+\_\+measured (\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities})\+: measured wheel velocity, computed by feeding updated wheel encoder values to Diff\+Drive\+::update\+Odomtry() w\+\_\+ang (\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities})\+: used to store wheel angles after they are converted from wheel encoder values, where 0-\/4096 maps to 0-\/2.\+0$\ast$\+PI driver (\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive})\+: diff\+\_\+drive object used to perform operations to set turtlebot3 commands and interpret its data. frequency (double)\+: the loop rate vel\+\_\+flag (bool)\+: flag to indicate that vel\+\_\+callback has been triggered, and that a wheel command should be published. sensor\+\_\+flag (bool)\+: flag to indicate that sensor\+\_\+callback has been triggered, and that wheel joint states should be published max\+\_\+lin\+\_\+vel\+\_\+ (float)\+: the turtlebot\textquotesingle{}s maximum linear velocity in m/s max\+\_\+ang\+\_\+vel\+\_\+ (float)\+: the turtlebot\textquotesingle{}s maximum angular velocity in rad/s motor\+\_\+rot\+\_\+max\+\_\+ (float)\+: the turtlebot wheels\textquotesingle{} maximum rotational speed in rad/s encoder\+\_\+ticks\+\_\+per\+\_\+rev\+\_\+ (float)\+: used to map between wheel encoder ticks and actual wheel rotation. Cast as float to use in division
+
+o\+\_\+fid\+\_\+ (std\+::string)\+: odometer frame ID b\+\_\+fid\+\_\+ (std\+::string)\+: body frame ID wl\+\_\+fid\+\_\+ (std\+::string)\+: left wheel frame ID wr\+\_\+fid\+\_\+ (std\+::string)\+: right wheel frame ID wbase\+\_\+ (float)\+: wheel base wrad\+\_\+ (float)\+: wheel radius
+
+P\+U\+B\+L\+I\+S\+H\+ES\+: joint\+\_\+states (sensor\+\_\+msgs\+::\+Joint\+State)\+: the turtlebot3\textquotesingle{}s wheel positions and velocities wheel\+\_\+cmd (nuturtlebot\+::\+Wheel\+Commands)\+: the turtlebot3\textquotesingle{}s wheel commands; integers corresponding to wheel velocities from -\/max to max in rad/s
+
+S\+U\+B\+S\+C\+R\+I\+B\+ES\+: cmd\+\_\+vel (geometry\+\_\+msgs\+::\+Twist)\+: subscriber, which records the commanded twist sensor\+\_\+data (nuturtlebot\+::\+Sensor\+Data)\+: subscriber, which records wheel encoder values, among other turtlebot3 sensor data
+
+F\+U\+N\+C\+T\+I\+O\+NS\+: vel\+\_\+callback (void)\+: callback for cmd\+\_\+vel subscriber, which records the commanded twist and sets a flag to publish wheel commands sensor\+\_\+callback (void)\+: callback for sensor\+\_\+data subscriber, which records the turtlebot3\textquotesingle{}s wheel positions and sets a flag to publish joint states 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{turtle__interface_8cpp_aefea32b63b7ca4bc8c0d4d72245e3308}\label{turtle__interface_8cpp_aefea32b63b7ca4bc8c0d4d72245e3308}} 
+\index{turtle\+\_\+interface.\+cpp@{turtle\+\_\+interface.\+cpp}!sensor\+\_\+callback@{sensor\+\_\+callback}}
+\index{sensor\+\_\+callback@{sensor\+\_\+callback}!turtle\+\_\+interface.\+cpp@{turtle\+\_\+interface.\+cpp}}
+\subsubsection{\texorpdfstring{sensor\+\_\+callback()}{sensor\_callback()}}
+{\footnotesize\ttfamily void sensor\+\_\+callback (\begin{DoxyParamCaption}\item[{const nuturtlebot\+::\+Sensor\+Data \&}]{sns }\end{DoxyParamCaption})}
+
+sensor\+\_\+data subscriber callback. Records left and right wheel angles
+
+
+\begin{DoxyParams}{Parameters}
+{\em sns} & (nuturtlebot\+::\+Sensor\+Data )\+: the left and right wheel joint encoder values w\+\_\+ang and w\+\_\+vel\+\_\+measured (\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities})\+: measured wheel angles and velocities respct. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{turtle__interface_8cpp_a647c2d49e90958302787373cf0bf90b7}\label{turtle__interface_8cpp_a647c2d49e90958302787373cf0bf90b7}} 
+\index{turtle\+\_\+interface.\+cpp@{turtle\+\_\+interface.\+cpp}!vel\+\_\+callback@{vel\+\_\+callback}}
+\index{vel\+\_\+callback@{vel\+\_\+callback}!turtle\+\_\+interface.\+cpp@{turtle\+\_\+interface.\+cpp}}
+\subsubsection{\texorpdfstring{vel\+\_\+callback()}{vel\_callback()}}
+{\footnotesize\ttfamily void vel\+\_\+callback (\begin{DoxyParamCaption}\item[{const geometry\+\_\+msgs\+::\+Twist \&}]{tw }\end{DoxyParamCaption})}
+
+cmd\+\_\+vel subscriber callback. Records commanded twist
+
+
+\begin{DoxyParams}{Parameters}
+{\em tw} & (geometry\+\_\+msgs\+::\+Twist)\+: the commanded linear and angular velocity \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+w\+\_\+vel (\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities} --$>$ nuturtlebot\+:Wheel\+Commands) to actuate turtlebot3
+\end{DoxyReturn}
+This function runs every time we get a geometry\+\_\+msgs\+::\+Twist message on the \char`\"{}cmd\+\_\+vel\char`\"{} topic. We generally use the const $<$message$>$Const\+Ptr \&msg syntax to prevent our node from accidentally changing the message, in the case that another node is also listening to it.

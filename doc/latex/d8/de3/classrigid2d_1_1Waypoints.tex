@@ -1,0 +1,82 @@
+\hypertarget{classrigid2d_1_1Waypoints}{}\section{rigid2d\+:\+:Waypoints Class Reference}
+\label{classrigid2d_1_1Waypoints}\index{rigid2d\+::\+Waypoints@{rigid2d\+::\+Waypoints}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1Waypoints_a8e7579d65c588966c0f53866a73fee43}\label{classrigid2d_1_1Waypoints_a8e7579d65c588966c0f53866a73fee43}} 
+\hyperlink{classrigid2d_1_1Waypoints_a8e7579d65c588966c0f53866a73fee43}{Waypoints} ()
+\begin{DoxyCompactList}\small\item\em the default constructor creates a vectour of four waypoints in a rectangle \end{DoxyCompactList}\item 
+\hyperlink{classrigid2d_1_1Waypoints_a2d80cabdd52bc5291ddab198be441618}{Waypoints} (const std\+::vector$<$ \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} $>$ \&waypoints\+\_\+)
+\begin{DoxyCompactList}\small\item\em create a \hyperlink{classrigid2d_1_1Waypoints}{Waypoints} instance by specifying the waypoints to visit in a vector \end{DoxyCompactList}\item 
+\hyperlink{classrigid2d_1_1Waypoints_a45bc2c3d9687047b403d08f14456961e}{Waypoints} (const std\+::vector$<$ \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} $>$ \&waypoints\+\_\+, const double \&P\+\_\+h\+\_\+, const double \&P\+\_\+l\+\_\+, const double \&w\+\_\+z\+\_\+max\+\_\+, const double \&v\+\_\+x\+\_\+max\+\_\+, const double \&threshold\+\_\+)
+\begin{DoxyCompactList}\small\item\em create a \hyperlink{classrigid2d_1_1Waypoints}{Waypoints} instance by specifying the waypoints to visit in a vector, the proportional controller gains, the maximum twist thresholds and the pose threshold \end{DoxyCompactList}\item 
+\hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \hyperlink{classrigid2d_1_1Waypoints_a9431a48c1fad67270b4fe27712fee09a}{next\+Waypoint} (const \hyperlink{structrigid2d_1_1Pose2D}{Pose2D} \&pose)
+\begin{DoxyCompactList}\small\item\em computes the required \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} to reach the next waypoint, whether linear or angular, and pushes waypoints back for cyclical motion when necessary \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classrigid2d_1_1Waypoints_a2d80cabdd52bc5291ddab198be441618}\label{classrigid2d_1_1Waypoints_a2d80cabdd52bc5291ddab198be441618}} 
+\index{rigid2d\+::\+Waypoints@{rigid2d\+::\+Waypoints}!Waypoints@{Waypoints}}
+\index{Waypoints@{Waypoints}!rigid2d\+::\+Waypoints@{rigid2d\+::\+Waypoints}}
+\subsubsection{\texorpdfstring{Waypoints()}{Waypoints()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily rigid2d\+::\+Waypoints\+::\+Waypoints (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} $>$ \&}]{waypoints\+\_\+ }\end{DoxyParamCaption})}
+
+
+
+create a \hyperlink{classrigid2d_1_1Waypoints}{Waypoints} instance by specifying the waypoints to visit in a vector 
+
+
+\begin{DoxyParams}{Parameters}
+{\em std\+::vector$<$rigid2d\+::\+Vector2\+D$>$} & -\/ the waypoints to visit \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classrigid2d_1_1Waypoints_a45bc2c3d9687047b403d08f14456961e}\label{classrigid2d_1_1Waypoints_a45bc2c3d9687047b403d08f14456961e}} 
+\index{rigid2d\+::\+Waypoints@{rigid2d\+::\+Waypoints}!Waypoints@{Waypoints}}
+\index{Waypoints@{Waypoints}!rigid2d\+::\+Waypoints@{rigid2d\+::\+Waypoints}}
+\subsubsection{\texorpdfstring{Waypoints()}{Waypoints()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily rigid2d\+::\+Waypoints\+::\+Waypoints (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} $>$ \&}]{waypoints\+\_\+,  }\item[{const double \&}]{P\+\_\+h\+\_\+,  }\item[{const double \&}]{P\+\_\+l\+\_\+,  }\item[{const double \&}]{w\+\_\+z\+\_\+max\+\_\+,  }\item[{const double \&}]{v\+\_\+x\+\_\+max\+\_\+,  }\item[{const double \&}]{threshold\+\_\+ }\end{DoxyParamCaption})}
+
+
+
+create a \hyperlink{classrigid2d_1_1Waypoints}{Waypoints} instance by specifying the waypoints to visit in a vector, the proportional controller gains, the maximum twist thresholds and the pose threshold 
+
+
+\begin{DoxyParams}{Parameters}
+{\em std\+::vector$<$rigid2d\+::\+Vector2\+D$>$} & -\/ the waypoints to visit \\
+\hline
+{\em (double)} & P\+\_\+h -\/ proportional control for heading \\
+\hline
+{\em (double)} & P\+\_\+h -\/ proportional control for cartesian position \\
+\hline
+{\em (double)} & w\+\_\+z\+\_\+max -\/ maximum angular velocity \\
+\hline
+{\em (double)} & v\+\_\+x\+\_\+max -\/ maximum linear velocity \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classrigid2d_1_1Waypoints_a9431a48c1fad67270b4fe27712fee09a}\label{classrigid2d_1_1Waypoints_a9431a48c1fad67270b4fe27712fee09a}} 
+\index{rigid2d\+::\+Waypoints@{rigid2d\+::\+Waypoints}!next\+Waypoint@{next\+Waypoint}}
+\index{next\+Waypoint@{next\+Waypoint}!rigid2d\+::\+Waypoints@{rigid2d\+::\+Waypoints}}
+\subsubsection{\texorpdfstring{next\+Waypoint()}{nextWaypoint()}}
+{\footnotesize\ttfamily \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} rigid2d\+::\+Waypoints\+::next\+Waypoint (\begin{DoxyParamCaption}\item[{const \hyperlink{structrigid2d_1_1Pose2D}{Pose2D} \&}]{pose }\end{DoxyParamCaption})}
+
+
+
+computes the required \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} to reach the next waypoint, whether linear or angular, and pushes waypoints back for cyclical motion when necessary 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \hyperlink{classrigid2d_1_1DiffDrive}{Diff\+Drive}} & -\/ instance of robot for which we compute a \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\hyperlink{classrigid2d_1_1Twist2D}{Twist2D} required to follow the current waypoint 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+rigid2d/include/rigid2d/\hyperlink{waypoints_8hpp}{waypoints.\+hpp}\item 
+rigid2d/src/rigid2d/waypoints.\+cpp\end{DoxyCompactItemize}

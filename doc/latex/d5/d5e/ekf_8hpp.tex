@@ -1,0 +1,100 @@
+\hypertarget{ekf_8hpp}{}\section{nuslam/include/nuslam/ekf.hpp File Reference}
+\label{ekf_8hpp}\index{nuslam/include/nuslam/ekf.\+hpp@{nuslam/include/nuslam/ekf.\+hpp}}
+
+
+Library E\+KF E\+KF detection and classification.  
+
+
+{\ttfamily \#include $<$rigid2d/rigid2d.\+hpp$>$}\newline
+{\ttfamily \#include $<$rigid2d/diff\+\_\+drive.\+hpp$>$}\newline
+{\ttfamily \#include $<$nuslam/landmarks.\+hpp$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$eigen3/\+Eigen/\+Dense$>$}\newline
+{\ttfamily \#include $<$numeric$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$limits$>$}\newline
+{\ttfamily \#include $<$random$>$}\newline
+Include dependency graph for ekf.\+hpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d0/dc6/ekf_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=196pt]{d8/dd5/ekf_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structnuslam_1_1CovarianceMatrix}{nuslam\+::\+Covariance\+Matrix}
+\item 
+struct \hyperlink{structnuslam_1_1ProcessNoise}{nuslam\+::\+Process\+Noise}
+\item 
+struct \hyperlink{structnuslam_1_1MeasurementNoise}{nuslam\+::\+Measurement\+Noise}
+\item 
+class \hyperlink{classnuslam_1_1EKF}{nuslam\+::\+E\+KF}
+\begin{DoxyCompactList}\small\item\em handles model propagation for \hyperlink{classnuslam_1_1EKF}{E\+KF} S\+L\+AM \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::mt19937 \& \hyperlink{ekf_8hpp_abbd1324d49509faf3e5d749aac18a8e5}{nuslam\+::get\+\_\+random} ()
+\begin{DoxyCompactList}\small\item\em create random number generator with common seed \end{DoxyCompactList}\item 
+Eigen\+::\+Vector\+Xd \hyperlink{ekf_8hpp_ad7de408dbbbab0e7ccd8ab5472de02d7}{nuslam\+::sample\+Normal\+Distribution} (int mtx\+\_\+dimension)
+\begin{DoxyCompactList}\small\item\em sample normal distribution \end{DoxyCompactList}\item 
+Eigen\+::\+Vector\+Xd \hyperlink{ekf_8hpp_aeb4d0c73a3d4fb1c60d70cb02a547f75}{nuslam\+::get\+Multivar\+Noise} (const Eigen\+::\+Matrix\+Xd \&noise\+\_\+mtx)
+\begin{DoxyCompactList}\small\item\em returns noise for each dimension (x,y,theta) extracted from 3D normal distribution using Cholesky Decomposition \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Library E\+KF E\+KF detection and classification. 
+
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{ekf_8hpp_file_abbd1324d49509faf3e5d749aac18a8e5}\label{ekf_8hpp_file_abbd1324d49509faf3e5d749aac18a8e5}} 
+\index{ekf.\+hpp@{ekf.\+hpp}!get\+\_\+random@{get\+\_\+random}}
+\index{get\+\_\+random@{get\+\_\+random}!ekf.\+hpp@{ekf.\+hpp}}
+\subsubsection{\texorpdfstring{get\+\_\+random()}{get\_random()}}
+{\footnotesize\ttfamily std\+::mt19937 \& nuslam\+::get\+\_\+random (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+create random number generator with common seed 
+
+\begin{DoxyReturn}{Returns}
+number generator 
+\end{DoxyReturn}
+\mbox{\Hypertarget{ekf_8hpp_file_aeb4d0c73a3d4fb1c60d70cb02a547f75}\label{ekf_8hpp_file_aeb4d0c73a3d4fb1c60d70cb02a547f75}} 
+\index{ekf.\+hpp@{ekf.\+hpp}!get\+Multivar\+Noise@{get\+Multivar\+Noise}}
+\index{get\+Multivar\+Noise@{get\+Multivar\+Noise}!ekf.\+hpp@{ekf.\+hpp}}
+\subsubsection{\texorpdfstring{get\+Multivar\+Noise()}{getMultivarNoise()}}
+{\footnotesize\ttfamily Eigen\+::\+Vector\+Xd nuslam\+::get\+Multivar\+Noise (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Matrix\+Xd \&}]{noise\+\_\+mtx }\end{DoxyParamCaption})}
+
+
+
+returns noise for each dimension (x,y,theta) extracted from 3D normal distribution using Cholesky Decomposition 
+
+\begin{DoxyReturn}{Returns}
+noise matrix 
+\end{DoxyReturn}
+\mbox{\Hypertarget{ekf_8hpp_file_ad7de408dbbbab0e7ccd8ab5472de02d7}\label{ekf_8hpp_file_ad7de408dbbbab0e7ccd8ab5472de02d7}} 
+\index{ekf.\+hpp@{ekf.\+hpp}!sample\+Normal\+Distribution@{sample\+Normal\+Distribution}}
+\index{sample\+Normal\+Distribution@{sample\+Normal\+Distribution}!ekf.\+hpp@{ekf.\+hpp}}
+\subsubsection{\texorpdfstring{sample\+Normal\+Distribution()}{sampleNormalDistribution()}}
+{\footnotesize\ttfamily Eigen\+::\+Vector\+Xd nuslam\+::sample\+Normal\+Distribution (\begin{DoxyParamCaption}\item[{int}]{mtx\+\_\+dimension }\end{DoxyParamCaption})}
+
+
+
+sample normal distribution 
+
+\begin{DoxyReturn}{Returns}
+noies vector 
+\end{DoxyReturn}

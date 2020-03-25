@@ -1,0 +1,343 @@
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:33: warning: Compound nuslam::Point is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:58: warning: Compound nuslam::ProcessNoise is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:21: warning: Compound nuslam::RangeBear is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:80: warning: Compound nuslam::MeasurementNoise is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:26: warning: Compound nuslam::CovarianceMatrix is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_gazebo/include/nuturtle_gazebo/turtle_drive_plugin.hpp:24: warning: Compound gazebo::TurtleDrivePlugin is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:13: warning: Compound rigid2d::Waypoints is not documented.
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_rect.cpp:51: warning: documented symbol `turtle_rect::TurtleRect::TurtleRect' was not declared or defined.
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_rect.cpp:136: warning: documented symbol `bool turtle_rect::TurtleRect::traj_resetCallback' was not declared or defined.
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_rect.cpp:186: warning: no matching file member found for 
+void turtle_rect::TurtleRect::poseCallback(const turtlesim::PoseConstPtr &msg)
+Possible candidates:
+ 'void poseCallback(const turtlesim::PoseConstPtr &pos)' at line 55 of file/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_way_node.cpp
+
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_rect.cpp:204: warning: no matching file member found for 
+void turtle_rect::TurtleRect::move(const float &goal_x, const float &goal_y, const float &goal_head)
+Possible candidates:
+ 'bool move' at line 58 of file/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/real_waypoint.cpp
+
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_rect.cpp:289: warning: no matching class member found for 
+  void turtle_rect::TurtleRect::predict()
+
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_rect.cpp:334: warning: documented symbol `void turtle_rect::TurtleRect::control' was not declared or defined.
+/home/mori/Projects/slam/ws/src/main/nuturtle_description/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
+/home/mori/Projects/slam/ws/src/main/nuturtle_gazebo/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
+/home/mori/Projects/slam/ws/src/main/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
+/home/mori/Projects/slam/ws/src/main/rigid2d/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
+/home/mori/Projects/slam/ws/src/main/tsim/README.md:1: warning: found more than one \mainpage comment block! (first occurrence: /home/mori/Projects/slam/ws/src/main/nuslam/README.md, line 2), Skipping current block!
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:179: warning: parameters of member nuslam::getMultivarNoise are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:173: warning: parameters of member nuslam::sampleNormalDistribution are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:116: warning: argument 'RangeBear' of command @param is not found in the argument list of nuslam::polarToCartesian(const RangeBear &range_bear)
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:119: warning: The following parameters of nuslam::polarToCartesian(const RangeBear &range_bear) are not documented:
+  parameter 'range_bear'
+/home/mori/Projects/slam/ws/src/main/nuslam/src/analysis.cpp:107: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/src/analysis.cpp:107: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/nuslam/src/analysis.cpp:40: warning: Member callback_flag (variable) of file analysis.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/analysis.cpp:41: warning: Member map (variable) of file analysis.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/analysis.cpp:42: warning: Member landmark_name (variable) of file analysis.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/analysis.cpp:43: warning: Member robot_name (variable) of file analysis.cpp is not documented.
+<gazebo_callback>:1: warning: argument 'gazebo_msgs' of command @param is not found in the argument list of gazebo_callback(const gazebo_msgs::ModelStates &model)
+<gazebo_callback>:1: warning: argument 'ModelStates' of command @param is not found in the argument list of gazebo_callback(const gazebo_msgs::ModelStates &model)
+<gazebo_callback>:1: warning: argument 'containing' of command @param is not found in the argument list of gazebo_callback(const gazebo_msgs::ModelStates &model)
+/home/mori/Projects/slam/ws/src/main/nuslam/src/analysis.cpp:46: warning: The following parameters of gazebo_callback(const gazebo_msgs::ModelStates &model) are not documented:
+  parameter 'model'
+/home/mori/Projects/slam/ws/src/main/nuslam/src/draw_map.cpp:50: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/src/draw_map.cpp:50: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/nuslam/src/draw_map.cpp:36: warning: Member callback_flag (variable) of file draw_map.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/draw_map.cpp:37: warning: Member global_map (variable) of file draw_map.cpp is not documented.
+<mapCallback>:1: warning: argument 'nuslam' of command @param is not found in the argument list of mapCallback(const nuslam::TurtleMap &map)
+<mapCallback>:1: warning: argument 'TurtleMap' of command @param is not found in the argument list of mapCallback(const nuslam::TurtleMap &map)
+<mapCallback>:1: warning: argument 'which' of command @param is not found in the argument list of mapCallback(const nuslam::TurtleMap &map)
+/home/mori/Projects/slam/ws/src/main/nuslam/src/draw_map.cpp:39: warning: The following parameters of mapCallback(const nuslam::TurtleMap &map) are not documented:
+  parameter 'map'
+/home/mori/Projects/slam/ws/src/main/nuslam/src/landmarks_node.cpp:240: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/src/landmarks_node.cpp:240: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/nuslam/src/landmarks_node.cpp:41: warning: Member threshold_ (variable) of file landmarks_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/landmarks_node.cpp:42: warning: Member callback_flag (variable) of file landmarks_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/landmarks_node.cpp:43: warning: Member map (variable) of file landmarks_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/landmarks_node.cpp:45: warning: Member pc (variable) of file landmarks_node.cpp is not documented.
+<scan_callback>:1: warning: argument 'sensor_msgs' of command @param is not found in the argument list of scan_callback(const sensor_msgs::LaserScan &lsr)
+<scan_callback>:1: warning: argument 'LaserScan' of command @param is not found in the argument list of scan_callback(const sensor_msgs::LaserScan &lsr)
+<scan_callback>:1: warning: argument 'which' of command @param is not found in the argument list of scan_callback(const sensor_msgs::LaserScan &lsr)
+/home/mori/Projects/slam/ws/src/main/nuslam/src/landmarks_node.cpp:48: warning: The following parameters of scan_callback(const sensor_msgs::LaserScan &lsr) are not documented:
+  parameter 'lsr'
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:187: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:187: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:64: warning: Member wl_enc (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:65: warning: Member wr_enc (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:66: warning: Member ekf_wl_enc (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:67: warning: Member ekf_wr_enc (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:68: warning: Member Vb (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:69: warning: Member w_vel (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:70: warning: Member reset_pose (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:71: warning: Member driver (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:72: warning: Member ekf_driver (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:73: warning: Member callback_flag (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:74: warning: Member landmark_flag (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:75: warning: Member odom_flag (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:76: warning: Member service_flag (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:78: warning: Member ekf (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:79: warning: Member radii (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:80: warning: Member x_pts (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:81: warning: Member y_pts (variable) of file slam.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:92: warning: Unsupported xml/html tag <message> found
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:166: warning: argument 'x' of command @param is not found in the argument list of set_poseCallback(rigid2d::SetPose::Request &req, rigid2d::SetPose::Response &res)
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:166: warning: argument 'y' of command @param is not found in the argument list of set_poseCallback(rigid2d::SetPose::Request &req, rigid2d::SetPose::Response &res)
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:166: warning: argument 'theta' of command @param is not found in the argument list of set_poseCallback(rigid2d::SetPose::Request &req, rigid2d::SetPose::Response &res)
+/home/mori/Projects/slam/ws/src/main/nuslam/src/slam.cpp:165: warning: The following parameters of set_poseCallback(rigid2d::SetPose::Request &req, rigid2d::SetPose::Response &res) are not documented:
+  parameter 'req'
+  parameter 'res'
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:126: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:126: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:58: warning: Member gazebo_callback_flag (variable) of file visualizer.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:59: warning: Member odom_callback_flag (variable) of file visualizer.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:60: warning: Member slam_callback_flag (variable) of file visualizer.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:61: warning: Member gazebo_poses (variable) of file visualizer.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:62: warning: Member odom_poses (variable) of file visualizer.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:63: warning: Member slam_poses (variable) of file visualizer.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:64: warning: Member frame_id_ (variable) of file visualizer.cpp is not documented.
+<gazebo_callback>:1: warning: argument 'gazebo_msgs' of command @param is not found in the argument list of gazebo_callback(const gazebo_msgs::ModelStates &model)
+<gazebo_callback>:1: warning: argument 'ModelStates' of command @param is not found in the argument list of gazebo_callback(const gazebo_msgs::ModelStates &model)
+<gazebo_callback>:1: warning: argument 'containing' of command @param is not found in the argument list of gazebo_callback(const gazebo_msgs::ModelStates &model)
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:67: warning: The following parameters of gazebo_callback(const gazebo_msgs::ModelStates &model) are not documented:
+  parameter 'model'
+<odom_callback>:1: warning: argument 'nav_msgs' of command @param is not found in the argument list of odom_callback(const nav_msgs::Odometry &odom)
+<odom_callback>:1: warning: argument 'Odometry' of command @param is not found in the argument list of odom_callback(const nav_msgs::Odometry &odom)
+<odom_callback>:1: warning: argument 'containing' of command @param is not found in the argument list of odom_callback(const nav_msgs::Odometry &odom)
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:91: warning: The following parameters of odom_callback(const nav_msgs::Odometry &odom) are not documented:
+  parameter 'odom'
+<slam_callback>:1: warning: argument 'nav_msgs' of command @param is not found in the argument list of slam_callback(const nav_msgs::Odometry &slam)
+<slam_callback>:1: warning: argument 'Odometry' of command @param is not found in the argument list of slam_callback(const nav_msgs::Odometry &slam)
+<slam_callback>:1: warning: argument 'containing' of command @param is not found in the argument list of slam_callback(const nav_msgs::Odometry &slam)
+/home/mori/Projects/slam/ws/src/main/nuslam/src/visualizer.cpp:108: warning: The following parameters of slam_callback(const nav_msgs::Odometry &slam) are not documented:
+  parameter 'slam'
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/real_waypoint.cpp:104: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/real_waypoint.cpp:104: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/real_waypoint.cpp:57: warning: Member pose (variable) of file real_waypoint.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/real_waypoint.cpp:58: warning: Member move (variable) of file real_waypoint.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/real_waypoint.cpp:59: warning: Member callback_flag (variable) of file real_waypoint.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:131: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:131: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:50: warning: Member request (variable) of file rotation.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:51: warning: Member start_called (variable) of file rotation.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:53: warning: Member timer_count (variable) of file rotation.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:54: warning: Member cycle_trigger (variable) of file rotation.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:55: warning: Member rotation_count (variable) of file rotation.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:56: warning: Member translation_count (variable) of file rotation.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:57: warning: Member pause_count (variable) of file rotation.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:60: warning: Member full_rots (variable) of file rotation.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:61: warning: Member full_trans (variable) of file rotation.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:63: warning: Member rot (variable) of file rotation.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:64: warning: Member trans (variable) of file rotation.cpp is not documented.
+<startCallback>:1: warning: argument 'rot_trans' of command @param is not found in the argument list of startCallback(nuturtle_robot::Rotation::Request &req, nuturtle_robot::Rotation::Response &res)
+<startCallback>:1: warning: argument 'rot_direction' of command @param is not found in the argument list of startCallback(nuturtle_robot::Rotation::Request &req, nuturtle_robot::Rotation::Response &res)
+<startCallback>:1: warning: argument 'trans_direction' of command @param is not found in the argument list of startCallback(nuturtle_robot::Rotation::Request &req, nuturtle_robot::Rotation::Response &res)
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/rotation.cpp:66: warning: The following parameters of startCallback(nuturtle_robot::Rotation::Request &req, nuturtle_robot::Rotation::Response &res) are not documented:
+  parameter 'req'
+  parameter 'res'
+<timerCallback>:1: warning: argument 'ros' of command @param is not found in the argument list of timerCallback(const ros::TimerEvent &, const ros::Publisher &vel_pub)
+<timerCallback>:1: warning: argument 'TimerEvent' of command @param is not found in the argument list of timerCallback(const ros::TimerEvent &, const ros::Publisher &vel_pub)
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:149: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:149: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:49: warning: Member w_vel (variable) of file turtle_interface.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:50: warning: Member w_vel_measured (variable) of file turtle_interface.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:51: warning: Member w_ang (variable) of file turtle_interface.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:52: warning: Member driver (variable) of file turtle_interface.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:53: warning: Member frequency (variable) of file turtle_interface.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:54: warning: Member vel_flag (variable) of file turtle_interface.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:55: warning: Member sensor_flag (variable) of file turtle_interface.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:56: warning: Member max_lin_vel_ (variable) of file turtle_interface.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:57: warning: Member max_ang_vel_ (variable) of file turtle_interface.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:58: warning: Member motor_rot_max_ (variable) of file turtle_interface.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:59: warning: Member encoder_ticks_per_rev_ (variable) of file turtle_interface.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/nuturtle_robot/src/turtle_interface.cpp:71: warning: Unsupported xml/html tag <message> found
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:10: warning: Member normalize_encoders(double rad) (function) of namespace rigid2d is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:127: warning: argument 'dd' of command @param is not found in the argument list of rigid2d::operator<<(std::ostream &os, const DiffDrive &driver)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:132: warning: The following parameters of rigid2d::operator<<(std::ostream &os, const DiffDrive &driver) are not documented:
+  parameter 'driver'
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:132: warning: return type of member rigid2d::operator<< is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:172: warning: parameters of member rigid2d::operator<< are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:172: warning: return type of member rigid2d::operator<< is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:182: warning: parameters of member rigid2d::operator>> are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:182: warning: return type of member rigid2d::operator>> is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:19: warning: Unsupported xml/html tag <cmath> found
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:282: warning: return type of member rigid2d::operator<< is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:331: warning: argument 'tf' of command @param is not found in the argument list of rigid2d::operator<<(std::ostream &os, const Twist2D &tw)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:336: warning: The following parameters of rigid2d::operator<<(std::ostream &os, const Twist2D &tw) are not documented:
+  parameter 'tw'
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:336: warning: return type of member rigid2d::operator<< is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:287: warning: parameters of member rigid2d::operator>> are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:287: warning: return type of member rigid2d::operator>> is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:341: warning: parameters of member rigid2d::operator>> are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:341: warning: return type of member rigid2d::operator>> is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/fake_diff_encoders_node.cpp:71: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/fake_diff_encoders_node.cpp:71: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/fake_diff_encoders_node.cpp:40: warning: Member w_ang (variable) of file fake_diff_encoders_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/fake_diff_encoders_node.cpp:41: warning: Member driver (variable) of file fake_diff_encoders_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/fake_diff_encoders_node.cpp:42: warning: Member frequency (variable) of file fake_diff_encoders_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/fake_diff_encoders_node.cpp:43: warning: Member callback_flag (variable) of file fake_diff_encoders_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/fake_diff_encoders_node.cpp:54: warning: Unsupported xml/html tag <message> found
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:100: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:100: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:45: warning: Member wl_enc (variable) of file odometer_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:46: warning: Member wr_enc (variable) of file odometer_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:47: warning: Member Vb (variable) of file odometer_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:48: warning: Member w_vel (variable) of file odometer_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:49: warning: Member reset_pose (variable) of file odometer_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:50: warning: Member driver (variable) of file odometer_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:51: warning: Member callback_flag (variable) of file odometer_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:52: warning: Member service_flag (variable) of file odometer_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:63: warning: Unsupported xml/html tag <message> found
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:79: warning: argument 'x' of command @param is not found in the argument list of set_poseCallback(rigid2d::SetPose::Request &req, rigid2d::SetPose::Response &res)
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:79: warning: argument 'y' of command @param is not found in the argument list of set_poseCallback(rigid2d::SetPose::Request &req, rigid2d::SetPose::Response &res)
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:79: warning: argument 'theta' of command @param is not found in the argument list of set_poseCallback(rigid2d::SetPose::Request &req, rigid2d::SetPose::Response &res)
+/home/mori/Projects/slam/ws/src/main/rigid2d/src/odometer_node.cpp:78: warning: The following parameters of set_poseCallback(rigid2d::SetPose::Request &req, rigid2d::SetPose::Response &res) are not documented:
+  parameter 'req'
+  parameter 'res'
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_rect_node.cpp:31: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_rect_node.cpp:31: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_way_node.cpp:72: warning: parameters of member main are not (all) documented
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_way_node.cpp:72: warning: return type of member main is not documented
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_way_node.cpp:53: warning: Member pose (variable) of file turtle_way_node.cpp is not documented.
+/home/mori/Projects/slam/ws/src/main/tsim/src/turtle_way_node.cpp:64: warning: Unsupported xml/html tag <message> found
+/home/mori/Projects/slam/ws/src/main/nuturtle_gazebo/include/nuturtle_gazebo/turtle_drive_plugin.hpp:35: warning: argument 'physics' of command @param is not found in the argument list of gazebo::TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
+/home/mori/Projects/slam/ws/src/main/nuturtle_gazebo/include/nuturtle_gazebo/turtle_drive_plugin.hpp:35: warning: argument 'ModelPtr' of command @param is not found in the argument list of gazebo::TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
+/home/mori/Projects/slam/ws/src/main/nuturtle_gazebo/include/nuturtle_gazebo/turtle_drive_plugin.hpp:35: warning: argument 'sdf' of command @param is not found in the argument list of gazebo::TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
+/home/mori/Projects/slam/ws/src/main/nuturtle_gazebo/include/nuturtle_gazebo/turtle_drive_plugin.hpp:35: warning: argument 'ElementPtr' of command @param is not found in the argument list of gazebo::TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
+/home/mori/Projects/slam/ws/src/main/nuturtle_gazebo/include/nuturtle_gazebo/turtle_drive_plugin.hpp:39: warning: The following parameters of gazebo::TurtleDrivePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) are not documented:
+  parameter '_model'
+  parameter '_sdf'
+/home/mori/Projects/slam/ws/src/main/nuturtle_gazebo/include/nuturtle_gazebo/turtle_drive_plugin.hpp:31: warning: argument 'nuturtlebot' of command @param is not found in the argument list of gazebo::TurtleDrivePlugin::wheel_cmdCallback(const nuturtlebot::WheelCommands &wc)
+/home/mori/Projects/slam/ws/src/main/nuturtle_gazebo/include/nuturtle_gazebo/turtle_drive_plugin.hpp:31: warning: argument 'WheelCommands' of command @param is not found in the argument list of gazebo::TurtleDrivePlugin::wheel_cmdCallback(const nuturtlebot::WheelCommands &wc)
+/home/mori/Projects/slam/ws/src/main/nuturtle_gazebo/include/nuturtle_gazebo/turtle_drive_plugin.hpp:33: warning: The following parameters of gazebo::TurtleDrivePlugin::wheel_cmdCallback(const nuturtlebot::WheelCommands &wc) are not documented:
+  parameter 'wc'
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:45: warning: parameters of member nuslam::CovarianceMatrix::CovarianceMatrix are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:50: warning: parameters of member nuslam::CovarianceMatrix::CovarianceMatrix are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:28: warning: Member robot_state_cov (variable) of class nuslam::CovarianceMatrix is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:31: warning: Member map_state (variable) of class nuslam::CovarianceMatrix is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:34: warning: Member map_state_cov (variable) of class nuslam::CovarianceMatrix is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:37: warning: Member cov_mtx (variable) of class nuslam::CovarianceMatrix is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:108: warning: parameters of member nuslam::EKF::EKF are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:152: warning: parameters of member nuslam::EKF::reset_pose are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:127: warning: argument 'measurements' of command @param is not found in the argument list of nuslam::EKF::mahalanobis_test(const Eigen::VectorXd &z)
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:131: warning: The following parameters of nuslam::EKF::mahalanobis_test(const Eigen::VectorXd &z) are not documented:
+  parameter 'z'
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:122: warning: argument 'vector' of command @param is not found in the argument list of nuslam::EKF::msr_update(const std::vector< Point > &measurements_)
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:125: warning: The following parameters of nuslam::EKF::msr_update(const std::vector< Point > &measurements_) are not documented:
+  parameter 'measurements_'
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:112: warning: argument 'Twist2D' of command @param is not found in the argument list of nuslam::EKF::predict(const Twist2D &twist)
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:115: warning: The following parameters of nuslam::EKF::predict(const Twist2D &twist) are not documented:
+  parameter 'twist'
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:143: warning: argument 'Eigen' of command @param is not found in the argument list of nuslam::EKF::return_pose()
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:143: warning: argument 'MatrixXd' of command @param is not found in the argument list of nuslam::EKF::return_pose()
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:100: warning: Member points (variable) of class nuslam::Landmark is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:58: warning: argument 'threshold' of command @param is not found in the argument list of nuslam::Landmark::Landmark(const double &threshold_)
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:60: warning: The following parameters of nuslam::Landmark::Landmark(const double &threshold_) are not documented:
+  parameter 'threshold_'
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:62: warning: argument 'radius' of command @param is not found in the argument list of nuslam::Landmark::Landmark(const double &radius_, const Point &coords_, const std::vector< Point > points_, const double &threshold_)
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:62: warning: argument 'threshold' of command @param is not found in the argument list of nuslam::Landmark::Landmark(const double &radius_, const Point &coords_, const std::vector< Point > points_, const double &threshold_)
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:67: warning: The following parameters of nuslam::Landmark::Landmark(const double &radius_, const Point &coords_, const std::vector< Point > points_, const double &threshold_) are not documented:
+  parameter 'radius_'
+  parameter 'threshold_'
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:70: warning: argument 'point' of command @param is not found in the argument list of nuslam::Landmark::evaluate_point(const Point &point_)
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:75: warning: The following parameters of nuslam::Landmark::evaluate_point(const Point &point_) are not documented:
+  parameter 'point_'
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:91: warning: parameters of member nuslam::MeasurementNoise::MeasurementNoise are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:82: warning: Member rb_noise_var (variable) of class nuslam::MeasurementNoise is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:85: warning: Member R (variable) of class nuslam::MeasurementNoise is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:45: warning: Member Point(const Vector2D &pose_) (function) of class nuslam::Point is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:48: warning: Member Point(const RangeBear &range_bear_) (function) of class nuslam::Point is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:34: warning: Member range_bear (variable) of class nuslam::Point is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:35: warning: Member pose (variable) of class nuslam::Point is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:37: warning: Member init (variable) of class nuslam::Point is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:38: warning: Member index (variable) of class nuslam::Point is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:39: warning: Member seen_count (variable) of class nuslam::Point is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:75: warning: parameters of member nuslam::ProcessNoise::ProcessNoise are not (all) documented
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:60: warning: Member map_size (variable) of class nuslam::ProcessNoise is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:63: warning: Member xyt_noise (variable) of class nuslam::ProcessNoise is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:66: warning: Member q (variable) of class nuslam::ProcessNoise is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/ekf.hpp:69: warning: Member Q (variable) of class nuslam::ProcessNoise is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:28: warning: Member RangeBear(const double &range_, const double &bearing_) (function) of class nuslam::RangeBear is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:22: warning: Member range (variable) of class nuslam::RangeBear is not documented.
+/home/mori/Projects/slam/ws/src/main/nuslam/include/nuslam/landmarks.hpp:22: warning: Member bearing (variable) of class nuslam::RangeBear is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:100: warning: return type of member rigid2d::DiffDrive::get_pose is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:103: warning: return type of member rigid2d::DiffDrive::get_ang is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:106: warning: parameters of member rigid2d::DiffDrive::set_static are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:109: warning: return type of member rigid2d::DiffDrive::wheelVelocities is not documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:112: warning: parameters of member rigid2d::DiffDrive::reset are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:60: warning: parameters of member rigid2d::DiffDrive::Waypoints are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:65: warning: argument 'Pose2D' of command @param is not found in the argument list of rigid2d::DiffDrive::DiffDrive(rigid2d::Pose2D pose_, double wheel_base_, double wheel_radius_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:65: warning: argument 'wheel_base' of command @param is not found in the argument list of rigid2d::DiffDrive::DiffDrive(rigid2d::Pose2D pose_, double wheel_base_, double wheel_radius_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:65: warning: argument 'wheel_radius' of command @param is not found in the argument list of rigid2d::DiffDrive::DiffDrive(rigid2d::Pose2D pose_, double wheel_base_, double wheel_radius_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:70: warning: The following parameters of rigid2d::DiffDrive::DiffDrive(rigid2d::Pose2D pose_, double wheel_base_, double wheel_radius_) are not documented:
+  parameter 'pose_'
+  parameter 'wheel_base_'
+  parameter 'wheel_radius_'
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:72: warning: argument 'twist' of command @param is not found in the argument list of rigid2d::DiffDrive::twistToWheels(rigid2d::Twist2D Vb)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:78: warning: The following parameters of rigid2d::DiffDrive::twistToWheels(rigid2d::Twist2D Vb) are not documented:
+  parameter 'Vb'
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:41: warning: Member Pose2D(double x_, double y_, double theta_) (function) of class rigid2d::Pose2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:33: warning: Member x (variable) of class rigid2d::Pose2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:34: warning: Member y (variable) of class rigid2d::Pose2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:35: warning: Member theta (variable) of class rigid2d::Pose2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:205: warning: Member Screw2D(double w_z_, double v_x_, double v_y_) (function) of class rigid2d::Screw2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:199: warning: Member w_z (variable) of class rigid2d::Screw2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:199: warning: Member v_x (variable) of class rigid2d::Screw2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:199: warning: Member v_y (variable) of class rigid2d::Screw2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:230: warning: argument 'rot' of command @param is not found in the argument list of rigid2d::Transform2D::Transform2D(const Vector2D &trans, double radians)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:234: warning: The following parameters of rigid2d::Transform2D::Transform2D(const Vector2D &trans, double radians) are not documented:
+  parameter 'radians'
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:269: warning: parameters of member rigid2d::Transform2D::operator>> are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:193: warning: Member Transform2DS(double theta_, double x_, double y_) (function) of class rigid2d::Transform2DS is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:187: warning: Member theta (variable) of class rigid2d::Transform2DS is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:187: warning: Member x (variable) of class rigid2d::Transform2DS is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:187: warning: Member y (variable) of class rigid2d::Transform2DS is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:308: warning: parameters of member rigid2d::Twist2D::Twist2D are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:316: warning: parameters of member rigid2d::Twist2D::reassign are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:328: warning: Member v_x (variable) of class rigid2d::Twist2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:328: warning: Member v_y (variable) of class rigid2d::Twist2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:328: warning: Member w_z (variable) of class rigid2d::Twist2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:301: warning: parameters of member rigid2d::Twist2D::DiffDrive are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:302: warning: parameters of member rigid2d::Twist2D::Waypoints are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:331: warning: argument 'tf' of command @param is not found in the argument list of rigid2d::Twist2D::operator<<(std::ostream &os, const Twist2D &tw)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:321: warning: The following parameters of rigid2d::Twist2D::operator<<(std::ostream &os, const Twist2D &tw) are not documented:
+  parameter 'tw'
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:326: warning: parameters of member rigid2d::Twist2D::operator>> are not (all) documented
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:105: warning: Member Vector2D(double x_, double y_) (function) of class rigid2d::Vector2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:108: warning: Member normalize() (function) of class rigid2d::Vector2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:96: warning: Member x (variable) of class rigid2d::Vector2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:97: warning: Member y (variable) of class rigid2d::Vector2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:98: warning: Member norm_x (variable) of class rigid2d::Vector2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:99: warning: Member norm_y (variable) of class rigid2d::Vector2D is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:120: warning: argument 'rhs' of command @param is not found in the argument list of rigid2d::Vector2D::operator*=(const double &scalar)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/rigid2d.hpp:123: warning: The following parameters of rigid2d::Vector2D::operator*=(const double &scalar) are not documented:
+  parameter 'scalar'
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:18: warning: argument 'std' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:18: warning: argument 'vector' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:18: warning: argument 'rigid2d' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:18: warning: argument 'Vector2D' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:21: warning: The following parameters of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_) are not documented:
+  parameter 'waypoints_'
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:23: warning: argument 'std' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_, const double &P_h_, const double &P_l_, const double &w_z_max_, const double &v_x_max_, const double &threshold_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:23: warning: argument 'vector' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_, const double &P_h_, const double &P_l_, const double &w_z_max_, const double &v_x_max_, const double &threshold_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:23: warning: argument 'rigid2d' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_, const double &P_h_, const double &P_l_, const double &w_z_max_, const double &v_x_max_, const double &threshold_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:23: warning: argument 'Vector2D' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_, const double &P_h_, const double &P_l_, const double &w_z_max_, const double &v_x_max_, const double &threshold_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:23: warning: argument 'double' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_, const double &P_h_, const double &P_l_, const double &w_z_max_, const double &v_x_max_, const double &threshold_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:23: warning: argument 'double' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_, const double &P_h_, const double &P_l_, const double &w_z_max_, const double &v_x_max_, const double &threshold_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:23: warning: argument 'double' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_, const double &P_h_, const double &P_l_, const double &w_z_max_, const double &v_x_max_, const double &threshold_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:23: warning: argument 'double' of command @param is not found in the argument list of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_, const double &P_h_, const double &P_l_, const double &w_z_max_, const double &v_x_max_, const double &threshold_)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:31: warning: The following parameters of rigid2d::Waypoints::Waypoints(const std::vector< Vector2D > &waypoints_, const double &P_h_, const double &P_l_, const double &w_z_max_, const double &v_x_max_, const double &threshold_) are not documented:
+  parameter 'waypoints_'
+  parameter 'P_h_'
+  parameter 'P_l_'
+  parameter 'w_z_max_'
+  parameter 'v_x_max_'
+  parameter 'threshold_'
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:34: warning: argument 'DiffDrive' of command @param is not found in the argument list of rigid2d::Waypoints::nextWaypoint(const Pose2D &pose)
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/waypoints.hpp:39: warning: The following parameters of rigid2d::Waypoints::nextWaypoint(const Pose2D &pose) are not documented:
+  parameter 'pose'
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:54: warning: Member WheelVelocities(double ul_, double ur_) (function) of class rigid2d::WheelVelocities is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:47: warning: Member ul (variable) of class rigid2d::WheelVelocities is not documented.
+/home/mori/Projects/slam/ws/src/main/rigid2d/include/rigid2d/diff_drive.hpp:48: warning: Member ur (variable) of class rigid2d::WheelVelocities is not documented.

@@ -1,0 +1,165 @@
+\hypertarget{slam_8cpp}{}\section{nuslam/src/slam.cpp File Reference}
+\label{slam_8cpp}\index{nuslam/src/slam.\+cpp@{nuslam/src/slam.\+cpp}}
+
+
+Main\+: Publishes Odometry messages for diff drive robot using Extended Kalman Filter S\+L\+AM.  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$sensor\+\_\+msgs/\+Joint\+State.\+h$>$}\newline
+{\ttfamily \#include $<$nav\+\_\+msgs/\+Odometry.\+h$>$}\newline
+{\ttfamily \#include $<$tf2/\+Linear\+Math/\+Quaternion.\+h$>$}\newline
+{\ttfamily \#include $<$tf2\+\_\+ros/transform\+\_\+broadcaster.\+h$>$}\newline
+{\ttfamily \#include $<$tf2\+\_\+geometry\+\_\+msgs/tf2\+\_\+geometry\+\_\+msgs.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}rigid2d/\+Set\+Pose.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include \char`\"{}nuslam/landmarks.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}nuslam/ekf.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}nuslam/\+Turtle\+Map.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rigid2d/rigid2d.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rigid2d/diff\+\_\+drive.\+hpp\char`\"{}}\newline
+Include dependency graph for slam.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d2/d57/slam_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{slam_8cpp_a8f0c3d2ac4fed55d807bd69afb5243b4}{js\+\_\+callback} (const sensor\+\_\+msgs\+::\+Joint\+State\+::\+Const\+Ptr \&js)
+\item 
+void \hyperlink{slam_8cpp_a7c7402381f220beb7cf9b6be1a846a0d}{landmark\+\_\+callback} (const nuslam\+::\+Turtle\+Map \&map)
+\item 
+bool \hyperlink{slam_8cpp_adb6929707bcc4d4fb332481cb33e4f2b}{set\+\_\+pose\+Callback} (rigid2d\+::\+Set\+Pose\+::\+Request \&req, rigid2d\+::\+Set\+Pose\+::\+Response \&res)
+\begin{DoxyCompactList}\small\item\em set\+\_\+pose service callback. Sets the turtlebot\textquotesingle{}s pose belief to desired value. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{slam_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{slam_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{slam_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The Main Function ///. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{slam_8cpp_ad1ee493a9c3d90ec79d68e9de39a0d62}\label{slam_8cpp_ad1ee493a9c3d90ec79d68e9de39a0d62}} 
+float {\bfseries wl\+\_\+enc} = 0
+\item 
+\mbox{\Hypertarget{slam_8cpp_a82d2473bdd4614b5a4532a95a0382487}\label{slam_8cpp_a82d2473bdd4614b5a4532a95a0382487}} 
+float {\bfseries wr\+\_\+enc} = 0
+\item 
+\mbox{\Hypertarget{slam_8cpp_a9cac548254b5baa18c6e6234daf6b363}\label{slam_8cpp_a9cac548254b5baa18c6e6234daf6b363}} 
+float {\bfseries ekf\+\_\+wl\+\_\+enc} = 0
+\item 
+\mbox{\Hypertarget{slam_8cpp_a0f595671e79941a5327ce59a25c848af}\label{slam_8cpp_a0f595671e79941a5327ce59a25c848af}} 
+float {\bfseries ekf\+\_\+wr\+\_\+enc} = 0
+\item 
+\mbox{\Hypertarget{slam_8cpp_abb35a308e88b2a5d113795948e6273a3}\label{slam_8cpp_abb35a308e88b2a5d113795948e6273a3}} 
+\hyperlink{classrigid2d_1_1Twist2D}{rigid2d\+::\+Twist2D} {\bfseries Vb}
+\item 
+\mbox{\Hypertarget{slam_8cpp_a002f817728ce76d60fecd0d2b5bcd214}\label{slam_8cpp_a002f817728ce76d60fecd0d2b5bcd214}} 
+\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities} {\bfseries w\+\_\+vel}
+\item 
+\mbox{\Hypertarget{slam_8cpp_aabf3dfeb602efbe1bc76a7918ae6e838}\label{slam_8cpp_aabf3dfeb602efbe1bc76a7918ae6e838}} 
+\hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D} {\bfseries reset\+\_\+pose}
+\item 
+\mbox{\Hypertarget{slam_8cpp_aae05b70475acb90fabcbcb02075b4a5c}\label{slam_8cpp_aae05b70475acb90fabcbcb02075b4a5c}} 
+\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive} {\bfseries driver}
+\item 
+\mbox{\Hypertarget{slam_8cpp_a0f9be3dafe77e9ce1672b5991913de9c}\label{slam_8cpp_a0f9be3dafe77e9ce1672b5991913de9c}} 
+\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive} {\bfseries ekf\+\_\+driver}
+\item 
+\mbox{\Hypertarget{slam_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}\label{slam_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}} 
+bool {\bfseries callback\+\_\+flag} = false
+\item 
+\mbox{\Hypertarget{slam_8cpp_aec95f3184024dd2d359b2aed43355edd}\label{slam_8cpp_aec95f3184024dd2d359b2aed43355edd}} 
+bool {\bfseries landmark\+\_\+flag} = false
+\item 
+\mbox{\Hypertarget{slam_8cpp_a766d6358d6980b16819f330ea0160e5d}\label{slam_8cpp_a766d6358d6980b16819f330ea0160e5d}} 
+bool {\bfseries odom\+\_\+flag} = false
+\item 
+\mbox{\Hypertarget{slam_8cpp_a13c6e8170f4eaffabda3cd95e02d139c}\label{slam_8cpp_a13c6e8170f4eaffabda3cd95e02d139c}} 
+bool {\bfseries service\+\_\+flag} = false
+\item 
+\mbox{\Hypertarget{slam_8cpp_a031d256a1ed5f4d7ff27d5bb5ae8eba1}\label{slam_8cpp_a031d256a1ed5f4d7ff27d5bb5ae8eba1}} 
+\hyperlink{classnuslam_1_1EKF}{nuslam\+::\+E\+KF} {\bfseries ekf}
+\item 
+\mbox{\Hypertarget{slam_8cpp_a95ebc576c07050b8e37cbcddffab08e1}\label{slam_8cpp_a95ebc576c07050b8e37cbcddffab08e1}} 
+std\+::vector$<$ double $>$ {\bfseries radii}
+\item 
+\mbox{\Hypertarget{slam_8cpp_a0c7bee542075db748c57c5b4604c062c}\label{slam_8cpp_a0c7bee542075db748c57c5b4604c062c}} 
+std\+::vector$<$ double $>$ {\bfseries x\+\_\+pts}
+\item 
+\mbox{\Hypertarget{slam_8cpp_acbd567921dc5721dadae3d37c73d4c26}\label{slam_8cpp_acbd567921dc5721dadae3d37c73d4c26}} 
+std\+::vector$<$ double $>$ {\bfseries y\+\_\+pts}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Main\+: Publishes Odometry messages for diff drive robot using Extended Kalman Filter S\+L\+AM. 
+
+P\+A\+R\+A\+M\+E\+T\+E\+RS\+: o\+\_\+fid\+\_\+ (string)\+: parent frame ID for the published tf transform o\+\_\+fid\+\_\+ (string)\+: child frame ID for the published tf transform wbase\+\_\+ (float)\+: wheel base of modeled diff drive robot wrad\+\_\+ (float)\+: wheel radius of modeled diff drive robot frequency (double)\+: frequency of control loop. callback\+\_\+flag (bool)\+: specifies whether to send a new transform (only when new pose is read) odom\+\_\+flag (bool)\+: specifies whether a new joint position was recorded (used in E\+KF Prediction) landmark\+\_\+flag (bool)\+: specifies whether a new landmark position was recorded (used in E\+KF Update)
+
+pose (\hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D})\+: modeled diff drive robot pose based on read wheel encoder angles wl\+\_\+enc (float)\+: left wheel encoder angles wr\+\_\+enc (float)\+: right wheel encoder angles driver (\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive})\+: model of the diff drive robot Vb (\hyperlink{classrigid2d_1_1Twist2D}{rigid2d\+::\+Twist2D})\+: read from driver instances to publish to odom message N\+O\+TE\+: using Vb instead of E\+KF Vb for smoother visualization in R\+Viz; no impact on E\+K\+F\+S\+L\+AM estimate w\+\_\+vel (\hyperlink{structrigid2d_1_1WheelVelocities}{rigid2d\+::\+Wheel\+Velocities})\+: wheel velocities used to calculate ddrive robot twist
+
+ekf\+\_\+wl\+\_\+enc (float)\+: left wheel encoder angles used for E\+K\+F\+S\+L\+AM ekf\+\_\+wr\+\_\+enc (float)\+: right wheel encoder angles used for E\+K\+F\+S\+L\+AM ekf\+\_\+driver (\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive})\+: model of the diff drive robot used for E\+K\+F\+S\+L\+AM ekf (\hyperlink{classnuslam_1_1EKF}{nuslam\+::\+E\+KF})\+: contains state vector for both robot and map state, as well as methods for computing estimates radii (std\+::vector$<$double$>$)\+: radii of landmarks reported by E\+KF estimate x\+\_\+pts (std\+::vector$<$double$>$)\+: x coordinates of landmarks reported by E\+KF estimate y\+\_\+pts (std\+::vector$<$double$>$)\+: y coordinates of landmarks reported by E\+KF estimate
+
+odom\+\_\+tf (geometry\+\_\+msgs\+::\+Transform\+Stamped)\+: odometry frame transform used to update R\+Viz sim odom (nav\+\_\+msgs\+::\+Odometry)\+: odometry message containing pose and twist published to odom topic
+
+P\+U\+B\+L\+I\+S\+H\+ES\+: odom (nav\+\_\+msgs\+::\+Odometry)\+: publishes odometry message containing pose(x,y,z) and twist(lin,ang) landmarks (nuslam\+::\+Turtle\+Map)\+: publishes Turtle\+Map message containing landmark coordinates (x,y) and radii
+
+S\+U\+B\+S\+C\+R\+I\+B\+ES\+: /joint\+\_\+states (sensor\+\_\+msgs\+::\+Joint\+State), which records the ddrive robot\textquotesingle{}s joint states /landmarks\+\_\+node/landmarks (nuslam\+::\+Turtle\+Map), stores lists of x,y coordinates and radii of detected landmarks
+
+F\+U\+N\+C\+T\+I\+O\+NS\+: js\+\_\+callback (void)\+: callback for /joint\+\_\+states subscriber, which records the ddrive robot\textquotesingle{}s joint states landmark\+\_\+callback (void)\+: callback for /landmarks\+\_\+node/landmarks subscriber, used to perform E\+K\+F\+S\+L\+AM set\+\_\+pose\+Callback (bool)\+: callback for set\+\_\+pose service, which resets the robot\textquotesingle{}s pose in the tf tree 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{slam_8cpp_a8f0c3d2ac4fed55d807bd69afb5243b4}\label{slam_8cpp_a8f0c3d2ac4fed55d807bd69afb5243b4}} 
+\index{slam.\+cpp@{slam.\+cpp}!js\+\_\+callback@{js\+\_\+callback}}
+\index{js\+\_\+callback@{js\+\_\+callback}!slam.\+cpp@{slam.\+cpp}}
+\subsubsection{\texorpdfstring{js\+\_\+callback()}{js\_callback()}}
+{\footnotesize\ttfamily void js\+\_\+callback (\begin{DoxyParamCaption}\item[{const sensor\+\_\+msgs\+::\+Joint\+State\+::\+Const\+Ptr \&}]{js }\end{DoxyParamCaption})}
+
+/joint\+\_\+states subscriber callback. Records left and right wheel angles
+
+
+\begin{DoxyParams}{Parameters}
+{\em js} & (sensor\+\_\+msgs\+::\+Joint\+State)\+: the left and right wheel joint angles \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+pose (\hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D})\+: modeled diff drive robot pose based on read wheel encoder angles
+\end{DoxyReturn}
+This function runs every time we get a sensor\+\_\+msgs\+::\+Joint\+State message on the \char`\"{}/joint\+\_\+states\char`\"{} topic. We generally use the const $<$message$>$Const\+Ptr \&msg syntax to prevent our node from accidentally changing the message, in the case that another node is also listening to it.\mbox{\Hypertarget{slam_8cpp_a7c7402381f220beb7cf9b6be1a846a0d}\label{slam_8cpp_a7c7402381f220beb7cf9b6be1a846a0d}} 
+\index{slam.\+cpp@{slam.\+cpp}!landmark\+\_\+callback@{landmark\+\_\+callback}}
+\index{landmark\+\_\+callback@{landmark\+\_\+callback}!slam.\+cpp@{slam.\+cpp}}
+\subsubsection{\texorpdfstring{landmark\+\_\+callback()}{landmark\_callback()}}
+{\footnotesize\ttfamily void landmark\+\_\+callback (\begin{DoxyParamCaption}\item[{const nuslam\+::\+Turtle\+Map \&}]{map }\end{DoxyParamCaption})}
+
+/landmarks\+\_\+node/landmarks subscriber callback. Used to perform E\+K\+F\+S\+L\+AM Measurement Update. Prediction Update also happens here. Condition for both updates\+: both happen only if joint state callback and landmark are triggered
+
+
+\begin{DoxyParams}{Parameters}
+{\em map} & (nuslam\+::\+Turtle\+Map)\+: message containing landmark coordinates (x,y) and radii \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{slam_8cpp_adb6929707bcc4d4fb332481cb33e4f2b}\label{slam_8cpp_adb6929707bcc4d4fb332481cb33e4f2b}} 
+\index{slam.\+cpp@{slam.\+cpp}!set\+\_\+pose\+Callback@{set\+\_\+pose\+Callback}}
+\index{set\+\_\+pose\+Callback@{set\+\_\+pose\+Callback}!slam.\+cpp@{slam.\+cpp}}
+\subsubsection{\texorpdfstring{set\+\_\+pose\+Callback()}{set\_poseCallback()}}
+{\footnotesize\ttfamily bool set\+\_\+pose\+Callback (\begin{DoxyParamCaption}\item[{rigid2d\+::\+Set\+Pose\+::\+Request \&}]{req,  }\item[{rigid2d\+::\+Set\+Pose\+::\+Response \&}]{res }\end{DoxyParamCaption})}
+
+
+
+set\+\_\+pose service callback. Sets the turtlebot\textquotesingle{}s pose belief to desired value. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & (float32)\+: desired x pose. \\
+\hline
+{\em y} & (float32)\+: desired y pose. \\
+\hline
+{\em theta} & (float32)\+: desired theta pose. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+result (bool)\+: True or False. 
+\end{DoxyReturn}

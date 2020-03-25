@@ -1,0 +1,119 @@
+\hypertarget{classrigid2d_1_1Twist2D}{}\section{rigid2d\+:\+:Twist2D Class Reference}
+\label{classrigid2d_1_1Twist2D}\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+
+
+a two-\/dimensional twist  
+
+
+
+
+{\ttfamily \#include $<$rigid2d.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a8a317315c9dc111b01e0f3c53af072b4}\label{classrigid2d_1_1Twist2D_a8a317315c9dc111b01e0f3c53af072b4}} 
+\hyperlink{classrigid2d_1_1Twist2D_a8a317315c9dc111b01e0f3c53af072b4}{Twist2D} ()
+\begin{DoxyCompactList}\small\item\em Create a zero-\/\+Twist. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_ac08464a283d6577dd5daffb82b2652ce}\label{classrigid2d_1_1Twist2D_ac08464a283d6577dd5daffb82b2652ce}} 
+\hyperlink{classrigid2d_1_1Twist2D_ac08464a283d6577dd5daffb82b2652ce}{Twist2D} (double w\+\_\+z\+\_\+, double v\+\_\+x\+\_\+, double v\+\_\+y\+\_\+)
+\begin{DoxyCompactList}\small\item\em Create a non-\/zero Twist. \end{DoxyCompactList}\item 
+\hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \hyperlink{classrigid2d_1_1Twist2D_af5d38e8a9b62c7f414453ea37e012697}{convert} (const \hyperlink{classrigid2d_1_1Transform2D}{Transform2D} \&tf) const
+\begin{DoxyCompactList}\small\item\em convert the twist using an adjoint \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_af9c23f13a251cbb56210a9fa870102ea}\label{classrigid2d_1_1Twist2D_af9c23f13a251cbb56210a9fa870102ea}} 
+void \hyperlink{classrigid2d_1_1Twist2D_af9c23f13a251cbb56210a9fa870102ea}{reassign} (double w\+\_\+z\+\_\+, double v\+\_\+x\+\_\+, double v\+\_\+y\+\_\+)
+\begin{DoxyCompactList}\small\item\em reassign \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} values \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_ad2f8bedd3dab17667975cac0b2742d45}\label{classrigid2d_1_1Twist2D_ad2f8bedd3dab17667975cac0b2742d45}} 
+double {\bfseries v\+\_\+x}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a3daf139ba86cb48702e00ac5a815a56c}\label{classrigid2d_1_1Twist2D_a3daf139ba86cb48702e00ac5a815a56c}} 
+double {\bfseries v\+\_\+y}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_aa1c51383a57fe07b3a944f99801d2058}\label{classrigid2d_1_1Twist2D_aa1c51383a57fe07b3a944f99801d2058}} 
+double {\bfseries w\+\_\+z}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a49f4e819b5084b5347aff6e6559b596b}\label{classrigid2d_1_1Twist2D_a49f4e819b5084b5347aff6e6559b596b}} 
+class \hyperlink{classrigid2d_1_1Twist2D_a49f4e819b5084b5347aff6e6559b596b}{Transform2D}
+\begin{DoxyCompactList}\small\item\em declare \hyperlink{classrigid2d_1_1Transform2D}{Transform2D} as friend so it can access \hyperlink{classrigid2d_1_1Twist2D}{Twist2D}\textquotesingle{}s private params \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a43d7c8fc235f7592079bde4168cd48d8}\label{classrigid2d_1_1Twist2D_a43d7c8fc235f7592079bde4168cd48d8}} 
+class {\bfseries Diff\+Drive}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_afeca09cf85f3491b24cdc9f9d41bab3d}\label{classrigid2d_1_1Twist2D_afeca09cf85f3491b24cdc9f9d41bab3d}} 
+class {\bfseries Waypoints}
+\item 
+std\+::ostream \& \hyperlink{classrigid2d_1_1Twist2D_aa73bc548f9e2f87b66c08cd96443e792}{operator$<$$<$} (std\+::ostream \&os, const \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \&tw)
+\begin{DoxyCompactList}\small\item\em should print a human readable version of the twist\+: An example output\+: dtheta (degrees)\+: 90 dx\+: 3 dy\+: 5 \end{DoxyCompactList}\item 
+std\+::istream \& \hyperlink{classrigid2d_1_1Twist2D_a123979c39440643723bcd0e3e04812df}{operator$>$$>$} (std\+::istream \&is, \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \&tw)
+\begin{DoxyCompactList}\small\item\em Read a twist from stdin Should be able to read input either as output by operator$<$$<$ or as 3 numbers (w\+\_\+z, v\+\_\+x, v\+\_\+y) separated by spaces or newlines. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+a two-\/dimensional twist 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_af5d38e8a9b62c7f414453ea37e012697}\label{classrigid2d_1_1Twist2D_af5d38e8a9b62c7f414453ea37e012697}} 
+\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}!convert@{convert}}
+\index{convert@{convert}!rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+\subsubsection{\texorpdfstring{convert()}{convert()}}
+{\footnotesize\ttfamily \hyperlink{classrigid2d_1_1Twist2D}{rigid2d\+::\+Twist2D} rigid2d\+::\+Twist2\+D\+::convert (\begin{DoxyParamCaption}\item[{const \hyperlink{classrigid2d_1_1Transform2D}{Transform2D} \&}]{tf }\end{DoxyParamCaption}) const}
+
+
+
+convert the twist using an adjoint 
+
+
+\begin{DoxyParams}{Parameters}
+{\em tf} & -\/ the frame to which the twist is converted. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the converted twist. 
+\end{DoxyReturn}
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_aa73bc548f9e2f87b66c08cd96443e792}\label{classrigid2d_1_1Twist2D_aa73bc548f9e2f87b66c08cd96443e792}} 
+\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+\subsubsection{\texorpdfstring{operator$<$$<$}{operator<<}}
+{\footnotesize\ttfamily std\+::ostream\& operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os,  }\item[{const \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \&}]{tw }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+should print a human readable version of the twist\+: An example output\+: dtheta (degrees)\+: 90 dx\+: 3 dy\+: 5 
+
+\begin{DoxySeeAlso}{See also}
+operator$<$$<$(...) (declared outside this class) for a description. friend tag allows non-\/member functions to access private params.
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{Parameters}
+{\em os} & -\/ an output stream \\
+\hline
+{\em tf} & -\/ the twist to print \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a123979c39440643723bcd0e3e04812df}\label{classrigid2d_1_1Twist2D_a123979c39440643723bcd0e3e04812df}} 
+\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}!operator$>$$>$@{operator$>$$>$}}
+\index{operator$>$$>$@{operator$>$$>$}!rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+\subsubsection{\texorpdfstring{operator$>$$>$}{operator>>}}
+{\footnotesize\ttfamily std\+::istream\& operator$>$$>$ (\begin{DoxyParamCaption}\item[{std\+::istream \&}]{is,  }\item[{\hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \&}]{tw }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+Read a twist from stdin Should be able to read input either as output by operator$<$$<$ or as 3 numbers (w\+\_\+z, v\+\_\+x, v\+\_\+y) separated by spaces or newlines. 
+
+\begin{DoxySeeAlso}{See also}
+operator$>$$>$(...) (declared outside this class) for a description. friend tag allows non-\/member functions to access private params. 
+\end{DoxySeeAlso}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+rigid2d/include/rigid2d/\hyperlink{rigid2d_8hpp}{rigid2d.\+hpp}\item 
+rigid2d/src/rigid2d/rigid2d.\+cpp\end{DoxyCompactItemize}

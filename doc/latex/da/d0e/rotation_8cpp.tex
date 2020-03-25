@@ -1,0 +1,122 @@
+\hypertarget{rotation_8cpp}{}\section{nuturtle\+\_\+robot/src/rotation.cpp File Reference}
+\label{rotation_8cpp}\index{nuturtle\+\_\+robot/src/rotation.\+cpp@{nuturtle\+\_\+robot/src/rotation.\+cpp}}
+
+
+Provides a /start service which makes the turtlebot3 perform either 20 rotation (C\+W/\+C\+CW) or a 2-\/meter traversal (F\+W\+D/\+B\+WD)  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$geometry\+\_\+msgs/\+Twist.\+h$>$}\newline
+{\ttfamily \#include $<$sensor\+\_\+msgs/\+Joint\+State.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include \char`\"{}rigid2d/rigid2d.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rigid2d/diff\+\_\+drive.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}nuturtlebot/\+Wheel\+Commands.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}nuturtlebot/\+Sensor\+Data.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}nuturtle\+\_\+robot/\+Rotation.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}rigid2d/\+Set\+Pose.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+Include dependency graph for rotation.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{dc/df1/rotation_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{rotation_8cpp_a31ebe0e5041f663b63d48a54ec05494b}{start\+Callback} (nuturtle\+\_\+robot\+::\+Rotation\+::\+Request \&req, nuturtle\+\_\+robot\+::\+Rotation\+::\+Response \&res)
+\item 
+void \hyperlink{rotation_8cpp_aa3e1206390821164a4b362e7c55f2648}{timer\+Callback} (const ros\+::\+Timer\+Event \&, const ros\+::\+Publisher \&vel\+\_\+pub)
+\item 
+\mbox{\Hypertarget{rotation_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{rotation_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{rotation_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The Main Function ///. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{rotation_8cpp_abf71dd72073c6c40ee2c364e567ae08c}\label{rotation_8cpp_abf71dd72073c6c40ee2c364e567ae08c}} 
+nuturtle\+\_\+robot\+::\+Rotation\+::\+Request {\bfseries request}
+\item 
+\mbox{\Hypertarget{rotation_8cpp_a6e7901ce8d657fd6ac8c86e5e2500d25}\label{rotation_8cpp_a6e7901ce8d657fd6ac8c86e5e2500d25}} 
+bool {\bfseries start\+\_\+called} = false
+\item 
+\mbox{\Hypertarget{rotation_8cpp_a6e85223fcd11d3cf3a1fff5b211332de}\label{rotation_8cpp_a6e85223fcd11d3cf3a1fff5b211332de}} 
+int {\bfseries timer\+\_\+count} = 0
+\item 
+\mbox{\Hypertarget{rotation_8cpp_ab8429d3251f67d8ee440068406c90b82}\label{rotation_8cpp_ab8429d3251f67d8ee440068406c90b82}} 
+bool {\bfseries cycle\+\_\+trigger} = false
+\item 
+\mbox{\Hypertarget{rotation_8cpp_a8c443db840e4be46a5d58abac0b85916}\label{rotation_8cpp_a8c443db840e4be46a5d58abac0b85916}} 
+int {\bfseries rotation\+\_\+count} = 0
+\item 
+\mbox{\Hypertarget{rotation_8cpp_a5b4563ede08683c61879f1c679b11d88}\label{rotation_8cpp_a5b4563ede08683c61879f1c679b11d88}} 
+int {\bfseries translation\+\_\+count} = 0
+\item 
+\mbox{\Hypertarget{rotation_8cpp_ad3f1aee58b6621b91b33841387188560}\label{rotation_8cpp_ad3f1aee58b6621b91b33841387188560}} 
+int {\bfseries pause\+\_\+count} = 0
+\item 
+\mbox{\Hypertarget{rotation_8cpp_a485d7b3a5c34aa635315b70d16219ed8}\label{rotation_8cpp_a485d7b3a5c34aa635315b70d16219ed8}} 
+int {\bfseries full\+\_\+rots} = 10000000
+\item 
+\mbox{\Hypertarget{rotation_8cpp_af7098fe636af27fcc90ed5ee1085fdb4}\label{rotation_8cpp_af7098fe636af27fcc90ed5ee1085fdb4}} 
+int {\bfseries full\+\_\+trans} = 1000000
+\item 
+\mbox{\Hypertarget{rotation_8cpp_a5d694246db39ec0d20b46da16d6827f7}\label{rotation_8cpp_a5d694246db39ec0d20b46da16d6827f7}} 
+float {\bfseries rot} = 0
+\item 
+\mbox{\Hypertarget{rotation_8cpp_ad618458d9c15ada2b6727db8e5a7cea5}\label{rotation_8cpp_ad618458d9c15ada2b6727db8e5a7cea5}} 
+float {\bfseries trans} = 0
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Provides a /start service which makes the turtlebot3 perform either 20 rotation (C\+W/\+C\+CW) or a 2-\/meter traversal (F\+W\+D/\+B\+WD) 
+
+P\+A\+R\+A\+M\+E\+T\+E\+RS\+: request (nuturtle\+\_\+robot\+::\+Rotation\+::\+Request)\+: service request for /start service, which contains four booleans\+: rot\+\_\+trans, rot\+\_\+direction, trans\+\_\+direction start\+\_\+called (bool)\+: flag to indicate that service has been called, and rotation/translation sequence can commence. timer\+\_\+count (int)\+: keeps track of iterations required to perform one rotation or translation segment. cycle\+\_\+trigger (bool)\+: flag used to alternate between pause and actuation of turtlebot3 rotation\+\_\+count (int)\+: records the number of rotations completed since the start of the service call translation\+\_\+count (int)\+: records the number of translation completed since the start of the service call pause\+\_\+count (bool)\+: keeps track of iterations required to pause for the correct amount of time based on loop rate full\+\_\+rots (int)\+: value greater than maximum number of rotations, used for loop logic full\+\_\+trans (int)\+: value greater than maximum number of translations, used for loop logic
+
+rot (float)\+: angular component of desired 2D twist trans (float)\+: linear component of desired 2D twist frac\+\_\+vel (float)\+: fraction to be used of the turtlebot3\textquotesingle{}s maximum linear and angular velocities max\+\_\+lin\+\_\+vel\+\_\+ (float)\+: turtlebot3\textquotesingle{}s maximum linear velocity max\+\_\+ang\+\_\+vel\+\_\+ (float)\+: turtlebot3\textquotesingle{}s maximum rotational velocity frequency (float)\+: loop rate for this operation
+
+P\+U\+B\+L\+I\+S\+H\+ES\+: publishes Twist to cmd\+\_\+vel
+
+F\+U\+N\+C\+T\+I\+O\+NS\+: start\+\_\+callback (bool)\+: callback for start service, which calls the set\+\_\+pose and fake/set\+\_\+pose services, then sets the appripriate flags to begin movement timer\+Callback (void)\+: deterministically publishes Twist message based on desired commands according to loop logic
+
+S\+E\+R\+V\+I\+C\+ES\+: start\+: calls set\+\_\+pose service and intiates either 20 rotations, or a 2 meter traversal 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{rotation_8cpp_a31ebe0e5041f663b63d48a54ec05494b}\label{rotation_8cpp_a31ebe0e5041f663b63d48a54ec05494b}} 
+\index{rotation.\+cpp@{rotation.\+cpp}!start\+Callback@{start\+Callback}}
+\index{start\+Callback@{start\+Callback}!rotation.\+cpp@{rotation.\+cpp}}
+\subsubsection{\texorpdfstring{start\+Callback()}{startCallback()}}
+{\footnotesize\ttfamily bool start\+Callback (\begin{DoxyParamCaption}\item[{nuturtle\+\_\+robot\+::\+Rotation\+::\+Request \&}]{req,  }\item[{nuturtle\+\_\+robot\+::\+Rotation\+::\+Response \&}]{res }\end{DoxyParamCaption})}
+
+start service callback, calls set\+\_\+pose service and intiates either 20 rotations, or a 2 meter traversal 
+\begin{DoxyParams}{Parameters}
+{\em rot\+\_\+trans} & (bool)\+: False -\/ Rotation, True -\/ Translation \\
+\hline
+{\em rot\+\_\+direction} & (bool)\+: False -\/ CW, True -\/ C\+CW \\
+\hline
+{\em trans\+\_\+direction} & (bool)\+: False -\/ Forward, True -\/ Backwards \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+result (bool)\+: True or False. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{rotation_8cpp_aa3e1206390821164a4b362e7c55f2648}\label{rotation_8cpp_aa3e1206390821164a4b362e7c55f2648}} 
+\index{rotation.\+cpp@{rotation.\+cpp}!timer\+Callback@{timer\+Callback}}
+\index{timer\+Callback@{timer\+Callback}!rotation.\+cpp@{rotation.\+cpp}}
+\subsubsection{\texorpdfstring{timer\+Callback()}{timerCallback()}}
+{\footnotesize\ttfamily void timer\+Callback (\begin{DoxyParamCaption}\item[{const ros\+::\+Timer\+Event \&}]{,  }\item[{const ros\+::\+Publisher \&}]{vel\+\_\+pub }\end{DoxyParamCaption})}
+
+deterministic timer to publish Twist messages to cmd\+\_\+vel 
+\begin{DoxyParams}{Parameters}
+{\em ros\+::\+Timer\+Event} & ensures loop is consistent (deterministic) \\
+\hline
+{\em vel\+\_\+pub} & (ros\+::\+Publisher)\+: publisher object used to send messages to cmd\+\_\+\+Vel \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+publishes Twist to cmd\+\_\+vel 
+\end{DoxyReturn}

@@ -1,0 +1,103 @@
+\hypertarget{real__waypoint_8cpp}{}\section{nuturtle\+\_\+robot/src/real\+\_\+waypoint.cpp File Reference}
+\label{real__waypoint_8cpp}\index{nuturtle\+\_\+robot/src/real\+\_\+waypoint.\+cpp@{nuturtle\+\_\+robot/src/real\+\_\+waypoint.\+cpp}}
+
+
+Makes the turtlebot3 follow a series of waypoints using closed-\/loop odometer-\/based feedback control.  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$std\+\_\+srvs/\+Empty.\+h$>$}\newline
+{\ttfamily \#include $<$nav\+\_\+msgs/\+Odometry.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}rigid2d/\+Set\+Pose.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$tf2/\+Linear\+Math/\+Quaternion.\+h$>$}\newline
+{\ttfamily \#include $<$tf2/\+Linear\+Math/\+Matrix3x3.\+h$>$}\newline
+{\ttfamily \#include $<$visualization\+\_\+msgs/\+Marker.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$boost/iterator/zip\+\_\+iterator.\+hpp$>$}\newline
+{\ttfamily \#include \char`\"{}rigid2d/waypoints.\+hpp\char`\"{}}\newline
+Include dependency graph for real\+\_\+waypoint.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{da/d22/real__waypoint_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{real__waypoint_8cpp_ac23f42e23b70b13ce3255b21f487a507}{odom\+Callback} (const nav\+\_\+msgs\+::\+Odometry \&odom)
+\item 
+bool \hyperlink{real__waypoint_8cpp_aafcd8ac962841fac7d63c81baaf9369d}{start\+Callback} (std\+\_\+srvs\+::\+Empty\+::\+Request \&, std\+\_\+srvs\+::\+Empty\+::\+Response \&)
+\item 
+bool \hyperlink{real__waypoint_8cpp_af42b5fe5657dfc7828d0445ef89e988d}{stop\+Callback} (std\+\_\+srvs\+::\+Empty\+::\+Request \&, std\+\_\+srvs\+::\+Empty\+::\+Response \&)
+\item 
+\mbox{\Hypertarget{real__waypoint_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{real__waypoint_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{real__waypoint_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The Main Function ///. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{real__waypoint_8cpp_a400d04156bbf7d9a5b3a3bc361d785d8}\label{real__waypoint_8cpp_a400d04156bbf7d9a5b3a3bc361d785d8}} 
+\hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D} {\bfseries pose}
+\item 
+\mbox{\Hypertarget{real__waypoint_8cpp_a44992affb21ddb63e4e7f0cc0090aca3}\label{real__waypoint_8cpp_a44992affb21ddb63e4e7f0cc0090aca3}} 
+bool {\bfseries move} = false
+\item 
+\mbox{\Hypertarget{real__waypoint_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}\label{real__waypoint_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}} 
+bool {\bfseries callback\+\_\+flag} = false
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Makes the turtlebot3 follow a series of waypoints using closed-\/loop odometer-\/based feedback control. 
+
+P\+A\+R\+A\+M\+E\+T\+E\+RS\+: waypoint\+\_\+x (vector$<$float$>$)\+: x-\/coordinates of the waypoints to visit waypoint\+\_\+y (vector$<$float$>$)\+: y-\/coordinates of the waypoints to visit frequency (int)\+: frequency of control loop. threshold (float)\+: specifies when the target pose has been reached. v\+\_\+x\+\_\+max\+\_\+ (float)\+: turtlebot3\textquotesingle{}s maximum linear velocity w\+\_\+z\+\_\+max\+\_\+ (float)\+: turtlebot3\textquotesingle{}s maximum rotational velocity frac\+\_\+vel (float)\+: fraction to be used of the turtlebot3\textquotesingle{}s maximum linear and angular velocities
+
+pose (\hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D})\+: modeled diff drive robot pose based on feedforward prediction move (bool)\+: flag to allow or prevent the publishing of Twists to cmd\+\_\+vel callback\+\_\+flag (bool)\+: flag to indicate that odometry message has been received tw (Twist)\+: used to publish linear and angular velocities to turtle1/cmd\+\_\+vel.
+
+Vb (\hyperlink{classrigid2d_1_1Twist2D}{rigid2d\+::\+Twist2D})\+: calculated twist necessary for robot to reach current waypoint waypoints\+\_\+ (vector$<$rigid2d\+::\+Vector2\+D$>$)\+: intermediate storage of waypoints combined using waypoint\+\_\+x and y waypoints (\hyperlink{classrigid2d_1_1Waypoints}{rigid2d\+::\+Waypoints})\+: stores waypoints to visit and returns \hyperlink{classrigid2d_1_1Twist2D}{rigid2d\+::\+Twist2D} required to do so
+
+marker (visualization\+\_\+msgs\+::\+Marker)\+: marker displayed in R\+Viz, which localizes waypoints on grid. started\+\_\+cycle (bool)\+:indicates whether new cycle has started.
+
+P\+U\+B\+L\+I\+S\+H\+ES\+: cmd\+\_\+vel (geometry\+\_\+msgs\+::\+Twist)\+: publishes a twist with linear (x) and angular (z) velocities to command turtlebot3 visualization\+\_\+marker (visualization\+\_\+msgs\+::\+Marker)\+: publishes marker to R\+Viz to localize watpoints on grid S\+U\+B\+S\+C\+R\+I\+B\+ES\+: odom (nav\+\_\+msgs\+::\+Odometry)\+: feceives the position and orientation of the turtlebot3
+
+F\+U\+N\+C\+T\+I\+O\+NS\+: odom\+Callback (void)\+: callback for odom subscriber, which records the turtle\textquotesingle{}s pose for use elsewhere. Also sets callback flag. start\+Callback (bool)\+: start service callback, sets move boolean to true to allow publishing of cmd\+\_\+vel stop\+Callback (bool)\+: stop service callback, sets move boolean to false to prevent publishing of cmd\+\_\+vel S\+E\+R\+V\+I\+C\+ES\+: start\+: sets move boolean to true to allow publishing of cmd\+\_\+vel stop\+: sets move boolean to false to prevent publishing of cmd\+\_\+vel 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{real__waypoint_8cpp_ac23f42e23b70b13ce3255b21f487a507}\label{real__waypoint_8cpp_ac23f42e23b70b13ce3255b21f487a507}} 
+\index{real\+\_\+waypoint.\+cpp@{real\+\_\+waypoint.\+cpp}!odom\+Callback@{odom\+Callback}}
+\index{odom\+Callback@{odom\+Callback}!real\+\_\+waypoint.\+cpp@{real\+\_\+waypoint.\+cpp}}
+\subsubsection{\texorpdfstring{odom\+Callback()}{odomCallback()}}
+{\footnotesize\ttfamily void odom\+Callback (\begin{DoxyParamCaption}\item[{const nav\+\_\+msgs\+::\+Odometry \&}]{odom }\end{DoxyParamCaption})}
+
+odom subscriber callback. Records turtlebot3 pose (x, y, theta)
+
+
+\begin{DoxyParams}{Parameters}
+{\em odom} & (nav\+\_\+msgs\+::\+Odometry) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+pose (\hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D}) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{real__waypoint_8cpp_aafcd8ac962841fac7d63c81baaf9369d}\label{real__waypoint_8cpp_aafcd8ac962841fac7d63c81baaf9369d}} 
+\index{real\+\_\+waypoint.\+cpp@{real\+\_\+waypoint.\+cpp}!start\+Callback@{start\+Callback}}
+\index{start\+Callback@{start\+Callback}!real\+\_\+waypoint.\+cpp@{real\+\_\+waypoint.\+cpp}}
+\subsubsection{\texorpdfstring{start\+Callback()}{startCallback()}}
+{\footnotesize\ttfamily bool start\+Callback (\begin{DoxyParamCaption}\item[{std\+\_\+srvs\+::\+Empty\+::\+Request \&}]{,  }\item[{std\+\_\+srvs\+::\+Empty\+::\+Response \&}]{ }\end{DoxyParamCaption})}
+
+start service callback, sets move boolean to true to allow publishing of cmd\+\_\+vel \begin{DoxyReturn}{Returns}
+sets move (bool) to true 
+\end{DoxyReturn}
+\mbox{\Hypertarget{real__waypoint_8cpp_af42b5fe5657dfc7828d0445ef89e988d}\label{real__waypoint_8cpp_af42b5fe5657dfc7828d0445ef89e988d}} 
+\index{real\+\_\+waypoint.\+cpp@{real\+\_\+waypoint.\+cpp}!stop\+Callback@{stop\+Callback}}
+\index{stop\+Callback@{stop\+Callback}!real\+\_\+waypoint.\+cpp@{real\+\_\+waypoint.\+cpp}}
+\subsubsection{\texorpdfstring{stop\+Callback()}{stopCallback()}}
+{\footnotesize\ttfamily bool stop\+Callback (\begin{DoxyParamCaption}\item[{std\+\_\+srvs\+::\+Empty\+::\+Request \&}]{,  }\item[{std\+\_\+srvs\+::\+Empty\+::\+Response \&}]{ }\end{DoxyParamCaption})}
+
+stop service callback, sets move boolean to false to prevent publishing of cmd\+\_\+vel \begin{DoxyReturn}{Returns}
+sets move (bool) to false 
+\end{DoxyReturn}

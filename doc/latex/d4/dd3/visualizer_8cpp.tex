@@ -1,0 +1,114 @@
+\hypertarget{visualizer_8cpp}{}\section{nuslam/src/visualizer.cpp File Reference}
+\label{visualizer_8cpp}\index{nuslam/src/visualizer.\+cpp@{nuslam/src/visualizer.\+cpp}}
+
+
+Publishes aggregate robot paths based on pure odometry, ground truth (Gazebo data) or the S\+L\+AM estimate. Also publishes tsim\+::\+Pose\+Error message to display error in x,y,theta between odometry and ground truth, as well as S\+L\+AM and ground truth.  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$std\+\_\+srvs/\+Empty.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$boost/iterator/zip\+\_\+iterator.\+hpp$>$}\newline
+{\ttfamily \#include $<$gazebo\+\_\+msgs/\+Model\+States.\+h$>$}\newline
+{\ttfamily \#include $<$geometry\+\_\+msgs/\+Pose.\+h$>$}\newline
+{\ttfamily \#include $<$geometry\+\_\+msgs/\+Pose\+Stamped.\+h$>$}\newline
+{\ttfamily \#include $<$nav\+\_\+msgs/\+Path.\+h$>$}\newline
+{\ttfamily \#include $<$nav\+\_\+msgs/\+Odometry.\+h$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$tf2/\+Linear\+Math/\+Quaternion.\+h$>$}\newline
+{\ttfamily \#include $<$tf2/\+Linear\+Math/\+Matrix3x3.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}tsim/\+Pose\+Error.\+h\char`\"{}}\newline
+Include dependency graph for visualizer.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d1/de5/visualizer_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{visualizer_8cpp_adbc02ba8fb4d3eeee5b172ca53ebf61c}{gazebo\+\_\+callback} (const gazebo\+\_\+msgs\+::\+Model\+States \&model)
+\item 
+void \hyperlink{visualizer_8cpp_a834848773a1eb06255ed987fa175c2fd}{odom\+\_\+callback} (const nav\+\_\+msgs\+::\+Odometry \&odom)
+\item 
+void \hyperlink{visualizer_8cpp_a6d0c68da38516d07a5b5ecef446a9e91}{slam\+\_\+callback} (const nav\+\_\+msgs\+::\+Odometry \&slam)
+\item 
+\mbox{\Hypertarget{visualizer_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{visualizer_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{visualizer_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The Main Function ///. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{visualizer_8cpp_a8c7fd303c6f4941962c2ce0d0d7b01ca}\label{visualizer_8cpp_a8c7fd303c6f4941962c2ce0d0d7b01ca}} 
+bool {\bfseries gazebo\+\_\+callback\+\_\+flag} = false
+\item 
+\mbox{\Hypertarget{visualizer_8cpp_ae812a1a12bd845b002bccc6f1e4b1d40}\label{visualizer_8cpp_ae812a1a12bd845b002bccc6f1e4b1d40}} 
+bool {\bfseries odom\+\_\+callback\+\_\+flag} = false
+\item 
+\mbox{\Hypertarget{visualizer_8cpp_a8c94858359289e74cde99c0ca67fb47d}\label{visualizer_8cpp_a8c94858359289e74cde99c0ca67fb47d}} 
+bool {\bfseries slam\+\_\+callback\+\_\+flag} = false
+\item 
+\mbox{\Hypertarget{visualizer_8cpp_ad5317fdaa1ce3c685ef2c6fb7d8b3a70}\label{visualizer_8cpp_ad5317fdaa1ce3c685ef2c6fb7d8b3a70}} 
+std\+::vector$<$ geometry\+\_\+msgs\+::\+Pose\+Stamped $>$ {\bfseries gazebo\+\_\+poses}
+\item 
+\mbox{\Hypertarget{visualizer_8cpp_a72f240728be93041c5d5d63dbdcbae5a}\label{visualizer_8cpp_a72f240728be93041c5d5d63dbdcbae5a}} 
+std\+::vector$<$ geometry\+\_\+msgs\+::\+Pose\+Stamped $>$ {\bfseries odom\+\_\+poses}
+\item 
+\mbox{\Hypertarget{visualizer_8cpp_a9727b4624cc3385d6397ff22951a58ba}\label{visualizer_8cpp_a9727b4624cc3385d6397ff22951a58ba}} 
+std\+::vector$<$ geometry\+\_\+msgs\+::\+Pose\+Stamped $>$ {\bfseries slam\+\_\+poses}
+\item 
+\mbox{\Hypertarget{visualizer_8cpp_a30944405237aa5def944fbfd607393de}\label{visualizer_8cpp_a30944405237aa5def944fbfd607393de}} 
+std\+::string {\bfseries frame\+\_\+id\+\_\+} = \char`\"{}map\char`\"{}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Publishes aggregate robot paths based on pure odometry, ground truth (Gazebo data) or the S\+L\+AM estimate. Also publishes tsim\+::\+Pose\+Error message to display error in x,y,theta between odometry and ground truth, as well as S\+L\+AM and ground truth. 
+
+P\+A\+R\+A\+M\+E\+T\+E\+RS\+: gazebo\+\_\+callback\+\_\+flag (bool)\+: specifies whether to publish robot path from gazebo based on callback trigger odom\+\_\+callback\+\_\+flag (bool)\+: specifies whether to publish robot path from odometry based on callback trigger slam\+\_\+callback\+\_\+flag (bool)\+: specifies whether to publish robot path from S\+L\+AM estimate based on callback trigger gazebo\+\_\+poses (std\+::vector$<$geometry\+\_\+msgs\+::\+Pose\+Stamped$>$)\+: vector containing Pose\+Stamped messages for Path generation odom\+\_\+poses (std\+::vector$<$geometry\+\_\+msgs\+::\+Pose\+Stamped$>$)\+: vector containing Pose\+Stamped messages for Path generation slam\+\_\+poses (std\+::vector$<$geometry\+\_\+msgs\+::\+Pose\+Stamped$>$)\+: vector containing Pose\+Stamped messages for Path generation frame\+\_\+id\+\_\+ (string)\+: frame with respect to which path is published (\char`\"{}map\char`\"{} is the static frame in this implementation) frequency (double)\+: frequency of control loop.
+
+P\+U\+B\+L\+I\+S\+H\+ES\+: gazebo\+\_\+path (nav\+\_\+msgs\+::\+Path)\+: publishes Path based on gazebo pose readings odom\+\_\+path (nav\+\_\+msgs\+::\+Path)\+: publishes Path based on odometry pose estimate slam\+\_\+path (nav\+\_\+msgs\+::\+Path)\+: publishes Path based on S\+L\+AM pose estimate odom\+\_\+err (tsim\+::\+Pose\+Error)\+: publishes error between odometry estimate and gazebo pose readings slam\+\_\+err (tsim\+::\+Pose\+Error)\+: publishes error between S\+L\+AM estimate and gazebo pose readings
+
+S\+U\+B\+S\+C\+R\+I\+B\+ES\+: /gazebo/model\+\_\+states (gazebo\+\_\+msgs\+::\+Model\+States) to read robot Pose from gazebo estimate /odom (nav\+\_\+msgs\+::\+Odometry) to read robot pose from odometry estimate /slam/odom (nav\+\_\+msgs\+::\+Odometry) to read robot pose from S\+L\+AM estimate
+
+F\+U\+N\+C\+T\+I\+O\+NS\+: gazebo\+\_\+callback (void)\+: callback for /gazebo/model\+\_\+states subscriber which appends the current pose to recorded pose history odom\+\_\+callback (void)\+: callback for /odom subscriber which appends the current pose to recorded pose history slam\+\_\+callback (void)\+: callback for /slam/odom subscriber which appends the current pose to recorded pose history 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{visualizer_8cpp_adbc02ba8fb4d3eeee5b172ca53ebf61c}\label{visualizer_8cpp_adbc02ba8fb4d3eeee5b172ca53ebf61c}} 
+\index{visualizer.\+cpp@{visualizer.\+cpp}!gazebo\+\_\+callback@{gazebo\+\_\+callback}}
+\index{gazebo\+\_\+callback@{gazebo\+\_\+callback}!visualizer.\+cpp@{visualizer.\+cpp}}
+\subsubsection{\texorpdfstring{gazebo\+\_\+callback()}{gazebo\_callback()}}
+{\footnotesize\ttfamily void gazebo\+\_\+callback (\begin{DoxyParamCaption}\item[{const gazebo\+\_\+msgs\+::\+Model\+States \&}]{model }\end{DoxyParamCaption})}
+
+extract turtlebot pose from Model\+States 
+\begin{DoxyParams}{Parameters}
+{\em gazebo\+\_\+msgs\+::\+Model\+States,containing} & the pose of all models in the environment \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{visualizer_8cpp_a834848773a1eb06255ed987fa175c2fd}\label{visualizer_8cpp_a834848773a1eb06255ed987fa175c2fd}} 
+\index{visualizer.\+cpp@{visualizer.\+cpp}!odom\+\_\+callback@{odom\+\_\+callback}}
+\index{odom\+\_\+callback@{odom\+\_\+callback}!visualizer.\+cpp@{visualizer.\+cpp}}
+\subsubsection{\texorpdfstring{odom\+\_\+callback()}{odom\_callback()}}
+{\footnotesize\ttfamily void odom\+\_\+callback (\begin{DoxyParamCaption}\item[{const nav\+\_\+msgs\+::\+Odometry \&}]{odom }\end{DoxyParamCaption})}
+
+extract turtlebot pose from Odometry msg 
+\begin{DoxyParams}{Parameters}
+{\em nav\+\_\+msgs\+::\+Odometry,containing} & the robot pose \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{visualizer_8cpp_a6d0c68da38516d07a5b5ecef446a9e91}\label{visualizer_8cpp_a6d0c68da38516d07a5b5ecef446a9e91}} 
+\index{visualizer.\+cpp@{visualizer.\+cpp}!slam\+\_\+callback@{slam\+\_\+callback}}
+\index{slam\+\_\+callback@{slam\+\_\+callback}!visualizer.\+cpp@{visualizer.\+cpp}}
+\subsubsection{\texorpdfstring{slam\+\_\+callback()}{slam\_callback()}}
+{\footnotesize\ttfamily void slam\+\_\+callback (\begin{DoxyParamCaption}\item[{const nav\+\_\+msgs\+::\+Odometry \&}]{slam }\end{DoxyParamCaption})}
+
+extract turtlebot pose from Odometry msg 
+\begin{DoxyParams}{Parameters}
+{\em nav\+\_\+msgs\+::\+Odometry,containing} & the robot pose \\
+\hline
+\end{DoxyParams}

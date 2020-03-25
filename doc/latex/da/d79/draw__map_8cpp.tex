@@ -1,0 +1,68 @@
+\hypertarget{draw__map_8cpp}{}\section{nuslam/src/draw\+\_\+map.cpp File Reference}
+\label{draw__map_8cpp}\index{nuslam/src/draw\+\_\+map.\+cpp@{nuslam/src/draw\+\_\+map.\+cpp}}
+
+
+Receives Turtle\+Map data and publishes markers to R\+Viz which indicate landmark estimations.  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$std\+\_\+srvs/\+Empty.\+h$>$}\newline
+{\ttfamily \#include $<$visualization\+\_\+msgs/\+Marker.\+h$>$}\newline
+{\ttfamily \#include $<$sensor\+\_\+msgs/\+Laser\+Scan.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$boost/iterator/zip\+\_\+iterator.\+hpp$>$}\newline
+{\ttfamily \#include \char`\"{}nuslam/landmarks.\+hpp\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}nuslam/\+Turtle\+Map.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+Include dependency graph for draw\+\_\+map.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{df/de5/draw__map_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{draw__map_8cpp_a7b3e91ec368e7d5a4082f972e7cdd0a2}{map\+Callback} (const nuslam\+::\+Turtle\+Map \&map)
+\item 
+\mbox{\Hypertarget{draw__map_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{draw__map_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{draw__map_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The Main Function ///. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{draw__map_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}\label{draw__map_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}} 
+bool {\bfseries callback\+\_\+flag} = false
+\item 
+\mbox{\Hypertarget{draw__map_8cpp_add282c3ccb897740380532389b28dded}\label{draw__map_8cpp_add282c3ccb897740380532389b28dded}} 
+nuslam\+::\+Turtle\+Map {\bfseries global\+\_\+map}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Receives Turtle\+Map data and publishes markers to R\+Viz which indicate landmark estimations. 
+
+P\+A\+R\+A\+M\+E\+T\+E\+RS\+: callback\+\_\+flag (bool)\+: specifies whether to draw landmarks from based on callback trigger global\+\_\+map (nuslam\+::\+Turtle\+Map)\+: stores lists of x,y coordinates and radii of landmarks to publish frequency (double)\+: frequency of control loop. color (string)\+: \char`\"{}gazebo\char`\"{}, \char`\"{}scan\char`\"{}, or \char`\"{}slam\char`\"{} determines color and size of markers for clarity
+
+P\+U\+B\+L\+I\+S\+H\+ES\+: scan/marker (visualization\+\_\+msgs\+::\+Marker)\+: publishes markers to indicate detected landmark positions
+
+S\+U\+B\+S\+C\+R\+I\+B\+ES\+: /landmarks\+\_\+node/landmarks (nuslam\+::\+Turtle\+Map), stores lists of x,y coordinates and radii of detected landmarks
+
+F\+U\+N\+C\+T\+I\+O\+NS\+: map\+Callback (void)\+: callback for /landmarks\+\_\+node/landmarks subscriber, which stores Turtle\+Map data for exraction 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{draw__map_8cpp_a7b3e91ec368e7d5a4082f972e7cdd0a2}\label{draw__map_8cpp_a7b3e91ec368e7d5a4082f972e7cdd0a2}} 
+\index{draw\+\_\+map.\+cpp@{draw\+\_\+map.\+cpp}!map\+Callback@{map\+Callback}}
+\index{map\+Callback@{map\+Callback}!draw\+\_\+map.\+cpp@{draw\+\_\+map.\+cpp}}
+\subsubsection{\texorpdfstring{map\+Callback()}{mapCallback()}}
+{\footnotesize\ttfamily void map\+Callback (\begin{DoxyParamCaption}\item[{const nuslam\+::\+Turtle\+Map \&}]{map }\end{DoxyParamCaption})}
+
+store Turtle\+Map data for converting into marker coordinates 
+\begin{DoxyParams}{Parameters}
+{\em nuslam\+::\+Turtle\+Map,which} & stores lists of x,y coordinates and radii of detected landmarks \\
+\hline
+\end{DoxyParams}

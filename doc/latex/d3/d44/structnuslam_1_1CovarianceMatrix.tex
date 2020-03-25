@@ -1,0 +1,35 @@
+\hypertarget{structnuslam_1_1CovarianceMatrix}{}\section{nuslam\+:\+:Covariance\+Matrix Struct Reference}
+\label{structnuslam_1_1CovarianceMatrix}\index{nuslam\+::\+Covariance\+Matrix@{nuslam\+::\+Covariance\+Matrix}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structnuslam_1_1CovarianceMatrix_a026cf2d0618c09200a10c7f314be6966}\label{structnuslam_1_1CovarianceMatrix_a026cf2d0618c09200a10c7f314be6966}} 
+\hyperlink{structnuslam_1_1CovarianceMatrix_a026cf2d0618c09200a10c7f314be6966}{Covariance\+Matrix} ()
+\begin{DoxyCompactList}\small\item\em constructor for covariance matrix with robot\+\_\+state\+\_\+cov init to zero and map\+\_\+state\+\_\+cov init to infinity but with no recorded landmarks \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structnuslam_1_1CovarianceMatrix_ab8879a65f665bda9f8c1d30f03d83d4b}\label{structnuslam_1_1CovarianceMatrix_ab8879a65f665bda9f8c1d30f03d83d4b}} 
+\hyperlink{structnuslam_1_1CovarianceMatrix_ab8879a65f665bda9f8c1d30f03d83d4b}{Covariance\+Matrix} (const std\+::vector$<$ \hyperlink{structnuslam_1_1Point}{Point} $>$ \&map\+\_\+state\+\_\+)
+\begin{DoxyCompactList}\small\item\em constructor for covariance matrix with robot\+\_\+state\+\_\+cov init to zero and map\+\_\+state\+\_\+cov init to infinity \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structnuslam_1_1CovarianceMatrix_a64f30a5e35b50cd63ac0db813d678024}\label{structnuslam_1_1CovarianceMatrix_a64f30a5e35b50cd63ac0db813d678024}} 
+\hyperlink{structnuslam_1_1CovarianceMatrix_a64f30a5e35b50cd63ac0db813d678024}{Covariance\+Matrix} (const std\+::vector$<$ \hyperlink{structnuslam_1_1Point}{Point} $>$ \&map\+\_\+state\+\_\+, const std\+::vector$<$ double $>$ \&robot\+\_\+state\+\_\+cov\+\_\+, const std\+::vector$<$ double $>$ \&map\+\_\+state\+\_\+cov\+\_\+)
+\begin{DoxyCompactList}\small\item\em constructor for covariance matrix with robot\+\_\+state\+\_\+cov and map\+\_\+state\+\_\+cov init to user-\/specified input \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structnuslam_1_1CovarianceMatrix_a8a667ab78f5bbefb92b354524a031e7e}\label{structnuslam_1_1CovarianceMatrix_a8a667ab78f5bbefb92b354524a031e7e}} 
+std\+::vector$<$ double $>$ {\bfseries robot\+\_\+state\+\_\+cov}
+\item 
+\mbox{\Hypertarget{structnuslam_1_1CovarianceMatrix_ac966e05d92a7e27a7d1ff68114697c3f}\label{structnuslam_1_1CovarianceMatrix_ac966e05d92a7e27a7d1ff68114697c3f}} 
+std\+::vector$<$ \hyperlink{structnuslam_1_1Point}{Point} $>$ {\bfseries map\+\_\+state}
+\item 
+\mbox{\Hypertarget{structnuslam_1_1CovarianceMatrix_a615413478283a7d1ac557af2090405c7}\label{structnuslam_1_1CovarianceMatrix_a615413478283a7d1ac557af2090405c7}} 
+std\+::vector$<$ double $>$ {\bfseries map\+\_\+state\+\_\+cov}
+\item 
+\mbox{\Hypertarget{structnuslam_1_1CovarianceMatrix_aca511a835b0c6e25e47a7dbb033d29ed}\label{structnuslam_1_1CovarianceMatrix_aca511a835b0c6e25e47a7dbb033d29ed}} 
+Eigen\+::\+Matrix\+Xd {\bfseries cov\+\_\+mtx}
+\end{DoxyCompactItemize}
+
+
+The documentation for this struct was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+nuslam/include/nuslam/\hyperlink{ekf_8hpp}{ekf.\+hpp}\item 
+nuslam/src/nuslam/ekf.\+cpp\end{DoxyCompactItemize}

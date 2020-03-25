@@ -1,0 +1,76 @@
+\hypertarget{turtle__way__node_8cpp}{}\section{tsim/src/turtle\+\_\+way\+\_\+node.cpp File Reference}
+\label{turtle__way__node_8cpp}\index{tsim/src/turtle\+\_\+way\+\_\+node.\+cpp@{tsim/src/turtle\+\_\+way\+\_\+node.\+cpp}}
+
+
+Makes turtlesim modeled as Diff Drive robot follow a user-\/specified trajectory in turtle\+\_\+way.\+yaml.  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$turtlesim/\+Pose.\+h$>$}\newline
+{\ttfamily \#include $<$geometry\+\_\+msgs/\+Twist.\+h$>$}\newline
+{\ttfamily \#include $<$std\+\_\+srvs/\+Empty.\+h$>$}\newline
+{\ttfamily \#include $<$tsim/\+Pose\+Error.\+h$>$}\newline
+{\ttfamily \#include $<$turtlesim/\+Set\+Pen.\+h$>$}\newline
+{\ttfamily \#include $<$turtlesim/\+Teleport\+Absolute.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$boost/iterator/zip\+\_\+iterator.\+hpp$>$}\newline
+{\ttfamily \#include \char`\"{}rigid2d/waypoints.\+hpp\char`\"{}}\newline
+Include dependency graph for turtle\+\_\+way\+\_\+node.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d2/d39/turtle__way__node_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{turtle__way__node_8cpp_a32f38e8ed5c6dc1fe5766d378c21f115}{pose\+Callback} (const turtlesim\+::\+Pose\+Const\+Ptr \&pos)
+\item 
+\mbox{\Hypertarget{turtle__way__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{turtle__way__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{turtle__way__node_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The Main Function ///. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{turtle__way__node_8cpp_aff33052d2147e2cb1ed2cfbc439023df}\label{turtle__way__node_8cpp_aff33052d2147e2cb1ed2cfbc439023df}} 
+\hyperlink{structrigid2d_1_1Pose2D}{Pose2D} {\bfseries pose}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Makes turtlesim modeled as Diff Drive robot follow a user-\/specified trajectory in turtle\+\_\+way.\+yaml. 
+
+P\+A\+R\+A\+M\+E\+T\+E\+RS\+: waypoint\+\_\+x (vector$<$float$>$)\+: x-\/coordinates of the waypoints to visit waypoint\+\_\+y (vector$<$float$>$)\+: y-\/coordinates of the waypoints to visit frequency (int)\+: frequency of control loop. threshold (float)\+: specifies when the target pose has been reached.
+
+pose (turtlesim\+::\+Pose)\+: turtle position as read by turtle1/pose topic driver\+\_\+pose (\hyperlink{structrigid2d_1_1Pose2D}{rigid2d\+::\+Pose2D})\+: modeled diff drive robot pose based on feedforward prediction
+
+x\+\_\+error (float)\+: turtle position error in x between read and predicted values. y\+\_\+error (float)\+: turtle position error in y between read and predicted values. theta\+\_\+error (float)\+: turtle position error in theta between read and predicted values. pose\+\_\+error (Pose\+Error)\+: custom message that stores x\+\_\+error, y\+\_\+error and theta\+\_\+error. tw (Twist)\+: used to publish linear and angular velocities to turtle1/cmd\+\_\+vel.
+
+Vb (\hyperlink{classrigid2d_1_1Twist2D}{rigid2d\+::\+Twist2D})\+: scaled from tw based on loop rate to predict simulated diff drive robot path driver (\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive})\+: model of the diff drive robot waypoints\+\_\+ (vector$<$rigid2d\+::\+Vector2\+D$>$)\+: intermediate storage of waypoints combined using waypoint\+\_\+x and y waypoints (\hyperlink{classrigid2d_1_1Waypoints}{rigid2d\+::\+Waypoints})\+: stores waypoints to visit and returns \hyperlink{classrigid2d_1_1Twist2D}{rigid2d\+::\+Twist2D} required to do so
+
+P\+U\+B\+L\+I\+S\+H\+ES\+: turtle1/cmd\+\_\+vel (geometry\+\_\+msgs\+::\+Twist)\+: publishes a twist with linear (x) and angular (z) velocities to command turtle pose\+\_\+error (tsim\+:Pose\+Error)\+: publishes pose error in x, y, and theta for plotting S\+U\+B\+S\+C\+R\+I\+B\+ES\+: turtle1/pose (turtlesim\+::\+Pose)\+: feceives the x, y, and theta position of the turtle from turtlesim.
+
+F\+U\+N\+C\+T\+I\+O\+NS\+: pose\+Callback (void)\+: callback for turtle1/pose subscriber, which records the turtle\textquotesingle{}s pose for use elsewhere. 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{turtle__way__node_8cpp_a32f38e8ed5c6dc1fe5766d378c21f115}\label{turtle__way__node_8cpp_a32f38e8ed5c6dc1fe5766d378c21f115}} 
+\index{turtle\+\_\+way\+\_\+node.\+cpp@{turtle\+\_\+way\+\_\+node.\+cpp}!pose\+Callback@{pose\+Callback}}
+\index{pose\+Callback@{pose\+Callback}!turtle\+\_\+way\+\_\+node.\+cpp@{turtle\+\_\+way\+\_\+node.\+cpp}}
+\subsubsection{\texorpdfstring{pose\+Callback()}{poseCallback()}}
+{\footnotesize\ttfamily void pose\+Callback (\begin{DoxyParamCaption}\item[{const turtlesim\+::\+Pose\+Const\+Ptr \&}]{pos }\end{DoxyParamCaption})}
+
+turtle1/pose subscriber callback. Records turtle1 pose (x, y, theta)
+
+
+\begin{DoxyParams}{Parameters}
+{\em pos} & (turtlesim\+::\+Pose)\+: turtle1\textquotesingle{}s pose in x, y, and theta. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+pose (turtlesim\+::\+Pose)
+\end{DoxyReturn}
+This function runs every time we get a turtlesim\+::\+Pose message on the \char`\"{}turtle1/pose\char`\"{} topic. We generally use the const $<$message$>$Const\+Ptr \&msg syntax to prevent our node from accidentally changing the message, in the case that another node is also listening to it.

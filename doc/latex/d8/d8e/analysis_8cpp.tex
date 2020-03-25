@@ -1,0 +1,77 @@
+\hypertarget{analysis_8cpp}{}\section{nuslam/src/analysis.cpp File Reference}
+\label{analysis_8cpp}\index{nuslam/src/analysis.\+cpp@{nuslam/src/analysis.\+cpp}}
+
+
+Publishes coordinates of available landmarks straight from gazebo (no noise) relative to robot.  
+
+
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$std\+\_\+srvs/\+Empty.\+h$>$}\newline
+{\ttfamily \#include $<$math.\+h$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$boost/iterator/zip\+\_\+iterator.\+hpp$>$}\newline
+{\ttfamily \#include \char`\"{}nuslam/\+Turtle\+Map.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$gazebo\+\_\+msgs/\+Model\+States.\+h$>$}\newline
+{\ttfamily \#include $<$geometry\+\_\+msgs/\+Pose.\+h$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include \char`\"{}nuslam/landmarks.\+hpp\char`\"{}}\newline
+{\ttfamily \#include $<$tf2/\+Linear\+Math/\+Quaternion.\+h$>$}\newline
+{\ttfamily \#include $<$tf2/\+Linear\+Math/\+Matrix3x3.\+h$>$}\newline
+Include dependency graph for analysis.\+cpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{d5/dbb/analysis_8cpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{analysis_8cpp_adbc02ba8fb4d3eeee5b172ca53ebf61c}{gazebo\+\_\+callback} (const gazebo\+\_\+msgs\+::\+Model\+States \&model)
+\item 
+\mbox{\Hypertarget{analysis_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{analysis_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \hyperlink{analysis_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em The Main Function ///. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{analysis_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}\label{analysis_8cpp_a3ee0ad2c2fb892e39c44a42e14f18ce4}} 
+bool {\bfseries callback\+\_\+flag} = false
+\item 
+\mbox{\Hypertarget{analysis_8cpp_a479b2db06058877d6bc4eea716274724}\label{analysis_8cpp_a479b2db06058877d6bc4eea716274724}} 
+nuslam\+::\+Turtle\+Map {\bfseries map}
+\item 
+\mbox{\Hypertarget{analysis_8cpp_a4df94e397e7df41d9894ed8e0a069ae1}\label{analysis_8cpp_a4df94e397e7df41d9894ed8e0a069ae1}} 
+std\+::string {\bfseries landmark\+\_\+name} = \char`\"{}cylinder\char`\"{}
+\item 
+\mbox{\Hypertarget{analysis_8cpp_a3b5bbcd0e93dca30ec3cc609f1f5373e}\label{analysis_8cpp_a3b5bbcd0e93dca30ec3cc609f1f5373e}} 
+std\+::string {\bfseries robot\+\_\+name} = \char`\"{}diff\+\_\+drive\char`\"{}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Publishes coordinates of available landmarks straight from gazebo (no noise) relative to robot. 
+
+P\+A\+R\+A\+M\+E\+T\+E\+RS\+: callback\+\_\+flag (bool)\+: specifies whether to draw landmarks from based on callback trigger map (nuslam\+::\+Turtle\+Map)\+: stores lists of x,y coordinates and radii of landmarks to publish frequency (double)\+: frequency of control loop. frame\+\_\+id\+\_\+ (string)\+: frame with respect to which landmark coordinates are published (\char`\"{}base\+\_\+scan\char`\"{} here)
+
+P\+U\+B\+L\+I\+S\+H\+ES\+: landmarks (nuslam\+::\+Turtle\+Map)\+: publishes Turtle\+Map message containing landmark coordinates (x,y) and radii
+
+S\+U\+B\+S\+C\+R\+I\+B\+ES\+: /gazebo/model\+\_\+states (gazebo\+\_\+msgs\+::\+Model\+States) to read robot and landmark Poses
+
+F\+U\+N\+C\+T\+I\+O\+NS\+: gazebo\+\_\+callback (void)\+: callback for /gazebo/model\+\_\+states subscriber to get landmark coordinates relative to robot 
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{analysis_8cpp_adbc02ba8fb4d3eeee5b172ca53ebf61c}\label{analysis_8cpp_adbc02ba8fb4d3eeee5b172ca53ebf61c}} 
+\index{analysis.\+cpp@{analysis.\+cpp}!gazebo\+\_\+callback@{gazebo\+\_\+callback}}
+\index{gazebo\+\_\+callback@{gazebo\+\_\+callback}!analysis.\+cpp@{analysis.\+cpp}}
+\subsubsection{\texorpdfstring{gazebo\+\_\+callback()}{gazebo\_callback()}}
+{\footnotesize\ttfamily void gazebo\+\_\+callback (\begin{DoxyParamCaption}\item[{const gazebo\+\_\+msgs\+::\+Model\+States \&}]{model }\end{DoxyParamCaption})}
+
+extract turtlebot pose and landmark poses from Model\+States, then computes relative cartesian coordinates to publish as Turtle\+Map message with arbitrary radius 
+\begin{DoxyParams}{Parameters}
+{\em gazebo\+\_\+msgs\+::\+Model\+States,containing} & the pose of all models in the environment \\
+\hline
+\end{DoxyParams}
